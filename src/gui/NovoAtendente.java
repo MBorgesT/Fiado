@@ -158,10 +158,11 @@ public class NovoAtendente extends javax.swing.JFrame {
                     .addComponent(jLabel18)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(senhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(confirmarSenhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(senhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(confirmarSenhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -222,7 +223,7 @@ public class NovoAtendente extends javax.swing.JFrame {
 
     private void botaoCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCadastrarActionPerformed
         if (new AtendenteFormValidation(formPanel).validate()) {
-            String salt = Hash.generateSalt();
+            byte[] salt = Hash.generateSalt();
             String hashedPw = Hash.hashPassword(String.valueOf(senhaTextField.getPassword()), salt).get();
 
             Atendente a = new Atendente(
@@ -230,14 +231,10 @@ public class NovoAtendente extends javax.swing.JFrame {
                     hashedPw,
                     salt
             );
-            
-            try {
-                new AtendenteDAO().insertAtendente(a);
-                menuPrincipal.resetTabelaAtendentes();
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, e, "Atenção", JOptionPane.WARNING_MESSAGE);
-            }
-            
+
+            AtendenteDAO.insertAtendente(a);
+            menuPrincipal.resetTabelaAtendentes();
+
             this.dispose();
         } else {
             System.out.println("foda irmão");

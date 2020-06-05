@@ -15,12 +15,11 @@ public class Hash {
     private static final int KEY_LENGTH = 512;
     private static final String ALGORITHM = "PBKDF2WithHmacSHA512";
 
-    public static Optional<String> hashPassword(String password, String salt) {
+    public static Optional<String> hashPassword(String password, byte[] salt) {
 
         char[] chars = password.toCharArray();
-        byte[] bytes = salt.getBytes();
 
-        PBEKeySpec spec = new PBEKeySpec(chars, bytes, ITERATIONS, KEY_LENGTH);
+        PBEKeySpec spec = new PBEKeySpec(chars, salt, ITERATIONS, KEY_LENGTH);
 
         Arrays.fill(chars, Character.MIN_VALUE);
 
@@ -38,7 +37,7 @@ public class Hash {
         }
     }
 
-    public static boolean verifyPassword(String password, String key, String salt) {
+    public static boolean verifyPassword(String password, String key, byte[] salt) {
         Optional<String> optEncrypted = hashPassword(password, salt);
         if (!optEncrypted.isPresent()) {
             return false;
@@ -46,10 +45,10 @@ public class Hash {
         return optEncrypted.get().equals(key);
     }
 
-    public static String generateSalt() {
+    public static byte[] generateSalt() {
         SecureRandom random = new SecureRandom();
         byte bytes[] = new byte[20];
         random.nextBytes(bytes);
-        return new String(bytes, StandardCharsets.UTF_8);
+        return bytes;
     }
 }

@@ -7,65 +7,73 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import models.Atendente;
 
 public class AtendenteDAO {
 
-    private Atendente extractAtendenteFromRs(ResultSet rs) throws SQLException {
-        return new Atendente(
-                rs.getInt("idAtendente"),
-                rs.getString("nome"),
-                rs.getString("senha"),
-                rs.getString("salt")
-        );
-    }
+    private static Atendente extractAtendenteFromRs(ResultSet rs) {
+        try {
+            byte[] salt = rs.getBytes("salt");
 
-    public ArrayList getAllAtendentes() throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
-        Statement stmt = conn.createStatement();
+            Atendente atendente = new Atendente(
+                    rs.getInt("idAtendente"),
+                    rs.getString("nome"),
+                    rs.getString("senha"),
+                    rs.getBytes("salt"));
 
-        ArrayList<Atendente> arrayAtendentes = new ArrayList<>();
+            atendente.setSalt(salt);
+            // até agora não entendi porque caralhos o salt não está funcionando no construtor
+            // mas assim funcionou, então fica na gambiarra
 
-        ResultSet rs = stmt.executeQuery("SELECT * FROM atendente");
-
-        while (rs.next()) {
-            arrayAtendentes.add(extractAtendenteFromRs(rs));
+            return atendente;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e, "extractAtendenteFromRs", JOptionPane.WARNING_MESSAGE);
         }
-
-        conn.close();
-
-        return arrayAtendentes;
+        return null;
     }
 
-    public void insertAtendente(Atendente atendente) throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
-        String sql = "INSERT INTO atendente(nome, senha, salt) VALUES (?, ?, ?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
+    public static ArrayList selectAllAtendentes() {
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Statement stmt = conn.createStatement();
 
-        ps.setString(1, atendente.getNome());
-        ps.setString(2, atendente.getSenha());
-        ps.setString(3, atendente.getSalt());
-        ps.executeUpdate();
+            ArrayList<Atendente> arrayAtendentes = new ArrayList<>();
 
-        conn.close();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM atendente");
 
-        JOptionPane.showMessageDialog(null, "Atendente cadastrado com sucesso", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            while (rs.next()) {
+                arrayAtendentes.add(extractAtendenteFromRs(rs));
+            }
+
+            conn.close();
+
+            return arrayAtendentes;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e, "Atenção", JOptionPane.WARNING_MESSAGE);
+        }
+        return null;
     }
 
-    public boolean checarSenha(int idAtendente, String hashedPw) throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT senha FROM atendente WHERE idAtendente = " + String.valueOf(idAtendente));
-        conn.close();
+    public static void insertAtendente(Atendente atendente) {
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            String sql = "INSERT INTO atendente(nome, senha, salt) VALUES (?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
 
-        rs.next();
-        String dbPw = rs.getString("senha");
+            ps.setString(1, atendente.getNome());
+            ps.setString(2, atendente.getSenha());
+            ps.setBytes(3, atendente.getSalt());
+            ps.executeUpdate();
 
-        if (hashedPw.equals(dbPw)) {
-            return true;
-        } else {
-            return false;
+            conn.close();
+
+            JOptionPane.showMessageDialog(null, "Atendente cadastrado com sucesso", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e, "insertAtendente", JOptionPane.WARNING_MESSAGE);
         }
     }
 }

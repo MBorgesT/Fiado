@@ -2,15 +2,16 @@ package models;
 
 public class Atendente {
     private int idAtendente;
-    private String nome, senha, salt;
+    private String nome, senha;
+    byte[] salt;
 
-    public Atendente(int idAtendente, String nome, String senha, String salt) {
+    public Atendente(int idAtendente, String nome, String senha, byte[] salt) {
         this.idAtendente = idAtendente;
         this.nome = nome;
         this.senha = senha;
     }
 
-    public Atendente(String nome, String senha, String salt) {
+    public Atendente(String nome, String senha, byte[] salt) {
         this.nome = nome;
         this.senha = senha;
         this.salt = salt;
@@ -35,7 +36,11 @@ public class Atendente {
         return senha;
     }
 
-    public String getSalt() {
+    public byte[] getSalt() {
         return salt;
+    }
+
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
     }
 }

@@ -187,7 +187,7 @@ public class ClienteFormValidation {
             if (cliente.getCpf().equals(cpf.getText())){
                 cpfEstaCadastrado = false;
             }else{
-                cpfEstaCadastrado = new ClienteDAO().checarExistenciaCpfUpdate(cpf.getText(), cliente.getIdCliente());
+                cpfEstaCadastrado = new ClienteDAO().checarExistenciaCpfOnUpdate(cpf.getText(), cliente.getIdCliente());
             }
         }
 

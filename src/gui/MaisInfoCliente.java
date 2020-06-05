@@ -6,6 +6,7 @@
 package gui;
 
 import dao.ClienteDAO;
+import dao.CompraDAO;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,7 +72,6 @@ public class MaisInfoCliente extends javax.swing.JFrame {
         nomeTextField.setEditable(b);
         telefone1TextField.setEditable(b);
         telefone2TextField.setEditable(b);
-        cpfTextField.setEditable(b);
         senhaTextField.setEditable(b);
         confirmarSenhaTextField.setEditable(b);
 
@@ -120,6 +120,8 @@ public class MaisInfoCliente extends javax.swing.JFrame {
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
         botaoEditarInfo = new javax.swing.JButton();
         botaoHistoricoPagamentos = new javax.swing.JButton();
         botaoHistoricoCompras = new javax.swing.JButton();
@@ -130,12 +132,10 @@ public class MaisInfoCliente extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Mais Informações de Cliente");
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         idLabel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         idLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/customer-red.png"))); // NOI18N
         idLabel.setText("ID: 1234");
-        getContentPane().add(idLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 12, -1, -1));
 
         formPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -154,6 +154,7 @@ public class MaisInfoCliente extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel6.setText("CPF:");
 
+        cpfTextField.setEditable(false);
         try {
             cpfTextField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("###.###.###-##")));
         } catch (java.text.ParseException ex) {
@@ -246,6 +247,14 @@ public class MaisInfoCliente extends javax.swing.JFrame {
         jLabel22.setForeground(new java.awt.Color(255, 51, 51));
         jLabel22.setText("*");
 
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 51, 51));
+        jLabel1.setText("A senha deve conter entre 6 e 8");
+
+        jLabel23.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        jLabel23.setForeground(new java.awt.Color(255, 51, 51));
+        jLabel23.setText("caracteres e conter somente números");
+
         javax.swing.GroupLayout formPanelLayout = new javax.swing.GroupLayout(formPanel);
         formPanel.setLayout(formPanelLayout);
         formPanelLayout.setHorizontalGroup(
@@ -253,6 +262,9 @@ public class MaisInfoCliente extends javax.swing.JFrame {
             .addGroup(formPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(formPanelLayout.createSequentialGroup()
+                        .addComponent(referenciaTextField)
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
                         .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(nomeTextField, javax.swing.GroupLayout.Alignment.LEADING)
@@ -274,7 +286,7 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jLabel16)
                                         .addGap(0, 0, Short.MAX_VALUE))
-                                    .addComponent(cpfTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE))))
+                                    .addComponent(cpfTextField))))
                         .addGap(12, 12, 12))
                     .addGroup(formPanelLayout.createSequentialGroup()
                         .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -285,17 +297,21 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                             .addComponent(senhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(confirmarSenhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(formPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel12)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel18)))
-                        .addGap(0, 267, Short.MAX_VALUE))
+                                .addComponent(jLabel18))
+                            .addComponent(confirmarSenhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel23))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addGap(36, 36, 36)
+                                .addComponent(jLabel1)))
+                        .addGap(0, 29, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
                         .addComponent(jSeparator1)
-                        .addContainerGap())
-                    .addGroup(formPanelLayout.createSequentialGroup()
-                        .addComponent(referenciaTextField)
                         .addContainerGap())
                     .addGroup(formPanelLayout.createSequentialGroup()
                         .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -334,7 +350,7 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel19)))
-                        .addContainerGap(494, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         formPanelLayout.setVerticalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -370,11 +386,13 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                     .addComponent(jLabel7)
                     .addComponent(jLabel12)
                     .addComponent(jLabel17)
-                    .addComponent(jLabel18))
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(senhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(confirmarSenhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(confirmarSenhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel23))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -407,8 +425,6 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        getContentPane().add(formPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 66, -1, -1));
-
         botaoEditarInfo.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoEditarInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
         botaoEditarInfo.setText("Editar Informações");
@@ -417,22 +433,23 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                 botaoEditarInfoActionPerformed(evt);
             }
         });
-        getContentPane().add(botaoEditarInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(651, 66, 267, -1));
 
         botaoHistoricoPagamentos.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        botaoHistoricoPagamentos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/payment.png"))); // NOI18N
+        botaoHistoricoPagamentos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/payment-32.png"))); // NOI18N
         botaoHistoricoPagamentos.setText("Histórico de Pagamentos");
-        getContentPane().add(botaoHistoricoPagamentos, new org.netbeans.lib.awtextra.AbsoluteConstraints(651, 246, -1, -1));
 
         botaoHistoricoCompras.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        botaoHistoricoCompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/basket.png"))); // NOI18N
+        botaoHistoricoCompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-32.png"))); // NOI18N
         botaoHistoricoCompras.setText("Histórico de Compras");
-        getContentPane().add(botaoHistoricoCompras, new org.netbeans.lib.awtextra.AbsoluteConstraints(651, 186, 267, -1));
+        botaoHistoricoCompras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoHistoricoComprasActionPerformed(evt);
+            }
+        });
 
         botaoExcluirConta.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoExcluirConta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/delete.png"))); // NOI18N
         botaoExcluirConta.setText("Excluir Conta");
-        getContentPane().add(botaoExcluirConta, new org.netbeans.lib.awtextra.AbsoluteConstraints(651, 428, 267, -1));
 
         botaoCancelarEdicao.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoCancelarEdicao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cancel.png"))); // NOI18N
@@ -443,16 +460,68 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                 botaoCancelarEdicaoActionPerformed(evt);
             }
         });
-        getContentPane().add(botaoCancelarEdicao, new org.netbeans.lib.awtextra.AbsoluteConstraints(651, 126, 267, -1));
 
         botaoDesAtivar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoDesAtivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/toggle-on.png"))); // NOI18N
         botaoDesAtivar.setText("Desativar");
-        getContentPane().add(botaoDesAtivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(651, 368, 267, -1));
+        botaoDesAtivar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoDesAtivarActionPerformed(evt);
+            }
+        });
 
         jLabel13.setForeground(new java.awt.Color(255, 51, 51));
         jLabel13.setText("* Campos obrigatórios");
-        getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(475, 45, -1, -1));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(idLabel)
+                        .addGap(324, 324, 324)
+                        .addComponent(jLabel13))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(botaoEditarInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botaoCancelarEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botaoHistoricoCompras, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botaoHistoricoPagamentos)
+                            .addComponent(botaoDesAtivar, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botaoExcluirConta, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(idLabel)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addComponent(jLabel13)))
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(botaoEditarInfo)
+                        .addGap(18, 18, 18)
+                        .addComponent(botaoCancelarEdicao)
+                        .addGap(18, 18, 18)
+                        .addComponent(botaoHistoricoCompras)
+                        .addGap(18, 18, 18)
+                        .addComponent(botaoHistoricoPagamentos)
+                        .addGap(80, 80, 80)
+                        .addComponent(botaoDesAtivar)
+                        .addGap(18, 18, 18)
+                        .addComponent(botaoExcluirConta)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         pack();
         setLocationRelativeTo(null);
@@ -467,9 +536,9 @@ public class MaisInfoCliente extends javax.swing.JFrame {
 
             if (reply == 0) {
                 if (new ClienteFormValidation(formPanel, cliente).validate()) {
-                    String salt = cliente.getSalt();
+                    byte[] salt = cliente.getSalt();
                     String hashedPw = Hash.hashPassword(String.valueOf(senhaTextField.getPassword()), salt).get();
-                    
+
                     Endereco e = cliente.getEndereco();
                     e.setNumero(Integer.parseInt(numeroTextField.getText()));
                     e.setLogradouro(logradouroTextField.getText().toUpperCase());
@@ -483,13 +552,9 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                     cliente.setTelefone2(telefone2TextField.getText().toUpperCase());
                     cliente.setCpf(cpfTextField.getText().toUpperCase());
                     cliente.setSenha(hashedPw);
-                    
-                    try{
-                        new ClienteDAO().updateCliente(cliente);
-                    }catch (SQLException sqlE){
-                        JOptionPane.showMessageDialog(null, sqlE, "Atenção", JOptionPane.WARNING_MESSAGE);
-                    }
-                    
+
+                    ClienteDAO.updateCliente(cliente);
+
                     botaoCancelarEdicao.doClick();
 
                     editando = false;
@@ -524,9 +589,18 @@ public class MaisInfoCliente extends javax.swing.JFrame {
         botaoHistoricoPagamentos.setEnabled(true);
         botaoDesAtivar.setEnabled(true);
         botaoExcluirConta.setEnabled(true);
-        
+
         preencherCampos();
     }//GEN-LAST:event_botaoCancelarEdicaoActionPerformed
+
+    private void botaoHistoricoComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoHistoricoComprasActionPerformed
+        new HistoricoCompras(CompraDAO.selectComprasFromCliente(cliente.getIdCliente()), cliente).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_botaoHistoricoComprasActionPerformed
+
+    private void botaoDesAtivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoDesAtivarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_botaoDesAtivarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -576,6 +650,7 @@ public class MaisInfoCliente extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField cpfTextField;
     private javax.swing.JPanel formPanel;
     private javax.swing.JLabel idLabel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -590,6 +665,7 @@ public class MaisInfoCliente extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

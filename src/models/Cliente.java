@@ -2,11 +2,12 @@ package models;
 
 public class Cliente {
     private int idCliente;
-    private String nome, telefone1, telefone2, cpf, senha, salt;
+    private String nome, telefone1, telefone2, cpf, senha;
+    private byte[] salt;
     private Endereco endereco;
     private boolean ativo;
 
-    public Cliente(int idCliente, String nome, String telefone1, String telefone2, String cpf, String senha, String salt, Endereco endereco, boolean ativo) {
+    public Cliente(int idCliente, String nome, String telefone1, String telefone2, String cpf, String senha, byte[] salt, Endereco endereco, boolean ativo) {
         this.idCliente = idCliente;
         this.nome = nome;
         this.telefone1 = telefone1;
@@ -18,7 +19,7 @@ public class Cliente {
         this.ativo = ativo;
     }
 
-    public Cliente(String nome, String telefone1, String telefone2, String cpf, String senha, String salt, Endereco endereco, boolean ativo) {
+    public Cliente(String nome, String telefone1, String telefone2, String cpf, String senha, byte[] salt, Endereco endereco, boolean ativo) {
         this.nome = nome;
         this.telefone1 = telefone1;
         this.telefone2 = telefone2;
@@ -60,7 +61,7 @@ public class Cliente {
         return senha;
     }
 
-    public String getSalt() {
+    public byte[] getSalt() {
         return salt;
     }
 

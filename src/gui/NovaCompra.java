@@ -1,30 +1,46 @@
 package gui;
 
+import dao.CompraDAO;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import models.Atendente;
 import models.Cliente;
+import models.Compra;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.json.JSONException;
+import org.json.JSONObject;
+import sun.net.www.http.HttpClient;
 import validation.CompraFormValidation;
 
 public class NovaCompra extends javax.swing.JFrame {
-    
+
     Cliente cliente;
     ArrayList<Atendente> todosAtendentes;
+    Calendar now;
 
     public NovaCompra(Cliente cliente, ArrayList todosAtendentes) {
         initComponents();
-        
+
         this.cliente = cliente;
         this.todosAtendentes = todosAtendentes;
-        
-        Calendar agora = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-        campoDataHora.setText(sdf.format(agora.getTime()));
-        
+
+        this.now = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        campoDataHora.setText(sdf.format(this.now.getTime()));
+
         campoNomeCliente.setText(cliente.getNome());
-        
-        for (Atendente a: this.todosAtendentes){
+
+        for (Atendente a : this.todosAtendentes) {
             atendentesComboBox.addItem(a.getNome());
         }
     }
@@ -32,7 +48,37 @@ public class NovaCompra extends javax.swing.JFrame {
     private NovaCompra() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    private void imprimirComprovante(Compra compra, Atendente atendente) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String valor = String.format("%.02f", compra.getValor());
+            valor = valor.replace('.', ',');
+
+            String obs = compra.getObservacao() == "" ? "null" : compra.getObservacao();
+
+            JSONObject json = new JSONObject();
+            json.put("id_compra", String.valueOf(compra.getIdCompra()));
+            json.put("data", compra.getFormattedData());
+            json.put("valor", valor);
+            json.put("cliente", cliente.getNome());
+            json.put("atendente", atendente.getNome());
+            json.put("observacao", obs);
+
+            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            HttpPost request = new HttpPost("http://localhost:5000/compra/");
+            StringEntity params = new StringEntity(json.toString());
+            request.addHeader("content-type", "application/json");
+            request.setEntity(params);
+            HttpResponse response = httpClient.execute(request);
+        } catch (IOException ex) {
+            System.out.println("io exception impressão compra");
+            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -40,7 +86,7 @@ public class NovaCompra extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         formPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        campoNome = new javax.swing.JTextField();
+        campoValor = new javax.swing.JTextField();
         campoDataHora = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -77,8 +123,8 @@ public class NovaCompra extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel2.setText("Valor (R$):");
 
-        campoNome.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        campoNome.setName("valor"); // NOI18N
+        campoValor.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoValor.setName("valor"); // NOI18N
 
         campoDataHora.setEditable(false);
         campoDataHora.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
@@ -115,6 +161,7 @@ public class NovaCompra extends javax.swing.JFrame {
 
         campoObservacao.setColumns(20);
         campoObservacao.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoObservacao.setLineWrap(true);
         campoObservacao.setRows(5);
         campoObservacao.setName(""); // NOI18N
         jScrollPane1.setViewportView(campoObservacao);
@@ -157,7 +204,7 @@ public class NovaCompra extends javax.swing.JFrame {
                         .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(formPanelLayout.createSequentialGroup()
                                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(campoNome, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(campoValor, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(formPanelLayout.createSequentialGroup()
                                         .addComponent(jLabel2)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -203,7 +250,7 @@ public class NovaCompra extends javax.swing.JFrame {
                     .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(campoNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(campoValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(campoDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
@@ -305,16 +352,34 @@ public class NovaCompra extends javax.swing.JFrame {
     private void botaoConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoConfirmarActionPerformed
         int idArrayAtendente = atendentesComboBox.getSelectedIndex();
         Atendente atendente = todosAtendentes.get(idArrayAtendente);
-        
-        if (new CompraFormValidation(formPanel, cliente, atendente).validate()){
-            System.out.println("validou");
-        }else{
+
+        if (new CompraFormValidation(formPanel, cliente, atendente).validate()) {
+            String strValor = campoValor.getText();
+            strValor = strValor.replaceAll(",", ".");
+            float valor = Float.parseFloat(strValor);
+
+            Compra compra = new Compra(
+                    cliente.getIdCliente(),
+                    atendente.getIdAtendente(),
+                    valor,
+                    this.now,
+                    campoObservacao.getText().toUpperCase(),
+                    false
+            );
+
+            int insertedId = CompraDAO.insertCompra(compra);
+            compra.setIdCompra(insertedId);
+
+            imprimirComprovante(compra, atendente);
+
+            this.dispose();
+        } else {
             System.out.println("fodeo");
         }
     }//GEN-LAST:event_botaoConfirmarActionPerformed
 
     public static void main(String args[]) {
-        
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new NovaCompra().setVisible(true);
@@ -327,11 +392,11 @@ public class NovaCompra extends javax.swing.JFrame {
     private javax.swing.JButton botaoCancelar;
     private javax.swing.JButton botaoConfirmar;
     private javax.swing.JTextField campoDataHora;
-    private javax.swing.JTextField campoNome;
     private javax.swing.JTextField campoNomeCliente;
     private javax.swing.JTextArea campoObservacao;
     private javax.swing.JPasswordField campoSenhaAtendente;
     private javax.swing.JPasswordField campoSenhaCliente;
+    private javax.swing.JTextField campoValor;
     private javax.swing.JPanel formPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

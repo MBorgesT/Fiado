@@ -4,6 +4,7 @@ import gui.MenuPrincipal;
 import java.sql.SQLException;
 import security.Hash;
 import dao.ClienteDAO;
+import gui.HistoricoCompras;
 import gui.NovaCompra;
 import validation.CompraFormValidation;
 

@@ -21,7 +21,7 @@ import validation.ClienteFormValidation;
 public class NovoCliente extends javax.swing.JFrame {
 
     MenuPrincipal menuPrincipal;
-    
+
     public NovoCliente(MenuPrincipal menuPrincipal) {
         initComponents();
         this.menuPrincipal = menuPrincipal;
@@ -106,6 +106,7 @@ public class NovoCliente extends javax.swing.JFrame {
             ex.printStackTrace();
         }
         cpfTextField.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        cpfTextField.setName("cpf"); // NOI18N
 
         jLabel7.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel7.setText("Senha:");
@@ -114,6 +115,7 @@ public class NovoCliente extends javax.swing.JFrame {
         senhaTextField.setName("senha"); // NOI18N
 
         telefone2TextField.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        telefone2TextField.setName("telefone2"); // NOI18N
 
         jLabel8.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel8.setText("Telefone 2:");
@@ -122,23 +124,28 @@ public class NovoCliente extends javax.swing.JFrame {
         jLabel2.setText("Logradouro:");
 
         logradouroTextField.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        logradouroTextField.setName("logradouro"); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel5.setText("Número:");
 
         numeroTextField.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        numeroTextField.setName("numero"); // NOI18N
 
         jLabel9.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel9.setText("Cidade:");
 
         cidadeTextField.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        cidadeTextField.setName("cidade"); // NOI18N
 
         bairroTextField.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        bairroTextField.setName("bairro"); // NOI18N
 
         jLabel10.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel10.setText("Bairro:");
 
         referenciaTextField.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        referenciaTextField.setName("referencia"); // NOI18N
 
         jLabel11.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel11.setText("Referência:");
@@ -418,40 +425,37 @@ public class NovoCliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void botaoCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCadastrarActionPerformed
-        try {
-            if (new ClienteFormValidation(formPanel).validate()) {
-                String salt = Hash.generateSalt();
-                String hashedPw = Hash.hashPassword(String.valueOf(senhaTextField.getPassword()), salt).get();
-                
-                Endereco e = new Endereco(
-                        Integer.parseInt(numeroTextField.getText()),
-                        logradouroTextField.getText().toUpperCase(),
-                        bairroTextField.getText().toUpperCase(),
-                        cidadeTextField.getText().toUpperCase(),
-                        referenciaTextField.getText().toUpperCase()
-                );
-                
-                Cliente c = new Cliente(
-                        nomeTextField.getText().toUpperCase(),
-                        telefone1TextField.getText().toUpperCase(),
-                        telefone2TextField.getText().toUpperCase(),
-                        cpfTextField.getText().toUpperCase(),
-                        hashedPw,
-                        salt,
-                        e,
-                        true
-                );
-                
-                new ClienteDAO().insertCliente(c);
-                
-                menuPrincipal.resetTabelaClientes();
-                
-                this.dispose();
-            } else {
-                System.out.println("foda irmão");
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e, "Atenção", JOptionPane.WARNING_MESSAGE);
+
+        if (new ClienteFormValidation(formPanel).validate()) {
+            byte[] salt = Hash.generateSalt();
+            String hashedPw = Hash.hashPassword(String.valueOf(senhaTextField.getPassword()), salt).get();
+
+            Endereco e = new Endereco(
+                    Integer.parseInt(numeroTextField.getText()),
+                    logradouroTextField.getText().toUpperCase(),
+                    bairroTextField.getText().toUpperCase(),
+                    cidadeTextField.getText().toUpperCase(),
+                    referenciaTextField.getText().toUpperCase()
+            );
+
+            Cliente c = new Cliente(
+                    nomeTextField.getText().toUpperCase(),
+                    telefone1TextField.getText().toUpperCase(),
+                    telefone2TextField.getText().toUpperCase(),
+                    cpfTextField.getText().toUpperCase(),
+                    hashedPw,
+                    salt,
+                    e,
+                    true
+            );
+
+            ClienteDAO.insertCliente(c);
+
+            menuPrincipal.resetTabelaClientes();
+
+            this.dispose();
+        } else {
+            System.out.println("nao validou cadastro cliente");
         }
     }//GEN-LAST:event_botaoCadastrarActionPerformed
 

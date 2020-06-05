@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import models.Cliente;
 import dao.ClienteDAO;
 import dao.AtendenteDAO;
+import dao.CompraDAO;
 import java.awt.Component;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -36,8 +37,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     public MenuPrincipal() throws SQLException {
         initComponents();
 
-        todosClientes = new ClienteDAO().getAllClientes();
-        todosAtendentes = new AtendenteDAO().getAllAtendentes();
+        todosClientes = ClienteDAO.selectAllClientes();
+        todosAtendentes = AtendenteDAO.selectAllAtendentes();
 
         clientesNaTabela = todosClientes;
         atendentesNaTabela = todosAtendentes;
@@ -47,8 +48,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         fillTables();
     }
-    
-    private void criarTabelaClienteListeners(){
+
+    private void criarTabelaClienteListeners() {
         tabelaClientes.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -61,8 +62,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
         });
     }
-    
-    private void criarTabelaAtendenteListeners(){
+
+    private void criarTabelaAtendenteListeners() {
         tabelaAtendentes.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -88,7 +89,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         for (Cliente c : clientesNaTabela) {
             tabelaClientesModel.addRow(c.clienteObjectArray());
         }
-        
+
         criarTabelaClienteListeners();
     }
 
@@ -99,36 +100,36 @@ public class MenuPrincipal extends javax.swing.JFrame {
         for (Atendente a : atendentesNaTabela) {
             tabelaAtendentesModel.addRow(a.atendenteObjectArray());
         }
-        
+
         criarTabelaAtendenteListeners();
     }
-    
-    private void selecionarCliente(Cliente c){
+
+    private void selecionarCliente(Cliente c) {
         clienteSelecionado = c;
         botaoDeselecionarCliente.setEnabled(true);
         labelClienteSelecionado.setText("<html>" + c.getNome() + "</html>");
-        
+
         botaoNovaCompra.setEnabled(true);
         botaoRealizarPagamento.setEnabled(true);
         botaoMaisInfoCliente.setEnabled(true);
     }
-    
-    private void selecionarAtendente(Atendente a){
+
+    private void selecionarAtendente(Atendente a) {
         atendenteSelecionado = a;
         botaoDeselecionarAtendente.setEnabled(true);
         labelAtendenteSelecionado.setText("<html>" + a.getNome() + "</html>");
-        
+
         botaoMaisInfoAtendente.setEnabled(true);
     }
-    
-    public void resetTabelaClientes() throws SQLException{
-        todosClientes = new ClienteDAO().getAllClientes();
+
+    public void resetTabelaClientes() {
+        todosClientes = new ClienteDAO().selectAllClientes();
         clientesNaTabela = todosClientes;
         fillClientesTable();
     }
-    
-    public void resetTabelaAtendentes() throws SQLException{
-        todosAtendentes = new AtendenteDAO().getAllAtendentes();
+
+    public void resetTabelaAtendentes() {
+        todosAtendentes = new AtendenteDAO().selectAllAtendentes();
         atendentesNaTabela = todosAtendentes;
         fillAtendentesTable();
     }
@@ -231,8 +232,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
         clientesButtonPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         botaoRealizarPagamento.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        botaoRealizarPagamento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/payment.png"))); // NOI18N
+        botaoRealizarPagamento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/payment-32.png"))); // NOI18N
         botaoRealizarPagamento.setText("Realizar Pagamento");
+        botaoRealizarPagamento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoRealizarPagamentoActionPerformed(evt);
+            }
+        });
 
         botaoNovaCompra.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoNovaCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-32.png"))); // NOI18N
@@ -375,6 +381,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Cliente", new javax.swing.ImageIcon(getClass().getResource("/icons/customer-blue.png")), clientePanel); // NOI18N
 
+        tabelaAtendentes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         tabelaAtendentes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -695,11 +702,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoDeselecionarAtendenteActionPerformed
 
     private void botaoNovoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoNovoClienteActionPerformed
-        new NovoCliente(this).setVisible(true);
+        new AtendenteAccessControl(new NovoCliente(this)).setVisible(true);
     }//GEN-LAST:event_botaoNovoClienteActionPerformed
 
     private void botaoMaisInfoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMaisInfoClienteActionPerformed
-        new MaisInfoCliente(this, clienteSelecionado).setVisible(true);
+        new AtendenteAccessControl(new MaisInfoCliente(this, clienteSelecionado)).setVisible(true);
     }//GEN-LAST:event_botaoMaisInfoClienteActionPerformed
 
     private void botaoNovoAtendenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoNovoAtendenteActionPerformed
@@ -713,6 +720,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void botaoNovaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoNovaCompraActionPerformed
         new NovaCompra(clienteSelecionado, todosAtendentes).setVisible(true);
     }//GEN-LAST:event_botaoNovaCompraActionPerformed
+
+    private void botaoRealizarPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoRealizarPagamentoActionPerformed
+        new HistoricoCompras(CompraDAO.selectComprasFromCliente(clienteSelecionado.getIdCliente()), clienteSelecionado).setVisible(true);
+    }//GEN-LAST:event_botaoRealizarPagamentoActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
