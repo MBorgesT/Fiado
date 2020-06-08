@@ -8,18 +8,9 @@ package gui_cliente;
 import java.util.ArrayList;
 import models.Cliente;
 import dao.ClienteDAO;
-import dao.AtendenteDAO;
 import dao.CompraDAO;
-import java.awt.Component;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import models.Atendente;
-import models.Compra;
-
 /**
  *
  * @author matheus

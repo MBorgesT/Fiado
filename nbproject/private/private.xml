@@ -5,10 +5,9 @@
         <group>
             <file>file:/home/matheus/NetBeansProjects/Fiado/src/fiado/SeletorMenu.java</file>
             <file>file:/home/matheus/NetBeansProjects/Fiado/src/dao/ConfiguracaoDAO.java</file>
-            <file>file:/home/matheus/NetBeansProjects/Fiado/src/models/Cliente.java</file>
-            <file>file:/home/matheus/NetBeansProjects/Fiado/src/gui_cliente/MenuPrincipal.java</file>
+            <file>file:/home/matheus/NetBeansProjects/Fiado/src/gui_admin/MaisInfoCompra.java</file>
+            <file>file:/home/matheus/NetBeansProjects/Fiado/src/gui_admin/HistoricoCompras.java</file>
             <file>file:/home/matheus/NetBeansProjects/Fiado/src/gui_admin/MenuAdmin.java</file>
-            <file>file:/home/matheus/NetBeansProjects/Fiado/src/dao/ClienteDAO.java</file>
             <file>file:/home/matheus/NetBeansProjects/Fiado/src/validation/BuscaClienteAdminValidation.java</file>
             <file>file:/home/matheus/NetBeansProjects/Fiado/src/gui_cliente/HistoricoCompras.java</file>
         </group>

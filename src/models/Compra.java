@@ -70,6 +70,22 @@ public class Compra {
         }
     }
 
+    public Object[] compraObjectArrayAdmin() {
+        String strPago;
+
+        if (estaPago) {
+            strPago = "SIM";
+        } else {
+            strPago = "NÃO";
+        }
+
+        return new Object[]{
+            this.getFormattedData(),
+            this.getFormattedValor(),
+            strPago
+        };
+    }
+
     public Object[] compraObjectArraySimple() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String strPago;

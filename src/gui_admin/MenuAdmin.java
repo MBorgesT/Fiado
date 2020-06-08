@@ -909,9 +909,23 @@ public class MenuAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoDeselecionarAtendenteActionPerformed
 
     private void botaoDesAtivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoDesAtivarActionPerformed
-        ClienteDAO.updateEstadoAtivoCliente(clienteSelecionado.getIdCliente(), !clienteSelecionado.isAtivo());
-        clienteSelecionado.setAtivo(!clienteSelecionado.isAtivo());
-        selecionarCliente(clienteSelecionado);
+        String acao;
+        if (clienteSelecionado.isAtivo()) {
+            acao = "desativar";
+        } else {
+            acao = "ativar";
+        }
+
+        String[] options = {"SIM", "NÃO"};
+        int reply = JOptionPane.showOptionDialog(null, "Você realmente deseja " + acao + " a conta do cliente?", "Atenção",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
+                options, options[0]);
+
+        if (reply == 0) {
+            ClienteDAO.updateEstadoAtivoCliente(clienteSelecionado.getIdCliente(), !clienteSelecionado.isAtivo());
+            clienteSelecionado.setAtivo(!clienteSelecionado.isAtivo());
+            selecionarCliente(clienteSelecionado);
+        }
     }//GEN-LAST:event_botaoDesAtivarActionPerformed
 
     private void botaoNovoAtendenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoNovoAtendenteActionPerformed
@@ -923,7 +937,7 @@ public class MenuAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoMaisInfoAtendenteActionPerformed
 
     private void botaoMaisInfoCliente1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMaisInfoCliente1ActionPerformed
-        // TODO add your handling code here:
+        new MaisInfoClienteAdmin(clienteSelecionado).setVisible(true);
     }//GEN-LAST:event_botaoMaisInfoCliente1ActionPerformed
 
     private void botaoLimparBuscaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoLimparBuscaClienteActionPerformed
