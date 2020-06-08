@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
+package gui_cliente;
 
 import dao.ClienteDAO;
 import dao.CompraDAO;
@@ -32,15 +32,7 @@ public class MaisInfoCliente extends javax.swing.JFrame {
 
         this.menuPrincipal = menuPrincipal;
         this.cliente = cliente;
-
-        if (cliente.isAtivo()) {
-            botaoDesAtivar.setIcon(new ImageIcon(getClass().getResource("/icons/toggle-on.png")));
-            botaoDesAtivar.setText("Desativar");
-        } else {
-            botaoDesAtivar.setIcon(new ImageIcon(getClass().getResource("/icons/toggle-off.png")));
-            botaoDesAtivar.setText("Ativar");
-        }
-
+        
         editando = false;
 
         preencherCampos();
@@ -113,7 +105,6 @@ public class MaisInfoCliente extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
@@ -125,9 +116,7 @@ public class MaisInfoCliente extends javax.swing.JFrame {
         botaoEditarInfo = new javax.swing.JButton();
         botaoHistoricoPagamentos = new javax.swing.JButton();
         botaoHistoricoCompras = new javax.swing.JButton();
-        botaoExcluirConta = new javax.swing.JButton();
         botaoCancelarEdicao = new javax.swing.JButton();
-        botaoDesAtivar = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -219,10 +208,6 @@ public class MaisInfoCliente extends javax.swing.JFrame {
         jLabel15.setForeground(new java.awt.Color(255, 51, 51));
         jLabel15.setText("*");
 
-        jLabel16.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(255, 51, 51));
-        jLabel16.setText("*");
-
         jLabel17.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(255, 51, 51));
         jLabel17.setText("*");
@@ -283,8 +268,6 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(formPanelLayout.createSequentialGroup()
                                         .addComponent(jLabel6)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel16)
                                         .addGap(0, 0, Short.MAX_VALUE))
                                     .addComponent(cpfTextField))))
                         .addGap(12, 12, 12))
@@ -376,9 +359,7 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(telefone2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(formPanelLayout.createSequentialGroup()
-                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel16))
+                        .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cpfTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
@@ -437,6 +418,11 @@ public class MaisInfoCliente extends javax.swing.JFrame {
         botaoHistoricoPagamentos.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoHistoricoPagamentos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/payment-32.png"))); // NOI18N
         botaoHistoricoPagamentos.setText("Histórico de Pagamentos");
+        botaoHistoricoPagamentos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoHistoricoPagamentosActionPerformed(evt);
+            }
+        });
 
         botaoHistoricoCompras.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoHistoricoCompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-32.png"))); // NOI18N
@@ -447,10 +433,6 @@ public class MaisInfoCliente extends javax.swing.JFrame {
             }
         });
 
-        botaoExcluirConta.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        botaoExcluirConta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/delete.png"))); // NOI18N
-        botaoExcluirConta.setText("Excluir Conta");
-
         botaoCancelarEdicao.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoCancelarEdicao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cancel.png"))); // NOI18N
         botaoCancelarEdicao.setText("Cancelar Edição");
@@ -458,15 +440,6 @@ public class MaisInfoCliente extends javax.swing.JFrame {
         botaoCancelarEdicao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botaoCancelarEdicaoActionPerformed(evt);
-            }
-        });
-
-        botaoDesAtivar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        botaoDesAtivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/toggle-on.png"))); // NOI18N
-        botaoDesAtivar.setText("Desativar");
-        botaoDesAtivar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botaoDesAtivarActionPerformed(evt);
             }
         });
 
@@ -486,14 +459,17 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                         .addComponent(jLabel13))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(botaoEditarInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botaoCancelarEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botaoHistoricoCompras, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botaoHistoricoPagamentos)
-                            .addComponent(botaoDesAtivar, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botaoExcluirConta, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(botaoEditarInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botaoCancelarEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(botaoHistoricoPagamentos, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(botaoHistoricoCompras, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -506,20 +482,16 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                         .addGap(33, 33, 33)
                         .addComponent(jLabel13)))
                 .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(botaoEditarInfo)
                         .addGap(18, 18, 18)
                         .addComponent(botaoCancelarEdicao)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(botaoHistoricoCompras)
                         .addGap(18, 18, 18)
-                        .addComponent(botaoHistoricoPagamentos)
-                        .addGap(80, 80, 80)
-                        .addComponent(botaoDesAtivar)
-                        .addGap(18, 18, 18)
-                        .addComponent(botaoExcluirConta)))
+                        .addComponent(botaoHistoricoPagamentos)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -571,8 +543,6 @@ public class MaisInfoCliente extends javax.swing.JFrame {
             botaoCancelarEdicao.setEnabled(true);
             botaoHistoricoCompras.setEnabled(false);
             botaoHistoricoPagamentos.setEnabled(false);
-            botaoDesAtivar.setEnabled(false);
-            botaoExcluirConta.setEnabled(false);
         }
     }//GEN-LAST:event_botaoEditarInfoActionPerformed
 
@@ -587,20 +557,17 @@ public class MaisInfoCliente extends javax.swing.JFrame {
         botaoCancelarEdicao.setEnabled(false);
         botaoHistoricoCompras.setEnabled(true);
         botaoHistoricoPagamentos.setEnabled(true);
-        botaoDesAtivar.setEnabled(true);
-        botaoExcluirConta.setEnabled(true);
 
         preencherCampos();
     }//GEN-LAST:event_botaoCancelarEdicaoActionPerformed
 
     private void botaoHistoricoComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoHistoricoComprasActionPerformed
         new HistoricoCompras(CompraDAO.selectComprasFromCliente(cliente.getIdCliente()), cliente).setVisible(true);
-        this.dispose();
     }//GEN-LAST:event_botaoHistoricoComprasActionPerformed
 
-    private void botaoDesAtivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoDesAtivarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_botaoDesAtivarActionPerformed
+    private void botaoHistoricoPagamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoHistoricoPagamentosActionPerformed
+        new HistoricoPagamentos(cliente).setVisible(true);
+    }//GEN-LAST:event_botaoHistoricoPagamentosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -640,9 +607,7 @@ public class MaisInfoCliente extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField bairroTextField;
     private javax.swing.JButton botaoCancelarEdicao;
-    private javax.swing.JButton botaoDesAtivar;
     private javax.swing.JButton botaoEditarInfo;
-    private javax.swing.JButton botaoExcluirConta;
     private javax.swing.JButton botaoHistoricoCompras;
     private javax.swing.JButton botaoHistoricoPagamentos;
     private javax.swing.JTextField cidadeTextField;
@@ -657,7 +622,6 @@ public class MaisInfoCliente extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;

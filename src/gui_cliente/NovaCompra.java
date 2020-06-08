@@ -1,6 +1,8 @@
-package gui;
+package gui_cliente;
 
+import dao.AtendenteDAO;
 import dao.CompraDAO;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -28,11 +30,11 @@ public class NovaCompra extends javax.swing.JFrame {
     ArrayList<Atendente> todosAtendentes;
     Calendar now;
 
-    public NovaCompra(Cliente cliente, ArrayList todosAtendentes) {
+    public NovaCompra(Cliente cliente) {
         initComponents();
 
         this.cliente = cliente;
-        this.todosAtendentes = todosAtendentes;
+        this.todosAtendentes = AtendenteDAO.selectAllAtendentes();
 
         this.now = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -65,16 +67,40 @@ public class NovaCompra extends javax.swing.JFrame {
             json.put("atendente", atendente.getNome());
             json.put("observacao", obs);
 
+            FileWriter file = new FileWriter("/home/matheus/Documents/Dev/projects/fiado-printer/compra.json");
+            file.write(json.toString());
+            file.flush();
+            file.close();
+
+            String[] options = {"SIM", "NÃO"};
+            int reply = JOptionPane.showOptionDialog(null, "Deseja imprimir o recibo do cliente?", "Recibo",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                    options, options[0]);
+
+            if (reply == 0)
+                Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_compra_cliente.py");
+            
+            Thread.currentThread().sleep(1000);
+            
+            JOptionPane.showMessageDialog(null, "Confirme para imprimir a nota da padaria", "Recibo", JOptionPane.INFORMATION_MESSAGE);
+            Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_compra_padaria.py");
+            
+            
+
+            /*
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
             HttpPost request = new HttpPost("http://localhost:5000/compra/");
             StringEntity params = new StringEntity(json.toString());
             request.addHeader("content-type", "application/json");
             request.setEntity(params);
             HttpResponse response = httpClient.execute(request);
+             */
         } catch (IOException ex) {
             System.out.println("io exception impressão compra");
             Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
+            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

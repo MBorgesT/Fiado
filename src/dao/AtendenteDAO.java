@@ -31,6 +31,7 @@ public class AtendenteDAO {
 
             return atendente;
         } catch (SQLException e) {
+            Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(null, e, "extractAtendenteFromRs", JOptionPane.WARNING_MESSAGE);
         }
         return null;
@@ -53,6 +54,7 @@ public class AtendenteDAO {
 
             return arrayAtendentes;
         } catch (SQLException e) {
+            Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(null, e, "Atenção", JOptionPane.WARNING_MESSAGE);
         }
         return null;
@@ -73,7 +75,26 @@ public class AtendenteDAO {
 
             JOptionPane.showMessageDialog(null, "Atendente cadastrado com sucesso", "Atenção", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException e) {
+            Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(null, e, "insertAtendente", JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    public static Atendente selectAtendenteById(int idAtendente) {
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Statement stmt = conn.createStatement();
+            
+            ResultSet rs = stmt.executeQuery("SELECT * FROM atendente WHERE idAtendente = " + String.valueOf(idAtendente));
+            
+            rs.next();
+            Atendente atendente = extractAtendenteFromRs(rs);
+            
+            return atendente;
+        } catch (SQLException e) {
+            Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, e, "selectAtendenteById", JOptionPane.WARNING_MESSAGE);
+        }
+        return null;
     }
 }

@@ -1,10 +1,13 @@
+package gui_admin;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
 
+
+import gui_admin.MenuAdmin;
 import dao.AtendenteDAO;
 import dao.ClienteDAO;
 import java.sql.SQLException;
@@ -17,17 +20,13 @@ import models.Endereco;
 import security.Hash;
 import validation.AtendenteFormValidation;
 
-/**
- *
- * @author matheus
- */
 public class NovoAtendente extends javax.swing.JFrame {
 
-    MenuPrincipal menuPrincipal;
+    MenuAdmin menuAdmin;
 
-    public NovoAtendente(MenuPrincipal menuPrincipal) {
+    public NovoAtendente(MenuAdmin menuAdmin) {
         initComponents();
-        this.menuPrincipal = menuPrincipal;
+        this.menuAdmin = menuAdmin;
     }
 
     private NovoAtendente() {
@@ -59,7 +58,7 @@ public class NovoAtendente extends javax.swing.JFrame {
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bread.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bread-48.png"))); // NOI18N
         jLabel1.setText("Novo Atendente");
 
         formPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -233,11 +232,11 @@ public class NovoAtendente extends javax.swing.JFrame {
             );
 
             AtendenteDAO.insertAtendente(a);
-            menuPrincipal.resetTabelaAtendentes();
+            menuAdmin.resetTabelaAtendentes();
 
             this.dispose();
         } else {
-            System.out.println("foda irmão");
+            System.out.println("erro no cadastro de atendente");
         }
     }//GEN-LAST:event_botaoCadastrarActionPerformed
 

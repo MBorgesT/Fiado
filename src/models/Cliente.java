@@ -1,5 +1,8 @@
 package models;
 
+import dao.ClienteDAO;
+import dao.CompraDAO;
+
 public class Cliente {
     private int idCliente;
     private String nome, telefone1, telefone2, cpf, senha;
@@ -34,6 +37,20 @@ public class Cliente {
         return new Object[]{
             idCliente,
             nome
+        };
+    }
+    
+    public Object[] clienteObjectArrayComplete(){
+        String valorEmDebito = String.format("%.02f", ClienteDAO.calcularValorEmDebito(idCliente));
+        valorEmDebito = valorEmDebito.replace('.', ',');
+        valorEmDebito = "R$ " + valorEmDebito;
+        
+        return new Object[]{
+            idCliente,
+            nome,
+            valorEmDebito,
+            ClienteDAO.dataCompraNaoPagaMaisAntiga(idCliente),
+            isAtivo() ? "SIM" : "NÃO"
         };
     }
 

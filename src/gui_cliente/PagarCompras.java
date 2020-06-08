@@ -1,8 +1,9 @@
-package gui;
+package gui_cliente;
 
 import dao.AtendenteDAO;
 import dao.CompraDAO;
 import dao.PagamentoDAO;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -75,25 +76,47 @@ public class PagarCompras extends javax.swing.JFrame {
             json.put("atendente", atendente.getNome());
             json.put("observacao", obs);
             json.put("qtd_compras", String.valueOf(arrayCompras.size()));
-            for (int i = 0; i < arrayCompras.size(); i++){
+            for (int i = 0; i < arrayCompras.size(); i++) {
                 String dataAux = "compra_data" + String.valueOf(i);
                 json.put(dataAux, arrayCompras.get(i).getFormattedData());
-                
+
                 String valorAux = "compra_valor" + String.valueOf(i);
                 json.put(valorAux, arrayCompras.get(i).getFormattedValor());
             }
 
+            FileWriter file = new FileWriter("/home/matheus/Documents/Dev/projects/fiado-printer/pagamento.json");
+            file.write(json.toString());
+            file.flush();
+            file.close();
+
+            String[] options = {"SIM", "NÃO"};
+            int reply = JOptionPane.showOptionDialog(null, "Deseja imprimir o recibo do cliente?", "Recibo",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                    options, options[0]);
+            
+            if (reply == 0)
+                Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_pagamento_cliente.py");
+            
+            Thread.currentThread().sleep(1000);
+            
+            JOptionPane.showMessageDialog(null, "Confirme para imprimir a nota da padaria", "Recibo", JOptionPane.INFORMATION_MESSAGE);
+            Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_pagamento_padaria.py");
+
+            /*
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
             HttpPost request = new HttpPost("http://localhost:5000/pagamento/");
             StringEntity params = new StringEntity(json.toString());
             request.addHeader("content-type", "application/json");
             request.setEntity(params);
             HttpResponse response = httpClient.execute(request);
+             */
         } catch (IOException ex) {
             System.out.println("io exception impressão compra");
             Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
             Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(PagarCompras.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -125,6 +148,7 @@ public class PagarCompras extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         campoValorTotal = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Pagamento");
@@ -180,6 +204,7 @@ public class PagarCompras extends javax.swing.JFrame {
 
         campoObservacao.setColumns(20);
         campoObservacao.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoObservacao.setLineWrap(true);
         campoObservacao.setRows(5);
         jScrollPane2.setViewportView(campoObservacao);
 
@@ -235,7 +260,7 @@ public class PagarCompras extends javax.swing.JFrame {
             .addComponent(campoSenhaCliente)
             .addComponent(comboBoxAtendente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(campoSenhaAtendente)
-            .addComponent(jScrollPane2)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
             .addComponent(jSeparator1)
             .addComponent(campoValorTotal)
             .addComponent(jSeparator2)
@@ -297,6 +322,9 @@ public class PagarCompras extends javax.swing.JFrame {
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        jLabel11.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel11.setText("Compras:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -305,17 +333,18 @@ public class PagarCompras extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11))
+                        .addGap(18, 18, 18)
+                        .addComponent(formPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(botaoCancelar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(botaoConfirmarPagamento))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(botaoConfirmarPagamento)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -324,9 +353,12 @@ public class PagarCompras extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(formPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(botaoConfirmarPagamento)
@@ -361,9 +393,9 @@ public class PagarCompras extends javax.swing.JFrame {
             for (Compra compra : arrayCompras) {
                 CompraDAO.updateSetPagamento(idPagamento, compra.getIdCompra());
             }
-            
+
             imprimirComprovante(pagamento, atendenteSelecionado);
-            
+
             telaAnterior.updateTabela();
 
             this.dispose();
@@ -395,6 +427,7 @@ public class PagarCompras extends javax.swing.JFrame {
     private javax.swing.JPanel formPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

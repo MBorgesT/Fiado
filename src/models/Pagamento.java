@@ -37,6 +37,13 @@ public class Pagamento {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return sdf.format(this.data.getTime());
     }
+    
+    public Object[] pagamentoObjectArray(){
+        return new Object[]{
+            this.getFormattedData(),
+            this.getFormattedValor()
+        };
+    }
 
     public int getIdPagamento() {
         return idPagamento;
