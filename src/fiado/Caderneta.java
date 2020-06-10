@@ -1,6 +1,5 @@
 package fiado;
 
-import gui_cliente.MenuPrincipal;
 import java.sql.SQLException;
 
 public class Caderneta {

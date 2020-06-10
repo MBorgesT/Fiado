@@ -100,7 +100,7 @@ public class BuscaComprasFormValidation {
                 }
                 return true;
             } catch (ParseException e) {
-                JOptionPane.showMessageDialog(null, "Pelo menos uma das datas está incorreta", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Pelo menos uma das datas está incorreta", "Atenção", JOptionPane.WARNING_MESSAGE);
                 return false;
             }
         }
@@ -122,7 +122,7 @@ public class BuscaComprasFormValidation {
                     Float.parseFloat(valor2);
                     return true;
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "O formato de pelo menos uma dos valores está incorreto", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "O formato de pelo menos uma dos valores está incorreto", "Atenção", JOptionPane.WARNING_MESSAGE);
                     return false;
                 }
             }else{
@@ -134,7 +134,7 @@ public class BuscaComprasFormValidation {
                     Float.parseFloat(valor1);
                     return true;
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "O formato de pelo menos uma dos valores está incorreto", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "O formato de pelo menos uma dos valores está incorreto", "Atenção", JOptionPane.WARNING_MESSAGE);
                     return false;
                 }
             }
@@ -145,7 +145,7 @@ public class BuscaComprasFormValidation {
         if (checkBoxSim.isSelected() || checkBoxNao.isSelected()) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "Você precisa informar se deseja buscar por compras pagas ou não", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Você precisa informar se deseja buscar por compras pagas ou não", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }

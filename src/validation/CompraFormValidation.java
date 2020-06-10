@@ -52,7 +52,7 @@ public class CompraFormValidation {
                 || atendentesComboBox.getSelectedIndex() == -1
                 || String.valueOf(senhaAtendente.getPassword()).isEmpty()
                 || String.valueOf(senhaCliente.getPassword()).isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Favor preencher todos os campos obrigatórios", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Favor preencher todos os campos obrigatórios", "Atenção", JOptionPane.WARNING_MESSAGE);
             return true;
         } else {
             return false;
@@ -67,7 +67,7 @@ public class CompraFormValidation {
             Float.parseFloat(valor);
             return true;
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "O valor da compra é inválido", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "O valor da compra é inválido", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -77,7 +77,7 @@ public class CompraFormValidation {
         if (isCorrect) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "A senha do cliente está incorreta", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "A senha do cliente está incorreta", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -87,7 +87,7 @@ public class CompraFormValidation {
         if (isCorrect) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "A senha do atendente está incorreta", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "A senha do atendente está incorreta", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }

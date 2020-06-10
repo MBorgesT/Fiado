@@ -36,7 +36,7 @@ public class AtendenteFormValidation {
         if (nome.getText().isEmpty()
                 || String.valueOf(senha.getPassword()).isEmpty()
                 || String.valueOf(confirmarSenha.getPassword()).isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Favor preencher todos os campos obrigatórios", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Favor preencher todos os campos obrigatórios", "Atenção", JOptionPane.WARNING_MESSAGE);
             return true;
         } else {
             return false;
@@ -47,7 +47,7 @@ public class AtendenteFormValidation {
         if (String.valueOf(senha.getPassword()).equals(String.valueOf(confirmarSenha.getPassword()))) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "As senhas informadas não são iguais", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "As senhas informadas não são iguais", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -58,7 +58,7 @@ public class AtendenteFormValidation {
         if (senha.length() >= 6 && senha.length() <= 8) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "As senhas precisam ter entre 6 e 8 dígitos", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "As senhas precisam ter entre 6 e 8 dígitos", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -76,7 +76,7 @@ public class AtendenteFormValidation {
         if (flag) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "As senhas só podem conter números", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "As senhas só podem conter números", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }

@@ -88,7 +88,7 @@ public class ClienteFormValidation {
             Integer.parseInt(numero.getText());
             return true;
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "O campo de número só pode conter somente valores numéricos", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "O campo de número só pode conter somente valores numéricos", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -104,7 +104,7 @@ public class ClienteFormValidation {
                 || bairro.getText().isEmpty()
                 || cidade.getText().isEmpty()
         ) {
-            JOptionPane.showMessageDialog(null, "Favor preencher todos os campos obrigatórios", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Favor preencher todos os campos obrigatórios", "Atenção", JOptionPane.WARNING_MESSAGE);
             return true;
         } else {
             return false;
@@ -124,7 +124,7 @@ public class ClienteFormValidation {
                 || CPF.equals("66666666666") || CPF.equals("77777777777")
                 || CPF.equals("88888888888") || CPF.equals("99999999999")
                 || (CPF.length() != 11)) {
-            JOptionPane.showMessageDialog(null, "O CPF inserido é inválido", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "O CPF inserido é inválido", "Atenção", JOptionPane.WARNING_MESSAGE);
             return (false);
         }
 
@@ -171,7 +171,7 @@ public class ClienteFormValidation {
             if ((dig10 == CPF.charAt(9)) && (dig11 == CPF.charAt(10))) {
                 return (true);
             } else {
-                JOptionPane.showMessageDialog(null, "O CPF inserido é inválido", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "O CPF inserido é inválido", "Atenção", JOptionPane.WARNING_MESSAGE);
                 return (false);
             }
         } catch (InputMismatchException erro) {
@@ -194,7 +194,7 @@ public class ClienteFormValidation {
         if (!cpfEstaCadastrado) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "Esse CPF já está cadastrado", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Esse CPF já está cadastrado", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -203,7 +203,7 @@ public class ClienteFormValidation {
         if (String.valueOf(senha.getPassword()).equals(String.valueOf(confirmarSenha.getPassword()))) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "As senhas informadas não são iguais", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "As senhas informadas não são iguais", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -214,7 +214,7 @@ public class ClienteFormValidation {
         if (senha.length() >= 6 && senha.length() <= 8) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "As senhas precisam ter entre 6 e 8 dígitos", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "As senhas precisam ter entre 6 e 8 dígitos", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -232,7 +232,7 @@ public class ClienteFormValidation {
         if (flag) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "As senhas só podem conter números", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "As senhas só podem conter números", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }

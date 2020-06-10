@@ -12,6 +12,7 @@ from datetime import datetime
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
+MEDIA_PATH = '/home/matheus/NetBeansProjects/Fiado/src/dao/caderneta.db'
 
 def main():
 
@@ -41,6 +42,7 @@ def main():
 	now = datetime.now()
 	year_folder_id = None
 	month_folder_id = None
+	latest_folder_id = None
 
 
 	response = drive_service.files().list(q="mimeType = 'application/vnd.google-apps.folder'",
@@ -48,10 +50,27 @@ def main():
 										  fields='nextPageToken, files(id, name)').execute()
 
 	flag = False
+	flagLatest = False
 	for file in response.get('files', []):
+		print(file)
 		if file.get('name') == str(now.year):
 			year_folder_id = file.get('id')
 			flag = True
+		if file.get('name') == 'ultimo_backup':
+			latest_folder_id = file.get('id')
+			flagLatest = True
+
+
+	if (flagLatest == False):
+		file_metadata = {
+			'name': 'ultimo_backup',
+			'mimeType': 'application/vnd.google-apps.folder'
+		}
+		file = drive_service.files().create(body=file_metadata,
+											fields='id').execute()
+
+		latest_folder_id = file.get('id')	
+			
 
 	if (flag == False):
 		file_metadata = {
@@ -94,7 +113,7 @@ def main():
 	}
 
 	media = MediaFileUpload(
-		'/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db',
+		MEDIA_PATH,
 		resumable=True
 	)
 
@@ -103,6 +122,39 @@ def main():
 										fields='id').execute()
 
 	print('File ID: %s' % file.get('id'))
+
+
+
+	response = drive_service.files().list(q="mimeType != 'application/vnd.google-apps.folder' and '{}' in parents".format(latest_folder_id),
+										  spaces='drive', 
+										  fields='nextPageToken, files(id, name)').execute()
+
+	if len(response.get('files', [])) > 0:
+		for file in response.get('files', []):
+			if (file.get('name') == 'caderneta.db'):
+				drive_service.files().delete(fileId=file.get('id')).execute()
+
+
+	file_metadata = {
+		'name': 'caderneta.db',
+		'parents': [latest_folder_id]
+	}
+
+	media = MediaFileUpload(
+		MEDIA_PATH,
+		resumable=True
+	)
+
+	file = drive_service.files().create(body=file_metadata,
+										 media_body=media,
+										 fields='id').execute()
+
+	print('Latest file ID: %s' % file.get('id'))
+
+	arq = open('latest_backup_id.txt', 'w')
+	arq.write(file.get('id'))
+	arq.close()
+
 
 
 

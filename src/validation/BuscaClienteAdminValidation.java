@@ -50,7 +50,7 @@ public class BuscaClienteAdminValidation {
                 Integer.parseInt(campoBuscaNomeId.getText());
                 return true;
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "O campo de ID precisa ser um número", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "O campo de ID precisa ser um número", "Atenção", JOptionPane.WARNING_MESSAGE);
                 return false;
             }
         } else {
@@ -64,7 +64,7 @@ public class BuscaClienteAdminValidation {
                 Float.parseFloat(campoBuscaValor.getText());
                 return true;
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "O campo de valor só pode conter números", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "O campo de valor só pode conter números", "Atenção", JOptionPane.WARNING_MESSAGE);
                 return false;
             }
         } else {
@@ -78,7 +78,7 @@ public class BuscaClienteAdminValidation {
                 Integer.parseInt(campoDiasNotificacao.getText());
                 return true;
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "O campo de dias para notificação só pode conter números", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "O campo de dias para notificação só pode conter números", "Atenção", JOptionPane.WARNING_MESSAGE);
                 return false;
             }
         } else {
@@ -90,7 +90,7 @@ public class BuscaClienteAdminValidation {
         if (checkBoxClienteSim.isSelected() || checkBoxClienteNao.isSelected()) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "Favor selecionar pelo menos uma das opções sobre bloqueio", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Favor selecionar pelo menos uma das opções sobre bloqueio", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }

@@ -36,7 +36,7 @@ public class ConfiguracaoSenhaFormValidation {
         if (String.valueOf(senha.getPassword()).equals(String.valueOf(confirmarSenha.getPassword()))) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "As senhas informadas não são iguais", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "As senhas informadas não são iguais", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -47,7 +47,7 @@ public class ConfiguracaoSenhaFormValidation {
         if (senha.length() >= 8) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "As senhas precisam ter entre 6 e 8 dígitos", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "As senhas precisam ter entre 6 e 8 dígitos", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }

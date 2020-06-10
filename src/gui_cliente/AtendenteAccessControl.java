@@ -81,6 +81,11 @@ public class AtendenteAccessControl extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         campoSenha.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoSenha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                campoSenhaActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel3.setText("Senha:");
@@ -167,6 +172,10 @@ public class AtendenteAccessControl extends javax.swing.JFrame {
             this.dispose();
         }
     }//GEN-LAST:event_botaoConfirmarActionPerformed
+
+    private void campoSenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoSenhaActionPerformed
+        botaoConfirmar.doClick();
+    }//GEN-LAST:event_campoSenhaActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

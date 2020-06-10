@@ -870,7 +870,7 @@ public class MenuAdmin extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 24, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -960,18 +960,18 @@ public class MenuAdmin extends javax.swing.JFrame {
             .addGroup(configuracoesPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(configuracoesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(configuracoesPanelLayout.createSequentialGroup()
-                        .addGroup(configuracoesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel11)
-                            .addComponent(senhaFormPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 812, Short.MAX_VALUE))
                     .addComponent(jSeparator1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, configuracoesPanelLayout.createSequentialGroup()
                         .addComponent(botaoCancelarEdicao)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(botaoSalvarEdicao)))
+                        .addComponent(botaoSalvarEdicao))
+                    .addGroup(configuracoesPanelLayout.createSequentialGroup()
+                        .addGroup(configuracoesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11)
+                            .addComponent(senhaFormPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 812, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         configuracoesPanelLayout.setVerticalGroup(
@@ -980,12 +980,12 @@ public class MenuAdmin extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(senhaFormPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 282, Short.MAX_VALUE)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(configuracoesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1233,19 +1233,19 @@ public class MenuAdmin extends javax.swing.JFrame {
         boolean flagDias = true, flagSenha = true;
 
         if (diasNotificacaoAlterado) {
-            if (!campoDiasNotificacao.getText().isEmpty()) {
+            if (!campoLimiteDiasAviso.getText().isEmpty()) {
                 try {
-                    int novoDiasNotificacao = Integer.parseInt(campoDiasNotificacao.getText());
+                    int novoDiasNotificacao = Integer.parseInt(campoLimiteDiasAviso.getText());
                     ConfiguracaoDAO.updateDiasNotificacao(novoDiasNotificacao);
                     diasNotificacaoAlterado = false;
                     JOptionPane.showMessageDialog(null, "Limite de dias para notificação atualizado com sucesso", "Atenção", JOptionPane.INFORMATION_MESSAGE);
                 } catch (NumberFormatException e) {
                     flagDias = false;
-                    JOptionPane.showMessageDialog(null, "O valor de limite de dias para notificação precisa ser numérico", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "O valor de limite de dias para notificação precisa ser numérico", "Atenção", JOptionPane.WARNING_MESSAGE);
                 }
             } else {
                 flagDias = false;
-                JOptionPane.showMessageDialog(null, "O campo de limite de dias para notificação não pode estar vazio", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "O campo de limite de dias para notificação não pode estar vazio", "Atenção", JOptionPane.WARNING_MESSAGE);
             }
         }
 

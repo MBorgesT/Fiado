@@ -38,7 +38,7 @@ public class PagarComprasValidation {
     
     private boolean temCamposVazios(){
         if (String.valueOf(campoSenhaCliente.getPassword()).isEmpty() || String.valueOf(campoSenhaAtendente.getPassword()).isEmpty()){
-            JOptionPane.showMessageDialog(null, "Favor preencher todos os campos obrigatórios", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Favor preencher todos os campos obrigatórios", "Atenção", JOptionPane.WARNING_MESSAGE);
             return true;
         }else{
             return false;
@@ -50,7 +50,7 @@ public class PagarComprasValidation {
         if (isCorrect) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "A senha do cliente está incorreta", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "A senha do cliente está incorreta", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -60,7 +60,7 @@ public class PagarComprasValidation {
         if (isCorrect) {
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "A senha do atendente está incorreta", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "A senha do atendente está incorreta", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }

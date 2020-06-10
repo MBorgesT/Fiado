@@ -358,7 +358,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(null, "Não foi possível achar um resultado", "Atenção", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Favor inserir somente números no campo de busca por ID", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Favor inserir somente números no campo de busca por ID", "Atenção", JOptionPane.WARNING_MESSAGE);
                 }
             } else {
                 searchParam = searchParam.toUpperCase();
@@ -418,7 +418,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 new NovaCompra(clienteSelecionado).setVisible(true);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "O cliente não está ativo, portanto não poderá realizar compras", "Atenção", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "O cliente não está ativo, portanto não poderá realizar compras", "Atenção", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_botaoNovaCompraActionPerformed
 
