@@ -67,7 +67,7 @@ public class CompraFormValidation {
             Float.parseFloat(valor);
             return true;
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "O valor da compra está incorreto", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "O valor da compra é inválido", "Atenção", JOptionPane.INFORMATION_MESSAGE);
             return false;
         }
     }

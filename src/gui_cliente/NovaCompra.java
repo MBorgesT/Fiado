@@ -21,6 +21,7 @@ import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
+import printers.ComprovantePrinter;
 import sun.net.www.http.HttpClient;
 import validation.CompraFormValidation;
 
@@ -34,7 +35,7 @@ public class NovaCompra extends javax.swing.JFrame {
         initComponents();
 
         this.cliente = cliente;
-        this.todosAtendentes = AtendenteDAO.selectAllAtendentes();
+        this.todosAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
 
         this.now = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -49,60 +50,6 @@ public class NovaCompra extends javax.swing.JFrame {
 
     private NovaCompra() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void imprimirComprovante(Compra compra, Atendente atendente) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            String valor = String.format("%.02f", compra.getValor());
-            valor = valor.replace('.', ',');
-
-            String obs = compra.getObservacao() == "" ? "null" : compra.getObservacao();
-
-            JSONObject json = new JSONObject();
-            json.put("id_compra", String.valueOf(compra.getIdCompra()));
-            json.put("data", compra.getFormattedData());
-            json.put("valor", valor);
-            json.put("cliente", cliente.getNome());
-            json.put("atendente", atendente.getNome());
-            json.put("observacao", obs);
-
-            FileWriter file = new FileWriter("/home/matheus/Documents/Dev/projects/fiado-printer/compra.json");
-            file.write(json.toString());
-            file.flush();
-            file.close();
-
-            String[] options = {"SIM", "NÃO"};
-            int reply = JOptionPane.showOptionDialog(null, "Deseja imprimir o recibo do cliente?", "Recibo",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-                    options, options[0]);
-
-            if (reply == 0)
-                Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_compra_cliente.py");
-            
-            Thread.currentThread().sleep(1000);
-            
-            JOptionPane.showMessageDialog(null, "Confirme para imprimir a nota da padaria", "Recibo", JOptionPane.INFORMATION_MESSAGE);
-            Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_compra_padaria.py");
-            
-            
-
-            /*
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost request = new HttpPost("http://localhost:5000/compra/");
-            StringEntity params = new StringEntity(json.toString());
-            request.addHeader("content-type", "application/json");
-            request.setEntity(params);
-            HttpResponse response = httpClient.execute(request);
-             */
-        } catch (IOException ex) {
-            System.out.println("io exception impressão compra");
-            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
-            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -394,11 +341,31 @@ public class NovaCompra extends javax.swing.JFrame {
             );
 
             int insertedId = CompraDAO.insertCompra(compra);
-            compra.setIdCompra(insertedId);
+            if (insertedId != 0) {
+                compra.setIdCompra(insertedId);
 
-            imprimirComprovante(compra, atendente);
+                String[] options = {"SIM", "NÃO"};
+                int reply = JOptionPane.showOptionDialog(null, "Deseja imprimir o recibo do cliente?", "Recibo",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                        options, options[0]);
 
-            this.dispose();
+                if (reply == 0) {
+                    ComprovantePrinter.printComprovanteCompra(compra, true);
+                }
+
+                try {
+                    Thread.currentThread().sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                JOptionPane.showMessageDialog(null, "Confirme para imprimir a nota da padaria", "Recibo", JOptionPane.INFORMATION_MESSAGE);
+                ComprovantePrinter.printComprovanteCompra(compra, false);
+
+                this.dispose();
+            }else{
+                JOptionPane.showMessageDialog(null, "Houve um erro com o banco de dados. Favor reiniciar o programa e tentar novamente", "Erro", JOptionPane.WARNING_MESSAGE);
+            }
         } else {
             System.out.println("fodeo");
         }

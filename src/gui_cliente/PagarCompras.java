@@ -23,6 +23,7 @@ import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
+import printers.ComprovantePrinter;
 import validation.PagarComprasValidation;
 
 public class PagarCompras extends javax.swing.JFrame {
@@ -38,7 +39,7 @@ public class PagarCompras extends javax.swing.JFrame {
 
         this.arrayCompras = arrayCompras;
         this.cliente = cliente;
-        this.todosAtendentes = AtendenteDAO.selectAllAtendentes();
+        this.todosAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
         this.telaAnterior = telaAnterior;
 
         this.valorTotal = 0;
@@ -62,62 +63,6 @@ public class PagarCompras extends javax.swing.JFrame {
 
     private PagarCompras() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void imprimirComprovante(Pagamento pagamento, Atendente atendente) {
-        try {
-            String obs = pagamento.getObservacao().isEmpty() ? "null" : pagamento.getObservacao();
-
-            JSONObject json = new JSONObject();
-            json.put("id_pagamento", String.valueOf(pagamento.getIdPagamento()));
-            json.put("data", pagamento.getFormattedData());
-            json.put("valor", pagamento.getFormattedValor());
-            json.put("cliente", cliente.getNome());
-            json.put("atendente", atendente.getNome());
-            json.put("observacao", obs);
-            json.put("qtd_compras", String.valueOf(arrayCompras.size()));
-            for (int i = 0; i < arrayCompras.size(); i++) {
-                String dataAux = "compra_data" + String.valueOf(i);
-                json.put(dataAux, arrayCompras.get(i).getFormattedData());
-
-                String valorAux = "compra_valor" + String.valueOf(i);
-                json.put(valorAux, arrayCompras.get(i).getFormattedValor());
-            }
-
-            FileWriter file = new FileWriter("/home/matheus/Documents/Dev/projects/fiado-printer/pagamento.json");
-            file.write(json.toString());
-            file.flush();
-            file.close();
-
-            String[] options = {"SIM", "NÃO"};
-            int reply = JOptionPane.showOptionDialog(null, "Deseja imprimir o recibo do cliente?", "Recibo",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-                    options, options[0]);
-            
-            if (reply == 0)
-                Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_pagamento_cliente.py");
-            
-            Thread.currentThread().sleep(1000);
-            
-            JOptionPane.showMessageDialog(null, "Confirme para imprimir a nota da padaria", "Recibo", JOptionPane.INFORMATION_MESSAGE);
-            Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_pagamento_padaria.py");
-
-            /*
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost request = new HttpPost("http://localhost:5000/pagamento/");
-            StringEntity params = new StringEntity(json.toString());
-            request.addHeader("content-type", "application/json");
-            request.setEntity(params);
-            HttpResponse response = httpClient.execute(request);
-             */
-        } catch (IOException ex) {
-            System.out.println("io exception impressão compra");
-            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
-            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(PagarCompras.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -388,17 +333,36 @@ public class PagarCompras extends javax.swing.JFrame {
             );
 
             int idPagamento = PagamentoDAO.insertPagamento(pagamento);
-            pagamento.setIdPagamento(idPagamento);
+            if (idPagamento != 0) {
+                pagamento.setIdPagamento(idPagamento);
 
-            for (Compra compra : arrayCompras) {
-                CompraDAO.updateSetPagamento(idPagamento, compra.getIdCompra());
+                for (Compra compra : arrayCompras) {
+                    CompraDAO.updateSetPagamento(idPagamento, compra.getIdCompra());
+                }
+
+                reply = JOptionPane.showOptionDialog(null, "Deseja imprimir o recibo do cliente?", "Recibo",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                        options, options[0]);
+
+                if (reply == 0) {
+                    ComprovantePrinter.printComprovantePagamento(pagamento, true);
+                }
+
+                try {
+                    Thread.currentThread().sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PagarCompras.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                JOptionPane.showMessageDialog(null, "Confirme para imprimir a nota da padaria", "Recibo", JOptionPane.INFORMATION_MESSAGE);
+                ComprovantePrinter.printComprovantePagamento(pagamento, false);
+
+                telaAnterior.updateTabela();
+
+                this.dispose();
+            }else{
+                JOptionPane.showMessageDialog(null, "Houve um erro com o banco de dados. Favor reiniciar o programa e tentar novamente", "Erro", JOptionPane.WARNING_MESSAGE);
             }
-
-            imprimirComprovante(pagamento, atendenteSelecionado);
-
-            telaAnterior.updateTabela();
-
-            this.dispose();
         }
     }//GEN-LAST:event_botaoConfirmarPagamentoActionPerformed
 

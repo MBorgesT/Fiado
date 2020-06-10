@@ -372,6 +372,11 @@ public class NovoCliente extends javax.swing.JFrame {
         botaoCancelar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cancel.png"))); // NOI18N
         botaoCancelar.setText("Cancelar");
+        botaoCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoCancelarActionPerformed(evt);
+            }
+        });
 
         botaoCadastrar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoCadastrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/ok.png"))); // NOI18N
@@ -425,7 +430,6 @@ public class NovoCliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void botaoCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCadastrarActionPerformed
-
         if (new ClienteFormValidation(formPanel).validate()) {
             byte[] salt = Hash.generateSalt();
             String hashedPw = Hash.hashPassword(String.valueOf(senhaTextField.getPassword()), salt).get();
@@ -449,15 +453,20 @@ public class NovoCliente extends javax.swing.JFrame {
                     true
             );
 
-            ClienteDAO.insertCliente(c);
-
-            menuPrincipal.resetTabelaClientes();
-
-            this.dispose();
+            if (ClienteDAO.insertCliente(c) == false) {
+                JOptionPane.showMessageDialog(null, "Houve um erro com o banco de dados. Favor reiniciar o programa e tentar novamente", "Erro", JOptionPane.WARNING_MESSAGE);
+            } else {
+                menuPrincipal.resetTabelaClientes();
+                this.dispose();
+            }
         } else {
             System.out.println("nao validou cadastro cliente");
         }
     }//GEN-LAST:event_botaoCadastrarActionPerformed
+
+    private void botaoCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCancelarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_botaoCancelarActionPerformed
 
     /**
      * @param args the command line arguments

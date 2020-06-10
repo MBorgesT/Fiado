@@ -14,7 +14,7 @@ public class BuscaClienteAdminValidation {
     private JRadioButton nomeClienteRadioButton, idClienteRadioButton;
     private JTextField campoBuscaNomeId, campoBuscaValor, campoDiasNotificacao;
     private JComboBox buscaValorComboBox;
-    private JCheckBox checkBoxSim, checkBoxNao;
+    private JCheckBox checkBoxClienteSim, checkBoxClienteNao;
 
     public BuscaClienteAdminValidation(JPanel panel) {
         Component[] components = panel.getComponents();
@@ -32,8 +32,8 @@ public class BuscaClienteAdminValidation {
 
         buscaValorComboBox = (JComboBox) componentMap.get("buscaValorComboBox");
 
-        checkBoxSim = (JCheckBox) componentMap.get("checkBoxSim");
-        checkBoxNao = (JCheckBox) componentMap.get("checkBoxNao");
+        checkBoxClienteSim = (JCheckBox) componentMap.get("checkBoxClienteSim");
+        checkBoxClienteNao = (JCheckBox) componentMap.get("checkBoxClienteNao");
     }
 
     public boolean validate() {
@@ -87,7 +87,7 @@ public class BuscaClienteAdminValidation {
     }
 
     private boolean validarCheckBoxesBloqueio() {
-        if (checkBoxSim.isSelected() || checkBoxNao.isSelected()) {
+        if (checkBoxClienteSim.isSelected() || checkBoxClienteNao.isSelected()) {
             return true;
         } else {
             JOptionPane.showMessageDialog(null, "Favor selecionar pelo menos uma das opções sobre bloqueio", "Atenção", JOptionPane.INFORMATION_MESSAGE);

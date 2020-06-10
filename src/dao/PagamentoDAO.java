@@ -44,7 +44,7 @@ public class PagamentoDAO {
 
     public static int insertPagamento(Pagamento pagamento) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             String sql = "INSERT INTO pagamento(idCliente, idAtendente, valor, data, observacao) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
@@ -81,7 +81,7 @@ public class PagamentoDAO {
 
     public static ArrayList<Pagamento> selectPagamentosFromCliente(int idCliente) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
 
             ArrayList<Pagamento> arrayPagamentos = new ArrayList<>();

@@ -45,7 +45,7 @@ public class CompraDAO {
 
     public static ArrayList<Compra> selectComprasFromCliente(int idCliente) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
 
             ArrayList<Compra> arrayCompras = new ArrayList<>();
@@ -68,7 +68,7 @@ public class CompraDAO {
 
     public static ArrayList<Compra> selectComprasFromPagamento(int idPagamento) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
 
             ArrayList<Compra> arrayCompras = new ArrayList<>();
@@ -91,7 +91,7 @@ public class CompraDAO {
 
     public static int insertCompra(Compra compra) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             String sql = "INSERT INTO compra(idCliente, idAtendente, valor, data, observacao, estaPago) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
@@ -129,7 +129,7 @@ public class CompraDAO {
 
     public static void updateSetPagamento(int idPagamento, int idCompra) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             String sql = "UPDATE compra SET idPagamento = ?, estaPago = 1 WHERE idCompra = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
 
@@ -149,7 +149,7 @@ public class CompraDAO {
         try {
             int diasNotificacao = ConfiguracaoDAO.selectDiasNotificacao();
 
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
             String sql = "SELECT data FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente);
             ResultSet rs = stmt.executeQuery(sql);
@@ -182,7 +182,7 @@ public class CompraDAO {
     
     public static boolean clienteExcedeDiasNotificacao(int idCliente, int diasNotificacao) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
             String sql = "SELECT data FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente);
             ResultSet rs = stmt.executeQuery(sql);

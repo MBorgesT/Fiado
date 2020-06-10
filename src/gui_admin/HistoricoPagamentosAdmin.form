@@ -266,6 +266,7 @@
               <Image iconType="3" name="/icons/printer-blue-32.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Nota do Cliente"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botaoImprimirNotaClienteActionPerformed"/>
@@ -280,6 +281,7 @@
               <Image iconType="3" name="/icons/printer-green-32.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Nota da Padaria"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botaoImprimirNotaPadariaActionPerformed"/>

@@ -17,6 +17,7 @@ import models.Compra;
 import models.Pagamento;
 import org.json.JSONException;
 import org.json.JSONObject;
+import printers.ComprovantePrinter;
 
 public class HistoricoPagamentosAdmin extends javax.swing.JFrame {
 
@@ -44,6 +45,8 @@ public class HistoricoPagamentosAdmin extends javax.swing.JFrame {
                 int row = tabelaPagamentos.rowAtPoint(evt.getPoint());
                 if (row >= 0) {
                     selecionarPagamento(arrayPagamentos.get(row));
+                    botaoImprimirNotaCliente.setEnabled(true);
+                    botaoImprimirNotaPadaria.setEnabled(true);
                 }
             }
         });
@@ -68,48 +71,6 @@ public class HistoricoPagamentosAdmin extends javax.swing.JFrame {
 
     private HistoricoPagamentosAdmin() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void imprimirComprovante(boolean isCliente) {
-        try {
-            Atendente atendente = AtendenteDAO.selectAtendenteById(pagamentoSelecionado.getIdAtendente());
-            ArrayList<Compra> arrayCompras = CompraDAO.selectComprasFromPagamento(pagamentoSelecionado.getIdPagamento());
-
-            String obs = pagamentoSelecionado.getObservacao().isEmpty() ? "null" : pagamentoSelecionado.getObservacao();
-
-            JSONObject json = new JSONObject();
-            json.put("id_pagamento", String.valueOf(pagamentoSelecionado.getIdPagamento()));
-            json.put("data", pagamentoSelecionado.getFormattedData());
-            json.put("valor", pagamentoSelecionado.getFormattedValor());
-            json.put("cliente", cliente.getNome());
-            json.put("atendente", atendente.getNome());
-            json.put("observacao", obs);
-            json.put("qtd_compras", String.valueOf(arrayCompras.size()));
-            for (int i = 0; i < arrayCompras.size(); i++) {
-                String dataAux = "compra_data" + String.valueOf(i);
-                json.put(dataAux, arrayCompras.get(i).getFormattedData());
-
-                String valorAux = "compra_valor" + String.valueOf(i);
-                json.put(valorAux, arrayCompras.get(i).getFormattedValor());
-            }
-
-            FileWriter file = new FileWriter("/home/matheus/Documents/Dev/projects/fiado-printer/pagamento.json");
-            file.write(json.toString());
-            file.flush();
-            file.close();
-
-            if (isCliente) {
-                Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_pagamento_cliente.py");
-            } else {
-                Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_pagamento_padaria.py");
-            }
-
-        } catch (IOException ex) {
-            System.out.println("io exception impressão compra");
-            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
-            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -212,6 +173,7 @@ public class HistoricoPagamentosAdmin extends javax.swing.JFrame {
         botaoImprimirNotaCliente.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoImprimirNotaCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/printer-blue-32.png"))); // NOI18N
         botaoImprimirNotaCliente.setText("Nota do Cliente");
+        botaoImprimirNotaCliente.setEnabled(false);
         botaoImprimirNotaCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botaoImprimirNotaClienteActionPerformed(evt);
@@ -221,6 +183,7 @@ public class HistoricoPagamentosAdmin extends javax.swing.JFrame {
         botaoImprimirNotaPadaria.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoImprimirNotaPadaria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/printer-green-32.png"))); // NOI18N
         botaoImprimirNotaPadaria.setText("Nota da Padaria");
+        botaoImprimirNotaPadaria.setEnabled(false);
         botaoImprimirNotaPadaria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botaoImprimirNotaPadariaActionPerformed(evt);
@@ -316,7 +279,7 @@ public class HistoricoPagamentosAdmin extends javax.swing.JFrame {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
                 options, options[0]);
         
-        if (reply == 0) imprimirComprovante(true);
+        if (reply == 0) ComprovantePrinter.printComprovantePagamento(pagamentoSelecionado, true);
     }//GEN-LAST:event_botaoImprimirNotaClienteActionPerformed
 
     private void botaoImprimirNotaPadariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoImprimirNotaPadariaActionPerformed
@@ -325,7 +288,7 @@ public class HistoricoPagamentosAdmin extends javax.swing.JFrame {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
                 options, options[0]);
         
-        if (reply == 0) imprimirComprovante(false);
+        if (reply == 0) ComprovantePrinter.printComprovantePagamento(pagamentoSelecionado, false);
     }//GEN-LAST:event_botaoImprimirNotaPadariaActionPerformed
 
     public static void main(String args[]) {

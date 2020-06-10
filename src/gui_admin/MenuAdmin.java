@@ -10,11 +10,20 @@ import models.Cliente;
 import dao.ClienteDAO;
 import dao.AtendenteDAO;
 import dao.CompraDAO;
+import dao.ConfiguracaoDAO;
+import java.awt.Color;
+import java.awt.Component;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import models.Atendente;
+import security.Hash;
 import validation.BuscaClienteAdminValidation;
+import validation.ConfiguracaoSenhaFormValidation;
 
 /**
  *
@@ -31,11 +40,14 @@ public class MenuAdmin extends javax.swing.JFrame {
     private Cliente clienteSelecionado;
     private Atendente atendenteSelecionado;
 
+    private boolean diasNotificacaoAlterado;
+    private boolean senhaAlterada;
+
     public MenuAdmin() {
         initComponents();
 
         todosClientes = ClienteDAO.selectAllClientes();
-        todosAtendentes = AtendenteDAO.selectAllAtendentes();
+        todosAtendentes = AtendenteDAO.selectTodosAtendentes();
 
         clientesNaTabela = todosClientes;
         atendentesNaTabela = todosAtendentes;
@@ -44,9 +56,88 @@ public class MenuAdmin extends javax.swing.JFrame {
         botaoDeselecionarAtendente.doClick();
 
         fillTables();
+
+        // pagina de configuracoes
+        this.diasNotificacaoAlterado = false;
+        this.senhaAlterada = false;
+
+        campoLimiteDiasAviso.setText(String.valueOf(ConfiguracaoDAO.selectDiasNotificacao()));
+
+        setupConfiguracao();
     }
 
-    private void criarTabelaClienteListeners() {
+    private void setupConfiguracao() {
+        campoLimiteDiasAviso.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de) {
+                botaoCancelarEdicao.setEnabled(true);
+                botaoSalvarEdicao.setEnabled(true);
+                diasNotificacaoAlterado = true;
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                botaoCancelarEdicao.setEnabled(true);
+                botaoSalvarEdicao.setEnabled(true);
+                diasNotificacaoAlterado = true;
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent de) {
+                botaoCancelarEdicao.setEnabled(true);
+                botaoSalvarEdicao.setEnabled(true);
+                diasNotificacaoAlterado = true;
+            }
+        });
+
+        campoNovaSenha.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de) {
+                botaoCancelarEdicao.setEnabled(true);
+                botaoSalvarEdicao.setEnabled(true);
+                senhaAlterada = true;
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                botaoCancelarEdicao.setEnabled(true);
+                botaoSalvarEdicao.setEnabled(true);
+                senhaAlterada = true;
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent de) {
+                botaoCancelarEdicao.setEnabled(true);
+                botaoSalvarEdicao.setEnabled(true);
+                senhaAlterada = true;
+            }
+        });
+
+        campoConfirmarNovaSenha.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent de) {
+                botaoCancelarEdicao.setEnabled(true);
+                botaoSalvarEdicao.setEnabled(true);
+                senhaAlterada = true;
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                botaoCancelarEdicao.setEnabled(true);
+                botaoSalvarEdicao.setEnabled(true);
+                senhaAlterada = true;
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent de) {
+                botaoCancelarEdicao.setEnabled(true);
+                botaoSalvarEdicao.setEnabled(true);
+                senhaAlterada = true;
+            }
+        });
+    }
+
+    private void setupTabelaClientes() {
         tabelaClientes.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -56,9 +147,11 @@ public class MenuAdmin extends javax.swing.JFrame {
                 }
             }
         });
+
+        tabelaClientes.getColumnModel().getColumn(4).setCellRenderer(new SimNaoRenderer());
     }
 
-    private void criarTabelaAtendenteListeners() {
+    private void setupTabelaAtendentes() {
         tabelaAtendentes.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -68,6 +161,8 @@ public class MenuAdmin extends javax.swing.JFrame {
                 }
             }
         });
+
+        tabelaAtendentes.getColumnModel().getColumn(2).setCellRenderer(new SimNaoRenderer());
     }
 
     private void fillTables() {
@@ -83,7 +178,7 @@ public class MenuAdmin extends javax.swing.JFrame {
             tabelaClientesModel.addRow(c.clienteObjectArrayComplete());
         }
 
-        criarTabelaClienteListeners();
+        setupTabelaClientes();
     }
 
     private void fillAtendentesTable() {
@@ -94,7 +189,7 @@ public class MenuAdmin extends javax.swing.JFrame {
             tabelaAtendentesModel.addRow(a.atendenteObjectArray());
         }
 
-        criarTabelaAtendenteListeners();
+        setupTabelaAtendentes();
     }
 
     private void selecionarCliente(Cliente c) {
@@ -103,16 +198,17 @@ public class MenuAdmin extends javax.swing.JFrame {
         labelClienteSelecionado.setText("<html>" + c.getNome() + "</html>");
 
         if (c.isAtivo()) {
-            botaoDesAtivar.setText("Desativar");
+            botaoDesAtivarCliente.setText("Desativar");
             ImageIcon icon = new ImageIcon(getClass().getResource("/icons/toggle-off.png"));
-            botaoDesAtivar.setIcon(icon);
+            botaoDesAtivarCliente.setIcon(icon);
         } else {
-            botaoDesAtivar.setText("Ativar");
+            botaoDesAtivarCliente.setText("Ativar");
             ImageIcon icon = new ImageIcon(getClass().getResource("/icons/toggle-on.png"));
-            botaoDesAtivar.setIcon(icon);
+            botaoDesAtivarCliente.setIcon(icon);
         }
 
-        botaoDesAtivar.setEnabled(true);
+        botaoDesAtivarCliente.setEnabled(true);
+        botaoMaisInfoCliente.setEnabled(true);
     }
 
     private void selecionarAtendente(Atendente a) {
@@ -120,6 +216,17 @@ public class MenuAdmin extends javax.swing.JFrame {
         botaoDeselecionarAtendente.setEnabled(true);
         labelAtendenteSelecionado.setText("<html>" + a.getNome() + "</html>");
 
+        if (a.isAtivo()) {
+            botaoDesAtivarAtendente.setText("Desativar");
+            ImageIcon icon = new ImageIcon(getClass().getResource("/icons/toggle-on.png"));
+            botaoDesAtivarAtendente.setIcon(icon);
+        } else {
+            botaoDesAtivarAtendente.setText("Ativar");
+            ImageIcon icon = new ImageIcon(getClass().getResource("/icons/toggle-off.png"));
+            botaoDesAtivarAtendente.setIcon(icon);
+        }
+
+        botaoDesAtivarAtendente.setEnabled(true);
         botaoMaisInfoAtendente.setEnabled(true);
     }
 
@@ -130,9 +237,10 @@ public class MenuAdmin extends javax.swing.JFrame {
     }
 
     public void resetTabelaAtendentes() {
-        todosAtendentes = new AtendenteDAO().selectAllAtendentes();
+        todosAtendentes = new AtendenteDAO().selectTodosAtendentesAtivos();
         atendentesNaTabela = todosAtendentes;
         fillAtendentesTable();
+
     }
 
     @SuppressWarnings("unchecked")
@@ -148,8 +256,8 @@ public class MenuAdmin extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         botaoBuscarCliente = new javax.swing.JButton();
         clientesButtonPanel = new javax.swing.JPanel();
-        botaoDesAtivar = new javax.swing.JButton();
-        botaoMaisInfoCliente1 = new javax.swing.JButton();
+        botaoDesAtivarCliente = new javax.swing.JButton();
+        botaoMaisInfoCliente = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         labelClienteSelecionado = new javax.swing.JLabel();
@@ -162,8 +270,8 @@ public class MenuAdmin extends javax.swing.JFrame {
         comboBoxBuscaValor = new javax.swing.JComboBox<>();
         campoBuscaValor = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        checkBoxSim = new javax.swing.JCheckBox();
-        checkBoxNao = new javax.swing.JCheckBox();
+        checkBoxClienteSim = new javax.swing.JCheckBox();
+        checkBoxClienteNao = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
         campoDiasNotificacao = new javax.swing.JTextField();
         botaoLimparBuscaCliente = new javax.swing.JButton();
@@ -171,29 +279,38 @@ public class MenuAdmin extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tabelaAtendentes = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
-        nomeAtendenteRadioButton = new javax.swing.JRadioButton();
-        idAtendenteRadioButton = new javax.swing.JRadioButton();
-        campoBuscaAtendentes = new javax.swing.JTextField();
         botaoAtendenteBuscar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         labelAtendenteSelecionado = new javax.swing.JLabel();
         botaoDeselecionarAtendente = new javax.swing.JButton();
         atendentesButtonPanel = new javax.swing.JPanel();
-        botaoMaisInfoAtendente = new javax.swing.JButton();
+        botaoDesAtivarAtendente = new javax.swing.JButton();
         botaoNovoAtendente = new javax.swing.JButton();
+        botaoMaisInfoAtendente = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        campoBuscaAtendentes = new javax.swing.JTextField();
+        idAtendenteRadioButton = new javax.swing.JRadioButton();
+        nomeAtendenteRadioButton = new javax.swing.JRadioButton();
+        jLabel14 = new javax.swing.JLabel();
+        checkBoxAtendenteSim = new javax.swing.JCheckBox();
+        checkBoxAtendenteNao = new javax.swing.JCheckBox();
+        jButton1 = new javax.swing.JButton();
         configuracoesPanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jPanel5 = new javax.swing.JPanel();
+        campoLimiteDiasAviso = new javax.swing.JTextField();
+        senhaFormPanel = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jPasswordField2 = new javax.swing.JPasswordField();
+        campoNovaSenha = new javax.swing.JPasswordField();
+        campoConfirmarNovaSenha = new javax.swing.JPasswordField();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        botaoCancelarEdicao = new javax.swing.JButton();
+        botaoSalvarEdicao = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu do Administrador");
@@ -229,6 +346,7 @@ public class MenuAdmin extends javax.swing.JFrame {
             tabelaClientes.getColumnModel().getColumn(3).setResizable(false);
             tabelaClientes.getColumnModel().getColumn(3).setPreferredWidth(200);
             tabelaClientes.getColumnModel().getColumn(4).setResizable(false);
+            tabelaClientes.getColumnModel().getColumn(4).setPreferredWidth(60);
         }
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -245,21 +363,21 @@ public class MenuAdmin extends javax.swing.JFrame {
 
         clientesButtonPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        botaoDesAtivar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        botaoDesAtivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/toggle-on.png"))); // NOI18N
-        botaoDesAtivar.setText("Desativar");
-        botaoDesAtivar.addActionListener(new java.awt.event.ActionListener() {
+        botaoDesAtivarCliente.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoDesAtivarCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/toggle-on.png"))); // NOI18N
+        botaoDesAtivarCliente.setText("Desativar");
+        botaoDesAtivarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botaoDesAtivarActionPerformed(evt);
+                botaoDesAtivarClienteActionPerformed(evt);
             }
         });
 
-        botaoMaisInfoCliente1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        botaoMaisInfoCliente1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/more-info.png"))); // NOI18N
-        botaoMaisInfoCliente1.setText("Mais Informações");
-        botaoMaisInfoCliente1.addActionListener(new java.awt.event.ActionListener() {
+        botaoMaisInfoCliente.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoMaisInfoCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/more-info.png"))); // NOI18N
+        botaoMaisInfoCliente.setText("Mais Informações");
+        botaoMaisInfoCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botaoMaisInfoCliente1ActionPerformed(evt);
+                botaoMaisInfoClienteActionPerformed(evt);
             }
         });
 
@@ -270,17 +388,17 @@ public class MenuAdmin extends javax.swing.JFrame {
             .addGroup(clientesButtonPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(clientesButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(botaoMaisInfoCliente1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(botaoDesAtivar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(botaoMaisInfoCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(botaoDesAtivarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         clientesButtonPanelLayout.setVerticalGroup(
             clientesButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(clientesButtonPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(botaoDesAtivar)
+                .addComponent(botaoDesAtivarCliente)
                 .addGap(18, 18, 18)
-                .addComponent(botaoMaisInfoCliente1)
+                .addComponent(botaoMaisInfoCliente)
                 .addContainerGap())
         );
 
@@ -351,17 +469,17 @@ public class MenuAdmin extends javax.swing.JFrame {
         campoBuscaValor.setName("campoBuscaValor"); // NOI18N
 
         jLabel8.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jLabel8.setText("Bloqueado:");
+        jLabel8.setText("Ativo:");
 
-        checkBoxSim.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        checkBoxSim.setSelected(true);
-        checkBoxSim.setText("Sim");
-        checkBoxSim.setName("checkBoxSim"); // NOI18N
+        checkBoxClienteSim.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        checkBoxClienteSim.setSelected(true);
+        checkBoxClienteSim.setText("Sim");
+        checkBoxClienteSim.setName("checkBoxClienteSim"); // NOI18N
 
-        checkBoxNao.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        checkBoxNao.setSelected(true);
-        checkBoxNao.setText("Não");
-        checkBoxNao.setName("checkBoxNao"); // NOI18N
+        checkBoxClienteNao.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        checkBoxClienteNao.setSelected(true);
+        checkBoxClienteNao.setText("Não");
+        checkBoxClienteNao.setName("checkBoxClienteNao"); // NOI18N
 
         jLabel9.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel9.setText("Dias passados com compras não pagas:");
@@ -387,9 +505,9 @@ public class MenuAdmin extends javax.swing.JFrame {
                             .addComponent(jLabel7)
                             .addComponent(jLabel8)
                             .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(checkBoxSim)
+                                .addComponent(checkBoxClienteSim)
                                 .addGap(18, 18, 18)
-                                .addComponent(checkBoxNao))
+                                .addComponent(checkBoxClienteNao))
                             .addComponent(jLabel9)
                             .addGroup(formPanelLayout.createSequentialGroup()
                                 .addComponent(comboBoxBuscaValor, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -421,8 +539,8 @@ public class MenuAdmin extends javax.swing.JFrame {
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(checkBoxSim)
-                    .addComponent(checkBoxNao))
+                    .addComponent(checkBoxClienteSim)
+                    .addComponent(checkBoxClienteNao))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -465,11 +583,11 @@ public class MenuAdmin extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(clientePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(clientePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(botaoBuscarCliente)
                             .addComponent(botaoLimparBuscaCliente))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(55, 55, 55)
                         .addComponent(clientesButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -485,11 +603,11 @@ public class MenuAdmin extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Nome"
+                "ID", "Nome", "Ativo?"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -502,21 +620,12 @@ public class MenuAdmin extends javax.swing.JFrame {
             tabelaAtendentes.getColumnModel().getColumn(0).setPreferredWidth(75);
             tabelaAtendentes.getColumnModel().getColumn(1).setResizable(false);
             tabelaAtendentes.getColumnModel().getColumn(1).setPreferredWidth(725);
+            tabelaAtendentes.getColumnModel().getColumn(2).setResizable(false);
+            tabelaAtendentes.getColumnModel().getColumn(2).setPreferredWidth(60);
         }
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel4.setText("Busca:");
-
-        buscaAtendentesButtonGroup.add(nomeAtendenteRadioButton);
-        nomeAtendenteRadioButton.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        nomeAtendenteRadioButton.setText("Nome");
-
-        buscaAtendentesButtonGroup.add(idAtendenteRadioButton);
-        idAtendenteRadioButton.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        idAtendenteRadioButton.setSelected(true);
-        idAtendenteRadioButton.setText("ID");
-
-        campoBuscaAtendentes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
 
         botaoAtendenteBuscar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoAtendenteBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/search.png"))); // NOI18N
@@ -549,7 +658,7 @@ public class MenuAdmin extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
                 .addComponent(botaoDeselecionarAtendente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
@@ -569,12 +678,12 @@ public class MenuAdmin extends javax.swing.JFrame {
 
         atendentesButtonPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        botaoMaisInfoAtendente.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        botaoMaisInfoAtendente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/more-info.png"))); // NOI18N
-        botaoMaisInfoAtendente.setText("Mais Informações");
-        botaoMaisInfoAtendente.addActionListener(new java.awt.event.ActionListener() {
+        botaoDesAtivarAtendente.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoDesAtivarAtendente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/toggle-on.png"))); // NOI18N
+        botaoDesAtivarAtendente.setText("Desativar");
+        botaoDesAtivarAtendente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botaoMaisInfoAtendenteActionPerformed(evt);
+                botaoDesAtivarAtendenteActionPerformed(evt);
             }
         });
 
@@ -587,6 +696,15 @@ public class MenuAdmin extends javax.swing.JFrame {
             }
         });
 
+        botaoMaisInfoAtendente.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoMaisInfoAtendente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/more-info.png"))); // NOI18N
+        botaoMaisInfoAtendente.setText("Mais Informações");
+        botaoMaisInfoAtendente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoMaisInfoAtendenteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout atendentesButtonPanelLayout = new javax.swing.GroupLayout(atendentesButtonPanel);
         atendentesButtonPanel.setLayout(atendentesButtonPanelLayout);
         atendentesButtonPanelLayout.setHorizontalGroup(
@@ -594,19 +712,95 @@ public class MenuAdmin extends javax.swing.JFrame {
             .addGroup(atendentesButtonPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(atendentesButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(botaoMaisInfoAtendente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(botaoNovoAtendente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(botaoNovoAtendente, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
+                    .addComponent(botaoDesAtivarAtendente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
+                    .addComponent(botaoMaisInfoAtendente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE))
                 .addContainerGap())
         );
         atendentesButtonPanelLayout.setVerticalGroup(
             atendentesButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(atendentesButtonPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(botaoDesAtivarAtendente)
+                .addGap(18, 18, 18)
                 .addComponent(botaoMaisInfoAtendente)
                 .addGap(18, 18, 18)
                 .addComponent(botaoNovoAtendente)
+                .addContainerGap())
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        campoBuscaAtendentes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+
+        buscaAtendentesButtonGroup.add(idAtendenteRadioButton);
+        idAtendenteRadioButton.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        idAtendenteRadioButton.setText("ID");
+
+        buscaAtendentesButtonGroup.add(nomeAtendenteRadioButton);
+        nomeAtendenteRadioButton.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        nomeAtendenteRadioButton.setSelected(true);
+        nomeAtendenteRadioButton.setText("Nome");
+
+        jLabel14.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel14.setText("Ativo:");
+
+        checkBoxAtendenteSim.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        checkBoxAtendenteSim.setSelected(true);
+        checkBoxAtendenteSim.setText("Sim");
+
+        checkBoxAtendenteNao.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        checkBoxAtendenteNao.setSelected(true);
+        checkBoxAtendenteNao.setText("Não");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(campoBuscaAtendentes)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(nomeAtendenteRadioButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(idAtendenteRadioButton))
+                            .addComponent(jLabel14)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(checkBoxAtendenteSim)
+                                .addGap(18, 18, 18)
+                                .addComponent(checkBoxAtendenteNao)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nomeAtendenteRadioButton)
+                    .addComponent(idAtendenteRadioButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(campoBuscaAtendentes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(checkBoxAtendenteSim)
+                    .addComponent(checkBoxAtendenteNao))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jButton1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/eraser.png"))); // NOI18N
+        jButton1.setText("Limpar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout atendentePanelLayout = new javax.swing.GroupLayout(atendentePanel);
         atendentePanel.setLayout(atendentePanelLayout);
@@ -617,18 +811,16 @@ public class MenuAdmin extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(atendentePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(atendentesButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(atendentePanelLayout.createSequentialGroup()
                         .addComponent(jLabel4)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(atendentePanelLayout.createSequentialGroup()
+                        .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(idAtendenteRadioButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(nomeAtendenteRadioButton))
-                    .addComponent(campoBuscaAtendentes)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, atendentePanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(botaoAtendenteBuscar))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(atendentesButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(botaoAtendenteBuscar)))
                 .addContainerGap())
         );
         atendentePanelLayout.setVerticalGroup(
@@ -636,17 +828,16 @@ public class MenuAdmin extends javax.swing.JFrame {
             .addGroup(atendentePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(atendentePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 726, Short.MAX_VALUE)
                     .addGroup(atendentePanelLayout.createSequentialGroup()
-                        .addGroup(atendentePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(nomeAtendenteRadioButton)
-                            .addComponent(idAtendenteRadioButton)
-                            .addComponent(jLabel4))
+                        .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(campoBuscaAtendentes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(botaoAtendenteBuscar)
-                        .addGap(184, 184, 184)
+                        .addGroup(atendentePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(botaoAtendenteBuscar))
+                        .addGap(80, 80, 80)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(atendentesButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -664,7 +855,7 @@ public class MenuAdmin extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel6.setText("<html>Limite de dias com conta não paga para mostrar aviso ao realizar uma compra:</html>");
 
-        jTextField1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoLimiteDiasAviso.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -674,7 +865,7 @@ public class MenuAdmin extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jTextField1)
+                        .addComponent(campoLimiteDiasAviso)
                         .addContainerGap())
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -686,18 +877,20 @@ public class MenuAdmin extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(campoLimiteDiasAviso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        senhaFormPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel10.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel10.setText("Nova senha:");
 
-        jPasswordField1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoNovaSenha.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoNovaSenha.setName("senha"); // NOI18N
 
-        jPasswordField2.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoConfirmarNovaSenha.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoConfirmarNovaSenha.setName("confirmarSenha"); // NOI18N
 
         jLabel12.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel12.setText("Digite novamente a senha:");
@@ -705,33 +898,33 @@ public class MenuAdmin extends javax.swing.JFrame {
         jLabel13.setForeground(new java.awt.Color(255, 51, 51));
         jLabel13.setText("<html>A senha deve conter pelo menos 8 caracteres</html>");
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        javax.swing.GroupLayout senhaFormPanelLayout = new javax.swing.GroupLayout(senhaFormPanel);
+        senhaFormPanel.setLayout(senhaFormPanelLayout);
+        senhaFormPanelLayout.setHorizontalGroup(
+            senhaFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(senhaFormPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPasswordField2)
-                    .addComponent(jPasswordField1)
+                .addGroup(senhaFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(campoConfirmarNovaSenha)
+                    .addComponent(campoNovaSenha)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+        senhaFormPanelLayout.setVerticalGroup(
+            senhaFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, senhaFormPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(campoNovaSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(campoConfirmarNovaSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -739,18 +932,46 @@ public class MenuAdmin extends javax.swing.JFrame {
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/padlock-48.png"))); // NOI18N
         jLabel11.setText("Senha de Administrador:");
 
+        botaoCancelarEdicao.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoCancelarEdicao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cancel.png"))); // NOI18N
+        botaoCancelarEdicao.setText("Cancelar Edição");
+        botaoCancelarEdicao.setEnabled(false);
+        botaoCancelarEdicao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoCancelarEdicaoActionPerformed(evt);
+            }
+        });
+
+        botaoSalvarEdicao.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoSalvarEdicao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/save-32.png"))); // NOI18N
+        botaoSalvarEdicao.setText("Salvar");
+        botaoSalvarEdicao.setEnabled(false);
+        botaoSalvarEdicao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoSalvarEdicaoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout configuracoesPanelLayout = new javax.swing.GroupLayout(configuracoesPanel);
         configuracoesPanel.setLayout(configuracoesPanelLayout);
         configuracoesPanelLayout.setHorizontalGroup(
             configuracoesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(configuracoesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(configuracoesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel11)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(812, Short.MAX_VALUE))
+                .addGroup(configuracoesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(configuracoesPanelLayout.createSequentialGroup()
+                        .addGroup(configuracoesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel11)
+                            .addComponent(senhaFormPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 812, Short.MAX_VALUE))
+                    .addComponent(jSeparator1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, configuracoesPanelLayout.createSequentialGroup()
+                        .addComponent(botaoCancelarEdicao)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(botaoSalvarEdicao)))
+                .addContainerGap())
         );
         configuracoesPanelLayout.setVerticalGroup(
             configuracoesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -758,12 +979,18 @@ public class MenuAdmin extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(369, Short.MAX_VALUE))
+                .addComponent(senhaFormPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(configuracoesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(botaoSalvarEdicao)
+                    .addComponent(botaoCancelarEdicao))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Configurações", new javax.swing.ImageIcon(getClass().getResource("/icons/gear.png")), configuracoesPanel); // NOI18N
@@ -825,11 +1052,11 @@ public class MenuAdmin extends javax.swing.JFrame {
                     }
                 }
 
-                if (!checkBoxSim.isSelected() && cliente.isAtivo()) {
+                if (!checkBoxClienteSim.isSelected() && cliente.isAtivo()) {
                     flag = false;
                 }
 
-                if (!checkBoxNao.isSelected() && !cliente.isAtivo()) {
+                if (!checkBoxClienteNao.isSelected() && !cliente.isAtivo()) {
                     flag = false;
                 }
 
@@ -844,50 +1071,59 @@ public class MenuAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoBuscarClienteActionPerformed
 
     private void botaoAtendenteBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAtendenteBuscarActionPerformed
-        String searchParam = campoBuscaAtendentes.getText();
-        if (!searchParam.isEmpty()) {
-            if (idAtendenteRadioButton.isSelected()) {
-                try {
-                    int idBusca = Integer.parseInt(searchParam);
-                    atendentesNaTabela = new ArrayList<>();
+        String searchParam = campoBuscaAtendentes.getText().toUpperCase();
 
-                    boolean flag = false;
-                    for (Atendente a : todosAtendentes) {
-                        if (a.getIdAtendente() == idBusca) {
-                            atendentesNaTabela.add(a);
-                            flag = true;
-                            break;
+        boolean campoBuscaVazio = campoBuscaAtendentes.getText().equals("");
+
+        boolean flagNumberParseEx = true;
+        if (idAtendenteRadioButton.isSelected() && !campoBuscaVazio) {
+            try {
+                Integer.parseInt(searchParam);
+            } catch (NumberFormatException e) {
+                flagNumberParseEx = false;
+                JOptionPane.showMessageDialog(null, "O campo de busca por ID só deve conter valores numéricos", "Atenção", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+
+        boolean flagCheckBoxes = true;
+        if (!checkBoxAtendenteSim.isSelected() && !checkBoxAtendenteNao.isSelected()) {
+            flagCheckBoxes = false;
+            JOptionPane.showMessageDialog(null, "Você precisa informar se deseja buscar por atendentes ativos ou não", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        if (flagNumberParseEx && flagCheckBoxes) {
+            atendentesNaTabela = new ArrayList<>();
+
+            boolean flag;
+            for (Atendente atendente : todosAtendentes) {
+                flag = true;
+
+                if (!campoBuscaVazio) {
+                    if (nomeAtendenteRadioButton.isSelected()) {
+                        if (!atendente.getNome().contains(searchParam)) {
+                            flag = false;
+                        }
+                    } else {
+                        if (atendente.getIdAtendente() != Integer.parseInt(searchParam)) {
+                            flag = false;
                         }
                     }
-
-                    fillAtendentesTable();
-
-                    if (!flag) {
-                        new JOptionPane().showMessageDialog(null, "Não foi possível achar um resultado", "Atenção", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                } catch (NumberFormatException e) {
-                    new JOptionPane().showMessageDialog(null, "Favor inserir somente números no campo de busca por ID", "Atenção", JOptionPane.INFORMATION_MESSAGE);
-                }
-            } else {
-                searchParam = searchParam.toUpperCase();
-                atendentesNaTabela = new ArrayList<>();
-
-                boolean flag = false;
-                for (Atendente a : todosAtendentes) {
-                    if (a.getNome().contains(searchParam)) {
-                        atendentesNaTabela.add(a);
-                        flag = true;
-                    }
                 }
 
-                fillClientesTable();
-
-                if (!flag) {
-                    new JOptionPane().showMessageDialog(null, "Não foi possível achar um resultado", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                if (!checkBoxAtendenteSim.isSelected() && atendente.isAtivo()) {
+                    flag = false;
                 }
+
+                if (!checkBoxAtendenteNao.isSelected() && !atendente.isAtivo()) {
+                    flag = false;
+                }
+
+                if (flag) {
+                    atendentesNaTabela.add(atendente);
+                }
+
             }
-        } else {
-            atendentesNaTabela = todosAtendentes;
+
             fillAtendentesTable();
         }
     }//GEN-LAST:event_botaoAtendenteBuscarActionPerformed
@@ -897,7 +1133,8 @@ public class MenuAdmin extends javax.swing.JFrame {
         botaoDeselecionarCliente.setEnabled(false);
         labelClienteSelecionado.setText(" ");
 
-        botaoDesAtivar.setEnabled(false);
+        botaoDesAtivarCliente.setEnabled(false);
+        botaoMaisInfoCliente.setEnabled(false);
     }//GEN-LAST:event_botaoDeselecionarClienteActionPerformed
 
     private void botaoDeselecionarAtendenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoDeselecionarAtendenteActionPerformed
@@ -906,9 +1143,10 @@ public class MenuAdmin extends javax.swing.JFrame {
         labelAtendenteSelecionado.setText(" ");
 
         botaoMaisInfoAtendente.setEnabled(false);
+        botaoDesAtivarAtendente.setEnabled(false);
     }//GEN-LAST:event_botaoDeselecionarAtendenteActionPerformed
 
-    private void botaoDesAtivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoDesAtivarActionPerformed
+    private void botaoDesAtivarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoDesAtivarClienteActionPerformed
         String acao;
         if (clienteSelecionado.isAtivo()) {
             acao = "desativar";
@@ -925,32 +1163,112 @@ public class MenuAdmin extends javax.swing.JFrame {
             ClienteDAO.updateEstadoAtivoCliente(clienteSelecionado.getIdCliente(), !clienteSelecionado.isAtivo());
             clienteSelecionado.setAtivo(!clienteSelecionado.isAtivo());
             selecionarCliente(clienteSelecionado);
+            fillClientesTable();
         }
-    }//GEN-LAST:event_botaoDesAtivarActionPerformed
+    }//GEN-LAST:event_botaoDesAtivarClienteActionPerformed
 
     private void botaoNovoAtendenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoNovoAtendenteActionPerformed
         new NovoAtendente(this).setVisible(true);
     }//GEN-LAST:event_botaoNovoAtendenteActionPerformed
 
-    private void botaoMaisInfoAtendenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMaisInfoAtendenteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_botaoMaisInfoAtendenteActionPerformed
+    private void botaoDesAtivarAtendenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoDesAtivarAtendenteActionPerformed
+        String acao;
+        if (atendenteSelecionado.isAtivo()) {
+            acao = "desativar";
+        } else {
+            acao = "ativar";
+        }
 
-    private void botaoMaisInfoCliente1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMaisInfoCliente1ActionPerformed
+        String[] options = {"SIM", "NÃO"};
+        int reply = JOptionPane.showOptionDialog(null, "Você realmente deseja " + acao + " a conta do atendente?", "Atenção",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
+                options, options[0]);
+
+        if (reply == 0) {
+            AtendenteDAO.updateEstadoAtivoAtendente(atendenteSelecionado.getIdAtendente(), !atendenteSelecionado.isAtivo());
+            atendenteSelecionado.setAtivo(!atendenteSelecionado.isAtivo());
+            selecionarAtendente(atendenteSelecionado);
+            fillAtendentesTable();
+        }
+    }//GEN-LAST:event_botaoDesAtivarAtendenteActionPerformed
+
+    private void botaoMaisInfoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMaisInfoClienteActionPerformed
         new MaisInfoClienteAdmin(clienteSelecionado).setVisible(true);
-    }//GEN-LAST:event_botaoMaisInfoCliente1ActionPerformed
+    }//GEN-LAST:event_botaoMaisInfoClienteActionPerformed
 
     private void botaoLimparBuscaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoLimparBuscaClienteActionPerformed
         campoBuscaNomeId.setText("");
         campoBuscaValor.setText("");
         campoDiasNotificacao.setText("");
 
-        checkBoxSim.setSelected(true);
-        checkBoxNao.setSelected(true);
+        checkBoxClienteSim.setSelected(true);
+        checkBoxClienteNao.setSelected(true);
 
         clientesNaTabela = todosClientes;
         fillClientesTable();
     }//GEN-LAST:event_botaoLimparBuscaClienteActionPerformed
+
+    private void botaoMaisInfoAtendenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMaisInfoAtendenteActionPerformed
+        new MaisInfoAtendenteAdmin(atendenteSelecionado).setVisible(true);
+    }//GEN-LAST:event_botaoMaisInfoAtendenteActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        campoBuscaAtendentes.setText("");
+        checkBoxAtendenteSim.setSelected(true);
+        checkBoxAtendenteNao.setSelected(true);
+        fillAtendentesTable();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void botaoCancelarEdicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCancelarEdicaoActionPerformed
+        campoLimiteDiasAviso.setText(String.valueOf(ConfiguracaoDAO.selectDiasNotificacao()));
+
+        campoNovaSenha.setText("");
+        campoConfirmarNovaSenha.setText("");
+    }//GEN-LAST:event_botaoCancelarEdicaoActionPerformed
+
+    private void botaoSalvarEdicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSalvarEdicaoActionPerformed
+        boolean flagDias = true, flagSenha = true;
+
+        if (diasNotificacaoAlterado) {
+            if (!campoDiasNotificacao.getText().isEmpty()) {
+                try {
+                    int novoDiasNotificacao = Integer.parseInt(campoDiasNotificacao.getText());
+                    ConfiguracaoDAO.updateDiasNotificacao(novoDiasNotificacao);
+                    diasNotificacaoAlterado = false;
+                    JOptionPane.showMessageDialog(null, "Limite de dias para notificação atualizado com sucesso", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                } catch (NumberFormatException e) {
+                    flagDias = false;
+                    JOptionPane.showMessageDialog(null, "O valor de limite de dias para notificação precisa ser numérico", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else {
+                flagDias = false;
+                JOptionPane.showMessageDialog(null, "O campo de limite de dias para notificação não pode estar vazio", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+
+        if (senhaAlterada) {
+            if (new ConfiguracaoSenhaFormValidation(senhaFormPanel).validate()) {
+                byte[] salt = Hash.generateSalt();
+                String cleanPw = String.valueOf(campoNovaSenha.getPassword());
+                String hashedPw = Hash.hashPassword(cleanPw, salt).get();
+
+                if (ConfiguracaoDAO.updateSenha(hashedPw, salt)) {
+                    campoNovaSenha.setText("");
+                    campoConfirmarNovaSenha.setText("");
+                    JOptionPane.showMessageDialog(null, "Senha atualizada com sucesso", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    flagSenha = false;
+                }
+            }else{
+                flagSenha = false;
+            }
+        }
+
+        if (flagDias && flagSenha) {
+            botaoCancelarEdicao.setEnabled(false);
+            botaoSalvarEdicao.setEnabled(false);
+        }
+    }//GEN-LAST:event_botaoSalvarEdicaoActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -990,21 +1308,29 @@ public class MenuAdmin extends javax.swing.JFrame {
     private javax.swing.JPanel atendentesButtonPanel;
     private javax.swing.JButton botaoAtendenteBuscar;
     private javax.swing.JButton botaoBuscarCliente;
-    private javax.swing.JButton botaoDesAtivar;
+    private javax.swing.JButton botaoCancelarEdicao;
+    private javax.swing.JButton botaoDesAtivarAtendente;
+    private javax.swing.JButton botaoDesAtivarCliente;
     private javax.swing.JButton botaoDeselecionarAtendente;
     private javax.swing.JButton botaoDeselecionarCliente;
     private javax.swing.JButton botaoLimparBuscaCliente;
     private javax.swing.JButton botaoMaisInfoAtendente;
-    private javax.swing.JButton botaoMaisInfoCliente1;
+    private javax.swing.JButton botaoMaisInfoCliente;
     private javax.swing.JButton botaoNovoAtendente;
+    private javax.swing.JButton botaoSalvarEdicao;
     private javax.swing.ButtonGroup buscaAtendentesButtonGroup;
     private javax.swing.ButtonGroup buscaClientesButtonGroup;
     private javax.swing.JTextField campoBuscaAtendentes;
     private javax.swing.JTextField campoBuscaNomeId;
     private javax.swing.JTextField campoBuscaValor;
+    private javax.swing.JPasswordField campoConfirmarNovaSenha;
     private javax.swing.JTextField campoDiasNotificacao;
-    private javax.swing.JCheckBox checkBoxNao;
-    private javax.swing.JCheckBox checkBoxSim;
+    private javax.swing.JTextField campoLimiteDiasAviso;
+    private javax.swing.JPasswordField campoNovaSenha;
+    private javax.swing.JCheckBox checkBoxAtendenteNao;
+    private javax.swing.JCheckBox checkBoxAtendenteSim;
+    private javax.swing.JCheckBox checkBoxClienteNao;
+    private javax.swing.JCheckBox checkBoxClienteSim;
     private javax.swing.JPanel clientePanel;
     private javax.swing.JPanel clientesButtonPanel;
     private javax.swing.JComboBox<String> comboBoxBuscaValor;
@@ -1012,11 +1338,13 @@ public class MenuAdmin extends javax.swing.JFrame {
     private javax.swing.JPanel formPanel;
     private javax.swing.JRadioButton idAtendenteRadioButton;
     private javax.swing.JRadioButton idClienteRadioButton;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1026,20 +1354,34 @@ public class MenuAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JPasswordField jPasswordField2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelAtendenteSelecionado;
     private javax.swing.JLabel labelClienteSelecionado;
     private javax.swing.JRadioButton nomeAtendenteRadioButton;
     private javax.swing.JRadioButton nomeClienteRadioButton;
+    private javax.swing.JPanel senhaFormPanel;
     private javax.swing.JTable tabelaAtendentes;
     private javax.swing.JTable tabelaClientes;
     // End of variables declaration//GEN-END:variables
+
+    public static class SimNaoRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+
+            String valueStr = (String) value;
+            c.setForeground(valueStr.contains("SIM") ? new Color(0, 163, 16) : Color.RED);
+
+            return c;
+        }
+
+    }
+
 }

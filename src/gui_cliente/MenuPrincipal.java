@@ -11,6 +11,7 @@ import dao.ClienteDAO;
 import dao.CompraDAO;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author matheus
@@ -383,17 +384,21 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoMaisInfoClienteActionPerformed
 
     private void botaoNovaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoNovaCompraActionPerformed
-        if (CompraDAO.clienteExcedeDiasNotificacao(clienteSelecionado.getIdCliente())) {
-            String[] options = {"SIM", "NÃO"};
-            int reply = JOptionPane.showOptionDialog(null, "Há compras não pagas que excedem o limite de dias sem pagamento. Deseja continuar?", "Atenção",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
-                    options, options[0]);
+        if (clienteSelecionado.isAtivo()) {
+            if (CompraDAO.clienteExcedeDiasNotificacao(clienteSelecionado.getIdCliente())) {
+                String[] options = {"SIM", "NÃO"};
+                int reply = JOptionPane.showOptionDialog(null, "Há compras não pagas que excedem o limite de dias sem pagamento. Deseja continuar?", "Atenção",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
+                        options, options[0]);
 
-            if (reply == 0) {
+                if (reply == 0) {
+                    new NovaCompra(clienteSelecionado).setVisible(true);
+                }
+            } else {
                 new NovaCompra(clienteSelecionado).setVisible(true);
             }
-        } else {
-            new NovaCompra(clienteSelecionado).setVisible(true);
+        }else{
+            JOptionPane.showMessageDialog(null, "O cliente não está ativo, portanto não poderá realizar compras", "Atenção", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_botaoNovaCompraActionPerformed
 

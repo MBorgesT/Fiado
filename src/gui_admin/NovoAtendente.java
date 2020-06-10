@@ -226,9 +226,10 @@ public class NovoAtendente extends javax.swing.JFrame {
             String hashedPw = Hash.hashPassword(String.valueOf(senhaTextField.getPassword()), salt).get();
 
             Atendente a = new Atendente(
-                    nomeTextField.getText(),
+                    nomeTextField.getText().toUpperCase(),
                     hashedPw,
-                    salt
+                    salt,
+                    true
             );
 
             AtendenteDAO.insertAtendente(a);

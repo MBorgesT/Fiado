@@ -20,6 +20,7 @@ import models.Cliente;
 import models.Compra;
 import org.json.JSONException;
 import org.json.JSONObject;
+import printers.ComprovantePrinter;
 
 /**
  *
@@ -54,44 +55,6 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
 
     private MaisInfoCompraAdmin() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void imprimirComprovante(boolean isCliente) {
-        try {
-            Cliente cliente = ClienteDAO.selectClienteById(compra.getIdCliente());
-            Atendente atendente = AtendenteDAO.selectAtendenteById(compra.getIdAtendente());
-
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            String valor = String.format("%.02f", compra.getValor());
-            valor = valor.replace('.', ',');
-
-            String obs = compra.getObservacao() == "" ? "null" : compra.getObservacao();
-
-            JSONObject json = new JSONObject();
-            json.put("id_compra", String.valueOf(compra.getIdCompra()));
-            json.put("data", compra.getFormattedData());
-            json.put("valor", valor);
-            json.put("cliente", cliente.getNome());
-            json.put("atendente", atendente.getNome());
-            json.put("observacao", obs);
-
-            FileWriter file = new FileWriter("/home/matheus/Documents/Dev/projects/fiado-printer/compra.json");
-            file.write(json.toString());
-            file.flush();
-            file.close();
-
-            if (isCliente) {
-                Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_compra_cliente.py");
-            } else {
-                Runtime.getRuntime().exec("python /home/matheus/Documents/Dev/projects/fiado-printer/print_compra_padaria.py");
-            }
-
-        } catch (IOException ex) {
-            System.out.println("io exception impressão compra");
-            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
-            Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -308,7 +271,7 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
                 options, options[0]);
         
-        if (reply == 0) imprimirComprovante(true);
+        if (reply == 0) ComprovantePrinter.printComprovanteCompra(compra, true);
     }//GEN-LAST:event_botaoImprimirNotaClienteActionPerformed
 
     private void botaoImprimirNotaPadariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoImprimirNotaPadariaActionPerformed
@@ -317,7 +280,7 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
                 options, options[0]);
         
-        if (reply == 0) imprimirComprovante(false);
+        if (reply == 0) ComprovantePrinter.printComprovanteCompra(compra, false);
     }//GEN-LAST:event_botaoImprimirNotaPadariaActionPerformed
 
     public static void main(String args[]) {

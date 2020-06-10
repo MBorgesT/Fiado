@@ -15,7 +15,7 @@ public class ClienteDAO {
 
     private static Cliente extractClienteFromRs(ResultSet rs) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
 
             PreparedStatement enderecoStmt = conn.prepareStatement("SELECT * FROM endereco WHERE idEndereco = ?");
             ResultSet enderecoRs;
@@ -63,7 +63,7 @@ public class ClienteDAO {
 
     public static ArrayList selectAllClientes() {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
 
             Statement stmt = conn.createStatement();
             ResultSet rs;
@@ -85,9 +85,9 @@ public class ClienteDAO {
         return null;
     }
 
-    public static void insertCliente(Cliente c) {
+    public static boolean insertCliente(Cliente c) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             String sql = "INSERT INTO endereco(logradouro, numero, bairro, cidade, referencia) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(sql);
 
@@ -118,15 +118,18 @@ public class ClienteDAO {
             conn.close();
 
             JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+
+            return true;
         } catch (SQLException e) {
             Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(null, e, "insertCliente", JOptionPane.WARNING_MESSAGE);
         }
+        return false;
     }
 
-    public static void updateCliente(Cliente c) {
+    public static boolean updateCliente(Cliente c) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             String sql = "UPDATE endereco SET logradouro = ?, numero = ?, bairro = ?, cidade = ?, referencia = ? WHERE idEndereco = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
 
@@ -155,15 +158,18 @@ public class ClienteDAO {
             conn.close();
 
             JOptionPane.showMessageDialog(null, "Cliente atualizado com sucesso", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+
+            return true;
         } catch (SQLException e) {
             Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(null, e, "updateCliente", JOptionPane.WARNING_MESSAGE);
         }
+        return false;
     }
 
     public static boolean checarExistenciaCpf(String cpf) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT idCliente FROM cliente WHERE cpf = '" + cpf + "'");
 
@@ -179,7 +185,7 @@ public class ClienteDAO {
 
     public static boolean checarExistenciaCpfOnUpdate(String cpf, int idCliente) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT idCliente FROM cliente WHERE cpf = '" + cpf + "' AND idCliente != " + String.valueOf(idCliente));
 
@@ -195,16 +201,16 @@ public class ClienteDAO {
 
     public static Cliente selectClienteById(int idCliente) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
 
             ResultSet rs = stmt.executeQuery("SELECT * FROM cliente WHERE idCliente = " + String.valueOf(idCliente));
 
             rs.next();
             Cliente cliente = extractClienteFromRs(rs);
-            
+
             conn.close();
-            
+
             return cliente;
         } catch (SQLException e) {
             Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -215,7 +221,7 @@ public class ClienteDAO {
 
     public static float calcularValorEmDebito(int idCliente) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
 
             ResultSet rs = stmt.executeQuery("SELECT valor FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente));
@@ -237,7 +243,7 @@ public class ClienteDAO {
 
     public static String dataCompraNaoPagaMaisAntiga(int idCliente) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
 
             ResultSet rs = stmt.executeQuery("SELECT data FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente));
@@ -275,22 +281,25 @@ public class ClienteDAO {
         return "";
     }
 
-    public static void updateEstadoAtivoCliente(int idCliente, boolean isAtivo) {
+    public static boolean updateEstadoAtivoCliente(int idCliente, boolean isAtivo) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             String sql = "UPDATE cliente SET ativo = ? WHERE idCliente = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
-            
+
             ps.setInt(1, isAtivo ? 1 : 0);
             ps.setInt(2, idCliente);
-            
+
             ps.executeUpdate();
-            
+
             conn.close();
+
+            return true;
         } catch (SQLException e) {
             Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(null, e, "updateEstadoAtivoCliente", JOptionPane.WARNING_MESSAGE);
         }
+        return false;
     }
-    
+
 }

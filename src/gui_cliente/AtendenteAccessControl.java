@@ -16,7 +16,7 @@ public class AtendenteAccessControl extends javax.swing.JFrame {
         initComponents();
 
         this.newFrame = newFrame;
-        this.arrayAtendentes = AtendenteDAO.selectAllAtendentes();
+        this.arrayAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
 
         for (Atendente a : arrayAtendentes) {
             comboBoxAtendente.addItem(a.getNome());
