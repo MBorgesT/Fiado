@@ -98,9 +98,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         labelClienteSelecionado = new javax.swing.JLabel();
         botaoDeselecionarCliente = new javax.swing.JButton();
+        botaoLimparBusca = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Fiado");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png")).getImage());
         setResizable(false);
 
         tabelaClientes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
@@ -141,6 +143,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         nomeClienteRadioButton.setText("Nome");
 
         campoBuscaClientes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoBuscaClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                campoBuscaClientesActionPerformed(evt);
+            }
+        });
 
         botaoBuscarCliente.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoBuscarCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/search.png"))); // NOI18N
@@ -256,6 +263,15 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        botaoLimparBusca.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoLimparBusca.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/eraser.png"))); // NOI18N
+        botaoLimparBusca.setText("Limpar");
+        botaoLimparBusca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoLimparBuscaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout clientePanelLayout = new javax.swing.GroupLayout(clientePanel);
         clientePanel.setLayout(clientePanelLayout);
         clientePanelLayout.setHorizontalGroup(
@@ -275,7 +291,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     .addComponent(clientesButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, clientePanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(botaoLimparBusca)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(botaoBuscarCliente)))
                 .addContainerGap())
         );
@@ -292,7 +309,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(campoBuscaClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(botaoBuscarCliente)
+                        .addGroup(clientePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(botaoBuscarCliente)
+                            .addComponent(botaoLimparBusca))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)
@@ -363,6 +382,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             clientesNaTabela = todosClientes;
             fillClientesTable();
         }
+        botaoDeselecionarCliente.doClick();
     }//GEN-LAST:event_botaoBuscarClienteActionPerformed
 
     private void botaoDeselecionarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoDeselecionarClienteActionPerformed
@@ -397,7 +417,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             } else {
                 new NovaCompra(clienteSelecionado).setVisible(true);
             }
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "O cliente não está ativo, portanto não poderá realizar compras", "Atenção", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_botaoNovaCompraActionPerformed
@@ -406,6 +426,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
         HistoricoCompras hc = new HistoricoCompras(CompraDAO.selectComprasFromCliente(clienteSelecionado.getIdCliente()), clienteSelecionado);
         new AtendenteAccessControl(hc).setVisible(true);
     }//GEN-LAST:event_botaoRealizarPagamentoActionPerformed
+
+    private void botaoLimparBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoLimparBuscaActionPerformed
+        campoBuscaClientes.setText("");
+        clientesNaTabela = todosClientes;
+        fillClientesTable();
+    }//GEN-LAST:event_botaoLimparBuscaActionPerformed
+
+    private void campoBuscaClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoBuscaClientesActionPerformed
+        botaoBuscarCliente.doClick();
+    }//GEN-LAST:event_campoBuscaClientesActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -442,6 +472,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botaoBuscarCliente;
     private javax.swing.JButton botaoDeselecionarCliente;
+    private javax.swing.JButton botaoLimparBusca;
     private javax.swing.JButton botaoMaisInfoCliente;
     private javax.swing.JButton botaoNovaCompra;
     private javax.swing.JButton botaoNovoCliente;

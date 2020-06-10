@@ -76,6 +76,7 @@ public class NovoCliente extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png")).getImage());
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N

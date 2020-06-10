@@ -314,6 +314,7 @@ public class MenuAdmin extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu do Administrador");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/administrator-48.png")).getImage());
         setResizable(false);
 
         jTabbedPane1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -979,7 +980,7 @@ public class MenuAdmin extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1067,6 +1068,7 @@ public class MenuAdmin extends javax.swing.JFrame {
             }
 
             fillClientesTable();
+            botaoDeselecionarCliente.doClick();
         }
     }//GEN-LAST:event_botaoBuscarClienteActionPerformed
 
@@ -1125,6 +1127,7 @@ public class MenuAdmin extends javax.swing.JFrame {
             }
 
             fillAtendentesTable();
+            botaoDesAtivarAtendente.doClick();
         }
     }//GEN-LAST:event_botaoAtendenteBuscarActionPerformed
 

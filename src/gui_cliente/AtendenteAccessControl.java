@@ -53,6 +53,7 @@ public class AtendenteAccessControl extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Controle de Acesso");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png")).getImage());
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N

@@ -2,9 +2,6 @@ package gui_cliente;
 
 import dao.AtendenteDAO;
 import dao.CompraDAO;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,15 +11,7 @@ import javax.swing.JOptionPane;
 import models.Atendente;
 import models.Cliente;
 import models.Compra;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.json.JSONException;
-import org.json.JSONObject;
 import printers.ComprovantePrinter;
-import sun.net.www.http.HttpClient;
 import validation.CompraFormValidation;
 
 public class NovaCompra extends javax.swing.JFrame {
@@ -86,6 +75,7 @@ public class NovaCompra extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nova Compra");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png")).getImage());
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png"))); // NOI18N

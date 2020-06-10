@@ -3,9 +3,6 @@ package gui_cliente;
 import dao.AtendenteDAO;
 import dao.CompraDAO;
 import dao.PagamentoDAO;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.logging.Level;
@@ -16,13 +13,6 @@ import models.Atendente;
 import models.Cliente;
 import models.Compra;
 import models.Pagamento;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.json.JSONException;
-import org.json.JSONObject;
 import printers.ComprovantePrinter;
 import validation.PagarComprasValidation;
 
@@ -97,6 +87,7 @@ public class PagarCompras extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Pagamento");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png")).getImage());
         setResizable(false);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(

@@ -133,6 +133,7 @@ public class MaisInfoCliente extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Mais Informações de Cliente");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png")).getImage());
 
         idLabel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         idLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/customer-red.png"))); // NOI18N

@@ -83,6 +83,7 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Mais Informações da Compra");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/administrator-48.png")).getImage());
 
         labelId.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         labelId.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png"))); // NOI18N

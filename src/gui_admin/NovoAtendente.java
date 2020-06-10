@@ -55,6 +55,8 @@ public class NovoAtendente extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Cadastro de Atendente");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/administrator-48.png")).getImage());
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N

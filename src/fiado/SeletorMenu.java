@@ -8,6 +8,8 @@ package fiado;
 import dao.ConfiguracaoDAO;
 import gui_admin.MenuAdmin;
 import gui_cliente.MenuPrincipal;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class SeletorMenu extends javax.swing.JFrame {
@@ -29,6 +31,7 @@ public class SeletorMenu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Fiado");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png")).getImage());
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -39,7 +42,7 @@ public class SeletorMenu extends javax.swing.JFrame {
 
         botaoFiado.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         botaoFiado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png"))); // NOI18N
-        botaoFiado.setText("Fiado");
+        botaoFiado.setText("Caderneta");
         botaoFiado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botaoFiadoActionPerformed(evt);
@@ -59,6 +62,11 @@ public class SeletorMenu extends javax.swing.JFrame {
         jLabel2.setText("Senha:");
 
         campoSenha.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoSenha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                campoSenhaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -129,6 +137,10 @@ public class SeletorMenu extends javax.swing.JFrame {
         new MenuPrincipal().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_botaoFiadoActionPerformed
+
+    private void campoSenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoSenhaActionPerformed
+        botaoAdministrador.doClick();
+    }//GEN-LAST:event_campoSenhaActionPerformed
 
     /**
      * @param args the command line arguments

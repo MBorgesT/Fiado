@@ -138,9 +138,11 @@ public class HistoricoCompras extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         campoValorComprasSelecionadas = new javax.swing.JTextField();
         jSeparator2 = new javax.swing.JSeparator();
+        botaoSelecionarTodasCompras1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Histórico de Compras");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png")).getImage());
         setResizable(false);
 
         labelNomeCliente.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -402,6 +404,15 @@ public class HistoricoCompras extends javax.swing.JFrame {
         campoValorComprasSelecionadas.setEditable(false);
         campoValorComprasSelecionadas.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
 
+        botaoSelecionarTodasCompras1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoSelecionarTodasCompras1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cancel.png"))); // NOI18N
+        botaoSelecionarTodasCompras1.setText("Deselecionar Todas Compras da Tabela");
+        botaoSelecionarTodasCompras1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoSelecionarTodasCompras1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -424,15 +435,16 @@ public class HistoricoCompras extends javax.swing.JFrame {
                                     .addComponent(formPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(18, 18, 18))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labelNomeCliente)
-                            .addComponent(botaoMaisInfoCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(labelNomeCliente)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(botaoSelecionarTodasCompras)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(botaoPagarCompras, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(botaoSelecionarTodasCompras1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botaoSelecionarTodasCompras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(botaoMaisInfoCompra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botaoPagarCompras, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
                         .addGap(18, 18, 18))))
         );
         layout.setVerticalGroup(
@@ -456,7 +468,9 @@ public class HistoricoCompras extends javax.swing.JFrame {
                     .addComponent(botaoSelecionarTodasCompras)
                     .addComponent(botaoPagarCompras))
                 .addGap(18, 18, 18)
-                .addComponent(botaoMaisInfoCompra)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(botaoSelecionarTodasCompras1)
+                    .addComponent(botaoMaisInfoCompra))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -603,6 +617,18 @@ public class HistoricoCompras extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_botaoMaisInfoCompraActionPerformed
 
+    private void botaoSelecionarTodasCompras1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoSelecionarTodasCompras1ActionPerformed
+        DefaultTableModel model = (DefaultTableModel) tabelaCompras.getModel();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (!comprasNaTabela.get(i).isEstaPago()) {
+                model.setValueAt(false, i, 0);
+            }
+        }
+        
+        setSomaValores();
+    }//GEN-LAST:event_botaoSelecionarTodasCompras1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -644,6 +670,7 @@ public class HistoricoCompras extends javax.swing.JFrame {
     private javax.swing.JButton botaoMaisInfoCompra;
     private javax.swing.JButton botaoPagarCompras;
     private javax.swing.JButton botaoSelecionarTodasCompras;
+    private javax.swing.JButton botaoSelecionarTodasCompras1;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JFormattedTextField campoDataAte;
     private javax.swing.JFormattedTextField campoDataDe;

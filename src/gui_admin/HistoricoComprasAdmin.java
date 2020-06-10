@@ -110,6 +110,7 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Histórico de Compras");
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/administrator-48.png")).getImage());
         setResizable(false);
 
         labelNomeCliente.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N

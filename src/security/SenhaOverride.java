@@ -1,5 +1,6 @@
 package security;
 
+import dao.DAOPaths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,7 +11,7 @@ public class SenhaOverride {
 
     public static void main(String[] args) throws SQLException {
 
-        Connection conn = DriverManager.getConnection("jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/fiado.db");
+        Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
         String sql = "UPDATE configuracao SET senha = ?, salt = ? WHERE idConfiguracao = 1";
         PreparedStatement ps = conn.prepareStatement(sql);
         
