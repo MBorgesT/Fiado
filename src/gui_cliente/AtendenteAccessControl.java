@@ -1,17 +1,49 @@
 package gui_cliente;
 
 import dao.AtendenteDAO;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import models.Atendente;
+import models.Cliente;
 import security.Hash;
 
 public class AtendenteAccessControl extends javax.swing.JFrame {
 
     JFrame newFrame;
+    Cliente cliente;
     ArrayList<Atendente> arrayAtendentes;
 
+    public AtendenteAccessControl(JFrame newFrame, Cliente cliente) {
+        initComponents();
+
+        this.newFrame = newFrame;
+        this.cliente = cliente;
+        this.arrayAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
+        
+        if (cliente.isAtendente()){
+            for (Atendente atendente: arrayAtendentes){
+                if (atendente.getIdAtendente() == cliente.getIdAtendente()){
+                    arrayAtendentes.remove(atendente);
+                }
+            }
+        }
+
+        for (Atendente a : arrayAtendentes) {
+            comboBoxAtendente.addItem(a.getNome());
+        }
+
+        comboBoxAtendente.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                campoSenha.setText("");
+            }
+        });
+
+    }
+    
     public AtendenteAccessControl(JFrame newFrame) {
         initComponents();
 
@@ -21,6 +53,13 @@ public class AtendenteAccessControl extends javax.swing.JFrame {
         for (Atendente a : arrayAtendentes) {
             comboBoxAtendente.addItem(a.getNome());
         }
+
+        comboBoxAtendente.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                campoSenha.setText("");
+            }
+        });
 
     }
 

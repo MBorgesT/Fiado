@@ -101,7 +101,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         botaoLimparBusca = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Fiado");
+        setTitle("Caderneta");
         setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png")).getImage());
         setResizable(false);
 
@@ -287,13 +287,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addComponent(nomeClienteRadioButton)
                         .addGap(18, 18, 18)
                         .addComponent(idClienteRadioButton))
-                    .addComponent(campoBuscaClientes)
                     .addComponent(clientesButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, clientePanelLayout.createSequentialGroup()
                         .addComponent(botaoLimparBusca)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(botaoBuscarCliente)))
+                        .addComponent(botaoBuscarCliente))
+                    .addComponent(campoBuscaClientes))
                 .addContainerGap())
         );
         clientePanelLayout.setVerticalGroup(
@@ -312,11 +312,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addGroup(clientePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(botaoBuscarCliente)
                             .addComponent(botaoLimparBusca))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 189, Short.MAX_VALUE)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
+                        .addGap(18, 18, 18)
                         .addComponent(clientesButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
 
@@ -400,7 +400,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoNovoClienteActionPerformed
 
     private void botaoMaisInfoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMaisInfoClienteActionPerformed
-        new AtendenteAccessControl(new MaisInfoCliente(this, clienteSelecionado)).setVisible(true);
+        new AtendenteAccessControl(new MaisInfoCliente(this, clienteSelecionado), clienteSelecionado).setVisible(true);
     }//GEN-LAST:event_botaoMaisInfoClienteActionPerformed
 
     private void botaoNovaCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoNovaCompraActionPerformed
@@ -424,7 +424,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     private void botaoRealizarPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoRealizarPagamentoActionPerformed
         HistoricoCompras hc = new HistoricoCompras(CompraDAO.selectComprasFromCliente(clienteSelecionado.getIdCliente()), clienteSelecionado);
-        new AtendenteAccessControl(hc).setVisible(true);
+        new AtendenteAccessControl(hc, clienteSelecionado).setVisible(true);
     }//GEN-LAST:event_botaoRealizarPagamentoActionPerformed
 
     private void botaoLimparBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoLimparBuscaActionPerformed

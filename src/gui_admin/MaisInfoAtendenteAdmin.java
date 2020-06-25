@@ -16,6 +16,9 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
         initComponents();
 
         this.atendente = atendente;
+        
+        labelId.setText("ID: " + String.valueOf(atendente.getIdAtendente()));
+        campoNome.setText(atendente.getNome());
 
         this.editando = false;
 
@@ -52,7 +55,7 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        labelId = new javax.swing.JLabel();
         formPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         campoNome = new javax.swing.JTextField();
@@ -72,9 +75,9 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
         setTitle("Mais Informações do Atendente");
         setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/administrator-48.png")).getImage());
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bread-48.png"))); // NOI18N
-        jLabel1.setText("ID: 123");
+        labelId.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        labelId.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bread-48.png"))); // NOI18N
+        labelId.setText("ID: 123");
 
         formPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -215,7 +218,7 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
+                            .addComponent(labelId)
                             .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 704, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -228,7 +231,7 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(labelId)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -342,10 +345,10 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
     private javax.swing.JTextField campoNome;
     private javax.swing.JPasswordField campoSenha;
     private javax.swing.JPanel formPanel;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel labelId;
     private javax.swing.JLabel labelInfoSenha1;
     private javax.swing.JLabel labelInfoSenha2;
     // End of variables declaration//GEN-END:variables

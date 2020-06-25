@@ -70,13 +70,24 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
         tabelaCompras.getColumnModel().getColumn(2).setCellRenderer(new SimNaoRenderer());
     }
 
-    private void fillTable() {
+    public void fillTable() {
         DefaultTableModel model = (DefaultTableModel) tabelaCompras.getModel();
 
         model.setRowCount(0);
         for (Compra c : comprasNaTabela) {
             model.addRow(c.compraObjectArrayAdmin());
         }
+        
+        setValorComprasSomadas();
+    }
+    
+    private void setValorComprasSomadas(){
+        float valorTotal = 0;
+        for (Compra c: comprasNaTabela){
+            valorTotal += c.getValor();
+        }
+        String strValorTotal = "R$ " + String.format("%.02f", valorTotal).replace(".", ",");
+        campoValorComprasNaTabela.setText(strValorTotal);
     }
 
     @SuppressWarnings("unchecked")
@@ -107,6 +118,9 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
         botaoMaisInfoCompra = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tabelaCompras = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        campoValorComprasNaTabela = new javax.swing.JTextField();
+        jSeparator2 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Histórico de Compras");
@@ -273,18 +287,22 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
         formPanel.setLayout(formPanelLayout);
         formPanelLayout.setHorizontalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                .addGroup(formPanelLayout.createSequentialGroup()
-                    .addComponent(botaoLimpar)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(botaoBuscar))
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addComponent(jLabel5)
-                .addComponent(jLabel6)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(formPanelLayout.createSequentialGroup()
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
+                        .addComponent(botaoLimpar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(botaoBuscar))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         formPanelLayout.setVerticalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -304,8 +322,8 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(botaoLimpar)
                     .addComponent(botaoBuscar))
-                .addGap(26, 26, 26)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         botaoMaisInfoCompra.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -345,6 +363,13 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
             tabelaCompras.getColumnModel().getColumn(2).setResizable(false);
         }
 
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/sigma.png"))); // NOI18N
+        jLabel1.setText("Soma das compras na tabela:");
+
+        campoValorComprasNaTabela.setEditable(false);
+        campoValorComprasNaTabela.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -356,11 +381,15 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(formPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(botaoMaisInfoCompra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(12, 12, 12))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(botaoMaisInfoCompra, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                                .addComponent(jLabel1)
+                                .addComponent(campoValorComprasNaTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jSeparator2))
+                            .addComponent(formPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -370,7 +399,13 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(formPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(campoValorComprasNaTabela, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(botaoMaisInfoCompra))
                     .addComponent(jScrollPane2))
@@ -486,7 +521,7 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
         if (Objects.isNull(compraSelecionada)){
             JOptionPane.showMessageDialog(null, "Favor selecionar uma compra na tabela para realizar essa operação", "Atenção", JOptionPane.INFORMATION_MESSAGE);
         }else{
-            new MaisInfoCompraAdmin(compraSelecionada).setVisible(true);
+            new MaisInfoCompraAdmin(compraSelecionada, this).setVisible(true);
         }
     }//GEN-LAST:event_botaoMaisInfoCompraActionPerformed
 
@@ -537,10 +572,12 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField campoDataDe;
     private javax.swing.JTextField campoValor1;
     private javax.swing.JTextField campoValor2;
+    private javax.swing.JTextField campoValorComprasNaTabela;
     private javax.swing.JCheckBox checkBoxNao;
     private javax.swing.JCheckBox checkBoxSim;
     private javax.swing.JComboBox<String> comboBoxValor;
     private javax.swing.JPanel formPanel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -551,6 +588,7 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel labelNomeCliente;
     private javax.swing.JTable tabelaCompras;
     // End of variables declaration//GEN-END:variables

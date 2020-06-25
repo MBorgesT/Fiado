@@ -8,6 +8,7 @@ package gui_admin;
 import gui_cliente.*;
 import dao.AtendenteDAO;
 import dao.ClienteDAO;
+import dao.CompraDAO;
 import java.awt.Color;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -27,13 +28,15 @@ import printers.ComprovantePrinter;
  * @author matheus
  */
 public class MaisInfoCompraAdmin extends javax.swing.JFrame {
-    
-    Compra compra;
 
-    public MaisInfoCompraAdmin(Compra compra) {
+    private Compra compra;
+    private HistoricoComprasAdmin telaAterior;
+
+    public MaisInfoCompraAdmin(Compra compra, HistoricoComprasAdmin telaAnterior) {
         initComponents();
-        
+
         this.compra = compra;
+        this.telaAterior = telaAnterior;
 
         labelId.setText("ID: " + String.valueOf(compra.getIdCompra()));
 
@@ -80,6 +83,7 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
         campoObservacao = new javax.swing.JTextArea();
         botaoImprimirNotaCliente = new javax.swing.JButton();
         botaoImprimirNotaPadaria = new javax.swing.JButton();
+        botaoExcluirCompra = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Mais Informações da Compra");
@@ -233,6 +237,15 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
             }
         });
 
+        botaoExcluirCompra.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoExcluirCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/delete.png"))); // NOI18N
+        botaoExcluirCompra.setText("Excluir");
+        botaoExcluirCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoExcluirCompraActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -246,7 +259,10 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(botaoImprimirNotaPadaria)
                         .addGap(18, 18, 18)
-                        .addComponent(botaoImprimirNotaCliente)))
+                        .addComponent(botaoImprimirNotaCliente))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(botaoExcluirCompra)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -258,8 +274,10 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
                     .addComponent(botaoImprimirNotaCliente)
                     .addComponent(botaoImprimirNotaPadaria))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(botaoExcluirCompra)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -271,8 +289,10 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
         int reply = JOptionPane.showOptionDialog(null, "Realmente deseja imprimir o comprovante do cliente?", "Recibo",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
                 options, options[0]);
-        
-        if (reply == 0) ComprovantePrinter.printComprovanteCompra(compra, true);
+
+        if (reply == 0) {
+            ComprovantePrinter.printComprovanteCompra(compra, true);
+        }
     }//GEN-LAST:event_botaoImprimirNotaClienteActionPerformed
 
     private void botaoImprimirNotaPadariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoImprimirNotaPadariaActionPerformed
@@ -280,9 +300,26 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
         int reply = JOptionPane.showOptionDialog(null, "Realmente deseja imprimir o comprovante da padaria?", "Recibo",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
                 options, options[0]);
-        
-        if (reply == 0) ComprovantePrinter.printComprovanteCompra(compra, false);
+
+        if (reply == 0) {
+            ComprovantePrinter.printComprovanteCompra(compra, false);
+        }
     }//GEN-LAST:event_botaoImprimirNotaPadariaActionPerformed
+
+    private void botaoExcluirCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExcluirCompraActionPerformed
+        String[] options = {"SIM", "NÃO"};
+        int reply = JOptionPane.showOptionDialog(null, "A exclusão de uma compra só deve ser feita no caso de uma compra realizada por erro.\nDeseja excluir mesmo assim?", "Recibo",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
+                options, options[0]);
+
+        if (reply == 0) {
+            if (CompraDAO.deleteCompra(compra)) {
+                JOptionPane.showMessageDialog(null, "Compra deletada com sucesso", "deleteCompra", JOptionPane.INFORMATION_MESSAGE);
+                telaAterior.fillTable();
+                this.dispose();
+            }
+        }
+    }//GEN-LAST:event_botaoExcluirCompraActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -320,6 +357,7 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton botaoExcluirCompra;
     private javax.swing.JButton botaoImprimirNotaCliente;
     private javax.swing.JButton botaoImprimirNotaPadaria;
     private javax.swing.JTextField campoAtendente;

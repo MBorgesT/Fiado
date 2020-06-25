@@ -163,12 +163,14 @@ public class CompraDAO {
                 dataCompra.setTime(sdf.parse(dataStr));
 
                 int diasEntre = (int) ChronoUnit.DAYS.between(dataCompra.toInstant(), Calendar.getInstance().toInstant());
-                
-                if (diasEntre >= diasNotificacao) flag = true;
+
+                if (diasEntre >= diasNotificacao) {
+                    flag = true;
+                }
             }
-            
+
             conn.close();
-            
+
             return flag;
         } catch (SQLException e) {
             Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -179,7 +181,7 @@ public class CompraDAO {
         }
         return false;
     }
-    
+
     public static boolean clienteExcedeDiasNotificacao(int idCliente, int diasNotificacao) {
         try {
             Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
@@ -196,12 +198,14 @@ public class CompraDAO {
                 dataCompra.setTime(sdf.parse(dataStr));
 
                 int diasEntre = (int) ChronoUnit.DAYS.between(dataCompra.toInstant(), Calendar.getInstance().toInstant());
-                
-                if (diasEntre >= diasNotificacao) flag = true;
+
+                if (diasEntre >= diasNotificacao) {
+                    flag = true;
+                }
             }
-            
+
             conn.close();
-            
+
             return flag;
         } catch (SQLException e) {
             Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -209,6 +213,41 @@ public class CompraDAO {
         } catch (ParseException e) {
             Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(null, e, "clienteExcedeDiasNotificacao", JOptionPane.WARNING_MESSAGE);
+        }
+        return false;
+    }
+
+    public static boolean deleteCompra(Compra compra) {
+        try {
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
+            String sql = "INSERT INTO compraExcluida(idCompra, idCliente, idAtendente, valor, data, observacao, estaPago) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String data = sdf.format(compra.getData().getTime());
+
+            ps.setInt(1, compra.getIdCompra());
+            ps.setInt(2, compra.getIdCliente());
+            ps.setInt(3, compra.getIdAtendente());
+            ps.setFloat(4, compra.getValor());
+            ps.setString(5, data);
+            ps.setString(6, compra.getObservacao());
+            ps.setInt(7, compra.isEstaPago() ? 1 : 0);
+            
+            ps.executeUpdate();
+            
+            
+            sql = "DELETE FROM compra WHERE idCompra = ?";
+            ps = conn.prepareStatement(sql);
+            
+            ps.setInt(1, compra.getIdCompra());
+
+            ps.executeUpdate();
+            
+            return true;
+        } catch (SQLException e) {
+            Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, e, "deleteCompra", JOptionPane.WARNING_MESSAGE);
         }
         return false;
     }

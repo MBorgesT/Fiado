@@ -3,6 +3,8 @@ package gui_cliente;
 import dao.AtendenteDAO;
 import dao.CompraDAO;
 import dao.PagamentoDAO;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.logging.Level;
@@ -31,6 +33,14 @@ public class PagarCompras extends javax.swing.JFrame {
         this.cliente = cliente;
         this.todosAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
         this.telaAnterior = telaAnterior;
+        
+        if (cliente.isAtendente()){
+            for (Atendente atendente: todosAtendentes){
+                if (cliente.getIdAtendente() == atendente.getIdAtendente()){
+                    todosAtendentes.remove(atendente);
+                }
+            }
+        }
 
         this.valorTotal = 0;
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -49,6 +59,12 @@ public class PagarCompras extends javax.swing.JFrame {
             comboBoxAtendente.addItem(atendente.getNome());
         }
 
+        comboBoxAtendente.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                campoSenhaAtendente.setText("");
+            }
+        });
     }
 
     private PagarCompras() {

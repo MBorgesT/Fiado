@@ -5,10 +5,13 @@
  */
 package gui_cliente;
 
+import dao.AtendenteDAO;
 import dao.ClienteDAO;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import javax.swing.JOptionPane;
+import models.Atendente;
 import models.Cliente;
 import models.Endereco;
 import security.Hash;
@@ -21,10 +24,20 @@ import validation.ClienteFormValidation;
 public class NovoCliente extends javax.swing.JFrame {
 
     MenuPrincipal menuPrincipal;
+    ArrayList<Atendente> todosAtendentes;
 
     public NovoCliente(MenuPrincipal menuPrincipal) {
         initComponents();
         this.menuPrincipal = menuPrincipal;
+        
+        comboBoxAtendentes.setVisible(false);
+        quemLabel.setVisible(false);
+        asteriscoAtendente.setVisible(false);
+        
+        this.todosAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
+        
+        for (Atendente a: todosAtendentes)
+            comboBoxAtendentes.addItem(a.getNome());
     }
 
     private NovoCliente() {
@@ -35,6 +48,7 @@ public class NovoCliente extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroupIsAtendente = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         formPanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -71,6 +85,14 @@ public class NovoCliente extends javax.swing.JFrame {
         jLabel22 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        radioButtonSim = new javax.swing.JRadioButton();
+        radioButtonNao = new javax.swing.JRadioButton();
+        comboBoxAtendentes = new javax.swing.JComboBox<>();
+        quemLabel = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        asteriscoAtendente = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
         botaoCancelar = new javax.swing.JButton();
         botaoCadastrar = new javax.swing.JButton();
         jLabel15 = new javax.swing.JLabel();
@@ -201,6 +223,41 @@ public class NovoCliente extends javax.swing.JFrame {
         jLabel24.setForeground(new java.awt.Color(255, 51, 51));
         jLabel24.setText("caracteres e conter somente números");
 
+        jLabel25.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel25.setText("É um atendente?");
+
+        buttonGroupIsAtendente.add(radioButtonSim);
+        radioButtonSim.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        radioButtonSim.setText("Sim");
+        radioButtonSim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioButtonSimActionPerformed(evt);
+            }
+        });
+
+        buttonGroupIsAtendente.add(radioButtonNao);
+        radioButtonNao.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        radioButtonNao.setSelected(true);
+        radioButtonNao.setText("Não");
+        radioButtonNao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioButtonNaoActionPerformed(evt);
+            }
+        });
+
+        comboBoxAtendentes.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+
+        quemLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        quemLabel.setText("Quem?");
+
+        jLabel26.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel26.setForeground(new java.awt.Color(255, 51, 51));
+        jLabel26.setText("*");
+
+        asteriscoAtendente.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        asteriscoAtendente.setForeground(new java.awt.Color(255, 51, 51));
+        asteriscoAtendente.setText("*");
+
         javax.swing.GroupLayout formPanelLayout = new javax.swing.GroupLayout(formPanel);
         formPanel.setLayout(formPanelLayout);
         formPanelLayout.setHorizontalGroup(
@@ -231,32 +288,8 @@ public class NovoCliente extends javax.swing.JFrame {
                                         .addGap(0, 0, Short.MAX_VALUE))
                                     .addComponent(cpfTextField))))
                         .addGap(12, 12, 12))
-                    .addGroup(formPanelLayout.createSequentialGroup()
-                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel17))
-                            .addComponent(senhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel18))
-                            .addComponent(confirmarSenhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(27, 27, 27)
-                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel24)
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addGap(25, 25, 25)
-                                .addComponent(jLabel23)))
-                        .addGap(0, 35, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
                         .addComponent(jSeparator1)
-                        .addContainerGap())
-                    .addGroup(formPanelLayout.createSequentialGroup()
-                        .addComponent(referenciaTextField)
                         .addContainerGap())
                     .addGroup(formPanelLayout.createSequentialGroup()
                         .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -286,6 +319,30 @@ public class NovoCliente extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(formPanelLayout.createSequentialGroup()
                         .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel25)
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(radioButtonSim)
+                                .addGap(18, 18, 18)
+                                .addComponent(radioButtonNao)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel26)
+                        .addGap(30, 30, 30)
+                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(quemLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(asteriscoAtendente)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(comboBoxAtendentes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap())))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
+                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(referenciaTextField))
+                        .addContainerGap())
+                    .addGroup(formPanelLayout.createSequentialGroup()
+                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(formPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -294,8 +351,28 @@ public class NovoCliente extends javax.swing.JFrame {
                             .addGroup(formPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel19)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addComponent(jLabel19))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(formPanelLayout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel17))
+                                    .addComponent(senhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(formPanelLayout.createSequentialGroup()
+                                        .addComponent(jLabel12)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel18))
+                                    .addComponent(confirmarSenhaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(27, 27, 27)
+                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel24)
+                                    .addGroup(formPanelLayout.createSequentialGroup()
+                                        .addGap(25, 25, 25)
+                                        .addComponent(jLabel23)))))
+                        .addContainerGap(35, Short.MAX_VALUE))))
         );
         formPanelLayout.setVerticalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -365,9 +442,23 @@ public class NovoCliente extends javax.swing.JFrame {
                     .addComponent(cidadeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(24, 24, 24)
                 .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(referenciaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel25)
+                    .addComponent(quemLabel)
+                    .addComponent(jLabel26)
+                    .addComponent(asteriscoAtendente))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(radioButtonNao, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(radioButtonSim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(comboBoxAtendentes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         botaoCancelar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -399,7 +490,9 @@ public class NovoCliente extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(formPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(formPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -419,7 +512,7 @@ public class NovoCliente extends javax.swing.JFrame {
                     .addComponent(jLabel15))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(botaoCadastrar)
                     .addComponent(botaoCancelar))
@@ -442,6 +535,14 @@ public class NovoCliente extends javax.swing.JFrame {
                     cidadeTextField.getText().toUpperCase(),
                     referenciaTextField.getText().toUpperCase()
             );
+            
+            boolean isAtendente = false;
+            int idAtendente = 0;
+            if (radioButtonSim.isSelected()){
+                isAtendente = true;
+                int indexComboBox = comboBoxAtendentes.getSelectedIndex();
+                idAtendente = todosAtendentes.get(indexComboBox).getIdAtendente();
+            }
 
             Cliente c = new Cliente(
                     nomeTextField.getText().toUpperCase(),
@@ -451,7 +552,9 @@ public class NovoCliente extends javax.swing.JFrame {
                     hashedPw,
                     salt,
                     e,
-                    true
+                    true,
+                    isAtendente,
+                    isAtendente ? idAtendente : -1
             );
 
             if (ClienteDAO.insertCliente(c) == false) {
@@ -468,6 +571,18 @@ public class NovoCliente extends javax.swing.JFrame {
     private void botaoCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCancelarActionPerformed
         this.dispose();
     }//GEN-LAST:event_botaoCancelarActionPerformed
+
+    private void radioButtonSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonSimActionPerformed
+        comboBoxAtendentes.setVisible(true);
+        quemLabel.setVisible(true);
+        asteriscoAtendente.setVisible(true);
+    }//GEN-LAST:event_radioButtonSimActionPerformed
+
+    private void radioButtonNaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonNaoActionPerformed
+        comboBoxAtendentes.setVisible(false);
+        quemLabel.setVisible(false);
+        asteriscoAtendente.setVisible(false);
+    }//GEN-LAST:event_radioButtonNaoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -506,10 +621,13 @@ public class NovoCliente extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel asteriscoAtendente;
     private javax.swing.JTextField bairroTextField;
     private javax.swing.JButton botaoCadastrar;
     private javax.swing.JButton botaoCancelar;
+    private javax.swing.ButtonGroup buttonGroupIsAtendente;
     private javax.swing.JTextField cidadeTextField;
+    private javax.swing.JComboBox<String> comboBoxAtendentes;
     private javax.swing.JPasswordField confirmarSenhaTextField;
     private javax.swing.JFormattedTextField cpfTextField;
     private javax.swing.JPanel formPanel;
@@ -530,6 +648,8 @@ public class NovoCliente extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -538,9 +658,13 @@ public class NovoCliente extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextField logradouroTextField;
     private javax.swing.JTextField nomeTextField;
     private javax.swing.JTextField numeroTextField;
+    private javax.swing.JLabel quemLabel;
+    private javax.swing.JRadioButton radioButtonNao;
+    private javax.swing.JRadioButton radioButtonSim;
     private javax.swing.JTextField referenciaTextField;
     private javax.swing.JPasswordField senhaTextField;
     private javax.swing.JTextField telefone1TextField;

@@ -30,7 +30,7 @@ public class SeletorMenu extends javax.swing.JFrame {
         campoSenha = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Fiado");
+        setTitle("Caderneta");
         setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png")).getImage());
         setResizable(false);
 

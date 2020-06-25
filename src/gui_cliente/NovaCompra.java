@@ -2,6 +2,8 @@ package gui_cliente;
 
 import dao.AtendenteDAO;
 import dao.CompraDAO;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,7 +26,18 @@ public class NovaCompra extends javax.swing.JFrame {
         initComponents();
 
         this.cliente = cliente;
-        this.todosAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
+        
+        ArrayList<Atendente> auxAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
+        if (cliente.isAtendente()){
+            this.todosAtendentes = new ArrayList<>();
+            for (Atendente atendente: auxAtendentes){
+                if (cliente.getIdAtendente() != atendente.getIdAtendente()){
+                    todosAtendentes.add(atendente);
+                }
+            }
+        }else{
+            this.todosAtendentes = auxAtendentes;
+        }
 
         this.now = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -32,9 +45,15 @@ public class NovaCompra extends javax.swing.JFrame {
 
         campoNomeCliente.setText(cliente.getNome());
 
-        for (Atendente a : this.todosAtendentes) {
+        for (Atendente a : this.todosAtendentes)
             atendentesComboBox.addItem(a.getNome());
-        }
+        
+        atendentesComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                campoSenhaAtendente.setText("");
+            }
+        });
     }
 
     private NovaCompra() {
@@ -313,51 +332,57 @@ public class NovaCompra extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoCancelarActionPerformed
 
     private void botaoConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoConfirmarActionPerformed
-        int idArrayAtendente = atendentesComboBox.getSelectedIndex();
-        Atendente atendente = todosAtendentes.get(idArrayAtendente);
+        String[] options = {"SIM", "NÃO"};
+        int reply = JOptionPane.showOptionDialog(null, "Realmente deseja realizar a compra?", "Pagamento",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                options, options[0]);
 
-        if (new CompraFormValidation(formPanel, cliente, atendente).validate()) {
-            String strValor = campoValor.getText();
-            strValor = strValor.replaceAll(",", ".");
-            float valor = Float.parseFloat(strValor);
+        if (reply == 0) {
+            int idArrayAtendente = atendentesComboBox.getSelectedIndex();
+            Atendente atendente = todosAtendentes.get(idArrayAtendente);
 
-            Compra compra = new Compra(
-                    cliente.getIdCliente(),
-                    atendente.getIdAtendente(),
-                    valor,
-                    this.now,
-                    campoObservacao.getText().toUpperCase(),
-                    false
-            );
+            if (new CompraFormValidation(formPanel, cliente, atendente).validate()) {
+                String strValor = campoValor.getText();
+                strValor = strValor.replaceAll(",", ".");
+                float valor = Float.parseFloat(strValor);
 
-            int insertedId = CompraDAO.insertCompra(compra);
-            if (insertedId != 0) {
-                compra.setIdCompra(insertedId);
+                Compra compra = new Compra(
+                        cliente.getIdCliente(),
+                        atendente.getIdAtendente(),
+                        valor,
+                        this.now,
+                        campoObservacao.getText().toUpperCase(),
+                        false
+                );
 
-                String[] options = {"SIM", "NÃO"};
-                int reply = JOptionPane.showOptionDialog(null, "Deseja imprimir o recibo do cliente?", "Recibo",
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-                        options, options[0]);
+                int insertedId = CompraDAO.insertCompra(compra);
+                if (insertedId != 0) {
+                    compra.setIdCompra(insertedId);
 
-                if (reply == 0) {
-                    ComprovantePrinter.printComprovanteCompra(compra, true);
+                    reply = JOptionPane.showOptionDialog(null, "Deseja imprimir o recibo do cliente?", "Recibo",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                            options, options[0]);
+
+                    if (reply == 0) {
+                        ComprovantePrinter.printComprovanteCompra(compra, true);
+                    }
+
+                    try {
+                        Thread.currentThread().sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Confirme para imprimir a nota da padaria", "Recibo", JOptionPane.INFORMATION_MESSAGE);
+                    ComprovantePrinter.printComprovanteCompra(compra, false);
+
+                    this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Houve um erro com o banco de dados. Favor reiniciar o programa e tentar novamente", "Erro", JOptionPane.WARNING_MESSAGE);
                 }
-
-                try {
-                    Thread.currentThread().sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                JOptionPane.showMessageDialog(null, "Confirme para imprimir a nota da padaria", "Recibo", JOptionPane.INFORMATION_MESSAGE);
-                ComprovantePrinter.printComprovanteCompra(compra, false);
-
-                this.dispose();
-            }else{
-                JOptionPane.showMessageDialog(null, "Houve um erro com o banco de dados. Favor reiniciar o programa e tentar novamente", "Erro", JOptionPane.WARNING_MESSAGE);
+            } else {
+                System.out.println("fodeo");
             }
-        } else {
-            System.out.println("fodeo");
         }
     }//GEN-LAST:event_botaoConfirmarActionPerformed
 

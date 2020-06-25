@@ -1,8 +1,10 @@
 
 package dao;
 
+import fiado.FilesFolder;
+
 public class DAOPaths {
     
-    public static String dbPath = "jdbc:sqlite:/home/matheus/NetBeansProjects/Fiado/src/dao/caderneta.db";
+    public static String dbPath = "jdbc:sqlite:" + FilesFolder.path + "database/atual/caderneta.db";
     
 }

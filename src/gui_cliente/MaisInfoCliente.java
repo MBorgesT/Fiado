@@ -526,7 +526,9 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                             hashedPw,
                             salt,
                             e,
-                            cliente.isAtivo()
+                            cliente.isAtivo(),
+                            cliente.isAtendente(),
+                            cliente.getIdAtendente()
                     );
 
                     if (ClienteDAO.updateCliente(c) == false) {

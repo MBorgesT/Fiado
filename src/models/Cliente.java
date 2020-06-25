@@ -4,13 +4,13 @@ import dao.ClienteDAO;
 import dao.CompraDAO;
 
 public class Cliente {
-    private int idCliente;
+    private int idCliente, idAtendente;
     private String nome, telefone1, telefone2, cpf, senha;
     private byte[] salt;
     private Endereco endereco;
-    private boolean ativo;
+    private boolean ativo, atendente;
 
-    public Cliente(int idCliente, String nome, String telefone1, String telefone2, String cpf, String senha, byte[] salt, Endereco endereco, boolean ativo) {
+    public Cliente(int idCliente, String nome, String telefone1, String telefone2, String cpf, String senha, byte[] salt, Endereco endereco, boolean ativo, boolean atendente, int idAtendente) {
         this.idCliente = idCliente;
         this.nome = nome;
         this.telefone1 = telefone1;
@@ -20,9 +20,11 @@ public class Cliente {
         this.salt = salt;
         this.endereco = endereco;
         this.ativo = ativo;
+        this.atendente = atendente;
+        this.idAtendente = idAtendente;
     }
 
-    public Cliente(String nome, String telefone1, String telefone2, String cpf, String senha, byte[] salt, Endereco endereco, boolean ativo) {
+    public Cliente(String nome, String telefone1, String telefone2, String cpf, String senha, byte[] salt, Endereco endereco, boolean ativo, boolean atendente, int idAtendente) {
         this.nome = nome;
         this.telefone1 = telefone1;
         this.telefone2 = telefone2;
@@ -31,6 +33,8 @@ public class Cliente {
         this.salt = salt;
         this.endereco = endereco;
         this.ativo = ativo;
+        this.atendente = atendente;
+        this.idAtendente = idAtendente;
     }
     
     public Object[] clienteObjectArray(){
@@ -89,6 +93,16 @@ public class Cliente {
     public boolean isAtivo() {
         return ativo;
     }
+
+    public int getIdAtendente() {
+        return idAtendente;
+    }
+
+    public boolean isAtendente() {
+        return atendente;
+    }
+    
+    
 
     public void setNome(String nome) {
         this.nome = nome;

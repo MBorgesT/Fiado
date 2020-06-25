@@ -1,5 +1,6 @@
 package printers;
 
+import fiado.FilesFolder;
 import dao.AtendenteDAO;
 import dao.ClienteDAO;
 import dao.CompraDAO;
@@ -19,14 +20,16 @@ import org.json.JSONObject;
 
 public class ComprovantePrinter {
     
-    private static String pathCompraCliente = "python /home/matheus/Documents/Dev/projects/fiado-printer/print_compra_cliente.py";
-    private static String pathCompraPadaria = "python /home/matheus/Documents/Dev/projects/fiado-printer/print_compra_padaria.py";
+    private static String baseFolder =  FilesFolder.path + "printer-scripts/";
     
-    private static String pathPagamentoCliente = "python /home/matheus/Documents/Dev/projects/fiado-printer/print_pagamento_cliente.py";
-    private static String pathPagamentoPadaria = "python /home/matheus/Documents/Dev/projects/fiado-printer/print_pagamento_padaria.py";
+    private static String pathCompraCliente = "python3 " + baseFolder + "print_compra_cliente.py";
+    private static String pathCompraPadaria = "python3 " + baseFolder + "print_compra_padaria.py";
     
-    private static String pathJsonCompra = "/home/matheus/Documents/Dev/projects/fiado-printer/compra.json";
-    private static String pathJsonPagamento = "/home/matheus/Documents/Dev/projects/fiado-printer/pagamento.json";
+    private static String pathPagamentoCliente = "python3 " + baseFolder + "print_pagamento_cliente.py";
+    private static String pathPagamentoPadaria = "python3 " + baseFolder + "print_pagamento_padaria.py";
+    
+    private static String pathJsonCompra = baseFolder + "compra.json";
+    private static String pathJsonPagamento = baseFolder + "pagamento.json";
 
     public static void printComprovanteCompra(Compra compra, boolean isCliente) {
         try {

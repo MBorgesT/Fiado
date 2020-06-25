@@ -41,6 +41,14 @@ public class ClienteDAO {
                 isAtivo = false;
             }
 
+            int atendente = rs.getInt("atendente");
+            boolean isAtendente;
+            if (atendente == 1) {
+                isAtendente = true;
+            } else {
+                isAtendente = false;
+            }
+
             conn.close();
 
             return (new Cliente(
@@ -52,7 +60,9 @@ public class ClienteDAO {
                     rs.getString("senha"),
                     rs.getBytes("salt"),
                     endereco,
-                    isAtivo
+                    isAtivo,
+                    isAtendente,
+                    rs.getInt("idAtendente")
             ));
         } catch (SQLException e) {
             Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -101,10 +111,9 @@ public class ClienteDAO {
 
             int idEndereco = ps.getGeneratedKeys().getInt(1);
 
-            sql = "INSERT INTO cliente(nome, telefone1, telefone2, cpf, idEndereco, senha, salt, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            sql = "INSERT INTO cliente(nome, telefone1, telefone2, cpf, idEndereco, senha, salt, ativo, atendente, idAtendente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             ps = conn.prepareStatement(sql);
 
-            int isAtivo = c.isAtivo() ? 1 : 0;
             ps.setString(1, c.getNome());
             ps.setString(2, c.getTelefone1());
             ps.setString(3, c.getTelefone2());
@@ -112,7 +121,9 @@ public class ClienteDAO {
             ps.setInt(5, idEndereco);
             ps.setString(6, c.getSenha());
             ps.setBytes(7, c.getSalt());
-            ps.setInt(8, isAtivo);
+            ps.setInt(8, c.isAtivo() ? 1 : 0);
+            ps.setInt(9, c.isAtendente() ? 1 : 0);
+            ps.setInt(10, c.getIdAtendente());
             ps.executeUpdate();
 
             conn.close();
