@@ -9,9 +9,9 @@ public class Compra {
     private float valor;
     private Calendar data;
     private String observacao;
-    private boolean estaPago;
+    private boolean estaPago, entrega, entregaValidada;
 
-    public Compra(int idCompra, int idCliente, int idAtendente, int idPagamento, float valor, Calendar data, String observacao, boolean estaPago) {
+    public Compra(int idCompra, int idCliente, int idAtendente, int idPagamento, float valor, Calendar data, String observacao, boolean estaPago, boolean entrega, boolean entregaValidada) {
         this.idCompra = idCompra;
         this.idCliente = idCliente;
         this.idAtendente = idAtendente;
@@ -20,16 +20,28 @@ public class Compra {
         this.data = data;
         this.observacao = observacao;
         this.estaPago = estaPago;
+        this.entrega = entrega;
+        this.entregaValidada = entregaValidada;
     }
 
-    public Compra(int idCliente, int idAtendente, float valor, Calendar data, String observacao, boolean estaPago) {
+    public Compra(int idCliente, int idAtendente, float valor, Calendar data, String observacao, boolean estaPago, boolean entrega) {
         this.idCliente = idCliente;
         this.idAtendente = idAtendente;
-        this.idPagamento = idPagamento;
         this.valor = valor;
         this.data = data;
         this.observacao = observacao;
         this.estaPago = estaPago;
+        this.entrega = entrega;
+    }
+
+    public Compra(int idCliente, float valor, Calendar data, String observacao, boolean estaPago, boolean entrega, boolean entregaValidada) {
+        this.idCliente = idCliente;
+        this.valor = valor;
+        this.data = data;
+        this.observacao = observacao;
+        this.estaPago = estaPago;
+        this.entrega = entrega;
+        this.entregaValidada = entregaValidada;
     }
 
     @Override
@@ -57,7 +69,8 @@ public class Compra {
                 null,
                 this.getFormattedData(),
                 this.getFormattedValor(),
-                strPago
+                strPago,
+                this.isEntrega() && this.isEntregaValidada() ? "ENTREGA" : ""
             };
         } else {
             strPago = "NÃO";
@@ -65,30 +78,41 @@ public class Compra {
                 false,
                 this.getFormattedData(),
                 this.getFormattedValor(),
-                strPago
+                strPago,
+                this.isEntrega() && this.isEntregaValidada() ? "ENTREGA" : ""
             };
         }
+
     }
 
     public Object[] compraObjectArrayAdmin() {
         String strPago;
+        String entrega;
 
         if (estaPago) {
             strPago = "SIM";
         } else {
             strPago = "NÃO";
         }
+        
+        if (this.isEntrega() && this.isEntregaValidada()){
+            entrega = "ENTREGA";
+        }else if (this.isEntrega() && !this.isEntregaValidada()){
+            entrega = "NÃO VALIDADA";
+        }else{
+            entrega = "";
+        }
 
         return new Object[]{
             this.getFormattedData(),
             this.getFormattedValor(),
-            strPago
+            strPago,
+            entrega
         };
     }
 
     public Object[] compraObjectArraySimple() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        String strPago;
 
         return new Object[]{
             sdf.format(data.getTime()),
@@ -126,6 +150,14 @@ public class Compra {
 
     public boolean isEstaPago() {
         return estaPago;
+    }
+
+    public boolean isEntrega() {
+        return entrega;
+    }
+
+    public boolean isEntregaValidada() {
+        return entregaValidada;
     }
 
     public void setIdCompra(int idCompra) {

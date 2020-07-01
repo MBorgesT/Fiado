@@ -352,6 +352,7 @@ public class NovaCompra extends javax.swing.JFrame {
                         valor,
                         this.now,
                         campoObservacao.getText().toUpperCase(),
+                        false,
                         false
                 );
 

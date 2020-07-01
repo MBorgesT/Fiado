@@ -44,6 +44,20 @@ public class NovoCliente extends javax.swing.JFrame {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    private boolean validarAlteracaoAtendente() {
+        if (radioButtonNao.isSelected()){
+            return true;
+        } else {
+            int idAtendente = todosAtendentes.get(comboBoxAtendentes.getSelectedIndex()).getIdAtendente();
+            if (ClienteDAO.atendenteJaCadastrado(idAtendente)){
+                JOptionPane.showMessageDialog(null, "Este atendente já está cadastradoc como cliente", "Atenção", JOptionPane.WARNING_MESSAGE);
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -229,6 +243,7 @@ public class NovoCliente extends javax.swing.JFrame {
         buttonGroupIsAtendente.add(radioButtonSim);
         radioButtonSim.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         radioButtonSim.setText("Sim");
+        radioButtonSim.setName("radioButtonSim"); // NOI18N
         radioButtonSim.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioButtonSimActionPerformed(evt);
@@ -246,6 +261,7 @@ public class NovoCliente extends javax.swing.JFrame {
         });
 
         comboBoxAtendentes.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        comboBoxAtendentes.setName("comboBoxAtendentes"); // NOI18N
 
         quemLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         quemLabel.setText("Quem?");
@@ -579,6 +595,8 @@ public class NovoCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_radioButtonSimActionPerformed
 
     private void radioButtonNaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButtonNaoActionPerformed
+        comboBoxAtendentes.setSelectedIndex(-1);
+        
         comboBoxAtendentes.setVisible(false);
         quemLabel.setVisible(false);
         asteriscoAtendente.setVisible(false);

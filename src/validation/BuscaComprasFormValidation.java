@@ -17,7 +17,7 @@ public class BuscaComprasFormValidation {
     JFormattedTextField campoDataDe, campoDataAte;
     JComboBox<String> comboBoxValor;
     JTextField campoValor1, campoValor2;
-    JCheckBox checkBoxSim, checkBoxNao;
+    JCheckBox checkBoxPagoSim, checkBoxPagoNao, checkBoxEntregaSim, checkBoxEntregaNao;
 
     public BuscaComprasFormValidation(JPanel panel) {
         Component[] panels = panel.getComponents();
@@ -40,14 +40,17 @@ public class BuscaComprasFormValidation {
         comboBoxValor = (JComboBox<String>) componentMap.get("comboBoxValor");
         campoValor1 = (JTextField) componentMap.get("campoValor1");
         campoValor2 = (JTextField) componentMap.get("campoValor2");
-        checkBoxSim = (JCheckBox) componentMap.get("checkBoxSim");
-        checkBoxNao = (JCheckBox) componentMap.get("checkBoxNao");
+        checkBoxPagoSim = (JCheckBox) componentMap.get("checkBoxPagoSim");
+        checkBoxPagoNao = (JCheckBox) componentMap.get("checkBoxPagoNao");
+        checkBoxEntregaSim = (JCheckBox) componentMap.get("checkBoxEntregaSim");
+        checkBoxEntregaNao = (JCheckBox) componentMap.get("checkBoxEntregaNao");
     }
 
     public boolean validate() {
         return (validateDates()
                 && validateValores()
-                && validadeCheckBoxes());
+                && validadePagoCheckBoxes()
+                && validadeEntregaCheckBoxes());
     }
 
     public boolean datasVazias() {
@@ -141,11 +144,20 @@ public class BuscaComprasFormValidation {
         }
     }
 
-    private boolean validadeCheckBoxes() {
-        if (checkBoxSim.isSelected() || checkBoxNao.isSelected()) {
+    private boolean validadePagoCheckBoxes() {
+        if (checkBoxPagoSim.isSelected() || checkBoxPagoNao.isSelected()) {
             return true;
         } else {
             JOptionPane.showMessageDialog(null, "Você precisa informar se deseja buscar por compras pagas ou não", "Atenção", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+    }
+    
+    private boolean validadeEntregaCheckBoxes() {
+        if (checkBoxEntregaSim.isSelected() || checkBoxEntregaNao.isSelected()) {
+            return true;
+        } else {
+            JOptionPane.showMessageDialog(null, "Você precisa informar se deseja buscar por entregas ou não", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }

@@ -25,10 +25,14 @@ public class ComprovantePrinter {
     private static String pathCompraCliente = "python3 " + baseFolder + "print_compra_cliente.py";
     private static String pathCompraPadaria = "python3 " + baseFolder + "print_compra_padaria.py";
     
+    private static String pathCompraEntregaCliente = "python3 " + baseFolder + "print_compra_entrega_cliente.py";
+    private static String pathCompraEntregaPadaria = "python3 " + baseFolder + "print_compra_entrega_padaria.py";
+    
     private static String pathPagamentoCliente = "python3 " + baseFolder + "print_pagamento_cliente.py";
     private static String pathPagamentoPadaria = "python3 " + baseFolder + "print_pagamento_padaria.py";
     
     private static String pathJsonCompra = baseFolder + "compra.json";
+    private static String pathJsonCompraEntrega = baseFolder + "compraEntrega.json";
     private static String pathJsonPagamento = baseFolder + "pagamento.json";
 
     public static void printComprovanteCompra(Compra compra, boolean isCliente) {
@@ -59,6 +63,40 @@ public class ComprovantePrinter {
                 Runtime.getRuntime().exec(pathCompraCliente);
             } else {
                 Runtime.getRuntime().exec(pathCompraPadaria);
+            }
+        } catch (JSONException ex) {
+            Logger.getLogger(ComprovantePrinter.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ComprovantePrinter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static void printComprovanteCompraEntrega(Compra compra, boolean isCliente) {
+        try {
+            Cliente cliente = ClienteDAO.selectClienteById(compra.getIdCliente());
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String valor = String.format("%.02f", compra.getValor());
+            valor = valor.replace('.', ',');
+            
+            String obs = compra.getObservacao() == "" ? "null" : compra.getObservacao();
+            
+            JSONObject json = new JSONObject();
+            json.put("id_compra", String.valueOf(compra.getIdCompra()));
+            json.put("data", compra.getFormattedData());
+            json.put("valor", valor);
+            json.put("cliente", cliente.getNome());
+            json.put("observacao", obs);
+            
+            FileWriter file = new FileWriter(pathJsonCompraEntrega);
+            file.write(json.toString());
+            file.flush();
+            file.close();
+            
+            if (isCliente) {
+                Runtime.getRuntime().exec(pathCompraEntregaCliente);
+            } else {
+                Runtime.getRuntime().exec(pathCompraEntregaPadaria);
             }
         } catch (JSONException ex) {
             Logger.getLogger(ComprovantePrinter.class.getName()).log(Level.SEVERE, null, ex);

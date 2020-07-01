@@ -6,10 +6,12 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Objects;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import models.Cliente;
 
@@ -18,6 +20,7 @@ public class ClienteFormValidation {
     JTextField nome, telefone1, telefone2, logradouro, numero, bairro, cidade, referencia;
     JFormattedTextField cpf;
     JPasswordField senha, confirmarSenha;
+    
     Cliente cliente;
 
     public ClienteFormValidation(JPanel panel) {

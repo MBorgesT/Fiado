@@ -1,5 +1,6 @@
 package gui_admin;
 
+import dao.CompraDAO;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -26,12 +27,12 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
     Cliente cliente;
     Compra compraSelecionada;
 
-    public HistoricoComprasAdmin(ArrayList<Compra> arrayCompras, Cliente cliente) {
+    public HistoricoComprasAdmin(Cliente cliente) {
         initComponents();
 
-        this.arrayCompras = arrayCompras;
-        this.comprasNaTabela = arrayCompras;
         this.cliente = cliente;
+        this.arrayCompras = CompraDAO.selectTodasComprasFromCliente(cliente.getIdCliente());
+        this.comprasNaTabela = arrayCompras;
         this.compraSelecionada = null;
 
         labelNomeCliente.setText(cliente.getNome());
@@ -65,9 +66,16 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
     private HistoricoComprasAdmin() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    public void resetTabela() {
+        this.arrayCompras = CompraDAO.selectTodasComprasFromCliente(cliente.getIdCliente());
+        
+        botaoLimpar.doClick();
+    }
 
     private void createTable() {
-        tabelaCompras.getColumnModel().getColumn(2).setCellRenderer(new SimNaoRenderer());
+        tabelaCompras.getColumnModel().getColumn(2).setCellRenderer(new NewCellRenderer());
+        tabelaCompras.getColumnModel().getColumn(3).setCellRenderer(new NewCellRenderer());
     }
 
     public void fillTable() {
@@ -110,11 +118,15 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
         campoValor2 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        checkBoxSim = new javax.swing.JCheckBox();
-        checkBoxNao = new javax.swing.JCheckBox();
+        checkBoxPagoSim = new javax.swing.JCheckBox();
+        checkBoxPagoNao = new javax.swing.JCheckBox();
         botaoLimpar = new javax.swing.JButton();
         botaoBuscar = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
+        jLabel7 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        checkBoxEntregaSim = new javax.swing.JCheckBox();
+        checkBoxEntregaNao = new javax.swing.JCheckBox();
         botaoMaisInfoCompra = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tabelaCompras = new javax.swing.JTable();
@@ -236,13 +248,13 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        checkBoxSim.setSelected(true);
-        checkBoxSim.setText("Sim");
-        checkBoxSim.setName("checkBoxSim"); // NOI18N
+        checkBoxPagoSim.setSelected(true);
+        checkBoxPagoSim.setText("Sim");
+        checkBoxPagoSim.setName("checkBoxPagoSim"); // NOI18N
 
-        checkBoxNao.setSelected(true);
-        checkBoxNao.setText("Não");
-        checkBoxNao.setName("checkBoxNao"); // NOI18N
+        checkBoxPagoNao.setSelected(true);
+        checkBoxPagoNao.setText("Não");
+        checkBoxPagoNao.setName("checkBoxPagoNao"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -250,9 +262,9 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(checkBoxSim)
+                .addComponent(checkBoxPagoSim)
                 .addGap(18, 18, 18)
-                .addComponent(checkBoxNao)
+                .addComponent(checkBoxPagoNao)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -260,8 +272,8 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(checkBoxSim)
-                    .addComponent(checkBoxNao))
+                    .addComponent(checkBoxPagoSim)
+                    .addComponent(checkBoxPagoNao))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -283,6 +295,40 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
             }
         });
 
+        jLabel7.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
+        jLabel7.setText("Entrega?");
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        checkBoxEntregaSim.setSelected(true);
+        checkBoxEntregaSim.setText("Sim");
+        checkBoxEntregaSim.setName("checkBoxEntregaSim"); // NOI18N
+
+        checkBoxEntregaNao.setSelected(true);
+        checkBoxEntregaNao.setText("Não");
+        checkBoxEntregaNao.setName("checkBoxEntregaNao"); // NOI18N
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(checkBoxEntregaSim)
+                .addGap(18, 18, 18)
+                .addComponent(checkBoxEntregaNao)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(checkBoxEntregaSim)
+                    .addComponent(checkBoxEntregaNao))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout formPanelLayout = new javax.swing.GroupLayout(formPanel);
         formPanel.setLayout(formPanelLayout);
         formPanelLayout.setHorizontalGroup(
@@ -290,19 +336,26 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(formPanelLayout.createSequentialGroup()
-                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, formPanelLayout.createSequentialGroup()
-                        .addComponent(botaoLimpar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(botaoBuscar))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel6)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(formPanelLayout.createSequentialGroup()
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(formPanelLayout.createSequentialGroup()
+                    .addComponent(botaoLimpar)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(botaoBuscar))
+                .addGroup(formPanelLayout.createSequentialGroup()
+                    .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel2)
+                        .addComponent(jLabel5)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(formPanelLayout.createSequentialGroup()
+                            .addComponent(jLabel6)
+                            .addGap(93, 93, 93)
+                            .addComponent(jLabel7)))
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         formPanelLayout.setVerticalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -315,15 +368,21 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(botaoLimpar)
-                    .addComponent(botaoBuscar))
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(formPanelLayout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(botaoLimpar)
+                        .addGap(18, 18, 18)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(formPanelLayout.createSequentialGroup()
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(botaoBuscar))))
         );
 
         botaoMaisInfoCompra.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -337,17 +396,17 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
 
         tabelaCompras.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Data", "Valor (R$)", "Está paga?"
+                "Data", "Valor (R$)", "Está paga?", "Entrega?"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -356,11 +415,8 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(tabelaCompras);
         if (tabelaCompras.getColumnModel().getColumnCount() > 0) {
-            tabelaCompras.getColumnModel().getColumn(0).setResizable(false);
             tabelaCompras.getColumnModel().getColumn(0).setPreferredWidth(160);
-            tabelaCompras.getColumnModel().getColumn(1).setResizable(false);
             tabelaCompras.getColumnModel().getColumn(1).setPreferredWidth(90);
-            tabelaCompras.getColumnModel().getColumn(2).setResizable(false);
         }
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -376,27 +432,27 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelNomeCliente)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(botaoMaisInfoCompra, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                                .addComponent(jLabel1)
-                                .addComponent(campoValorComprasNaTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jSeparator2))
-                            .addComponent(formPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(botaoMaisInfoCompra, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addComponent(campoValorComprasNaTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jSeparator2))
+                    .addComponent(formPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labelNomeCliente)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(6, 6, 6)
                 .addComponent(labelNomeCliente)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -485,13 +541,23 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
                                 break;
                         }
                     }
+                    
 
-                    if (!checkBoxSim.isSelected() && c.isEstaPago()) {
+                    if (!checkBoxPagoSim.isSelected() && c.isEstaPago()) {
                         flag = false;
                     }
-                    if (!checkBoxNao.isSelected() && !c.isEstaPago()) {
+                    if (!checkBoxPagoNao.isSelected() && !c.isEstaPago()) {
                         flag = false;
                     }
+                    
+                    
+                    if (!checkBoxEntregaSim.isSelected() && c.isEntrega()) {
+                        flag = false;
+                    }
+                    if (!checkBoxEntregaNao.isSelected() && !c.isEntrega()){
+                        flag = false;
+                    }
+                    
 
                     if (flag) {
                         comprasNaTabela.add(c);
@@ -510,8 +576,8 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
         campoDataAte.setText("");
         campoValor1.setText("");
         campoValor2.setText("");
-        checkBoxSim.setSelected(true);
-        checkBoxNao.setSelected(true);
+        checkBoxPagoSim.setSelected(true);
+        checkBoxPagoNao.setSelected(true);
 
         comprasNaTabela = arrayCompras;
         fillTable();
@@ -573,8 +639,10 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
     private javax.swing.JTextField campoValor1;
     private javax.swing.JTextField campoValor2;
     private javax.swing.JTextField campoValorComprasNaTabela;
-    private javax.swing.JCheckBox checkBoxNao;
-    private javax.swing.JCheckBox checkBoxSim;
+    private javax.swing.JCheckBox checkBoxEntregaNao;
+    private javax.swing.JCheckBox checkBoxEntregaSim;
+    private javax.swing.JCheckBox checkBoxPagoNao;
+    private javax.swing.JCheckBox checkBoxPagoSim;
     private javax.swing.JComboBox<String> comboBoxValor;
     private javax.swing.JPanel formPanel;
     private javax.swing.JLabel jLabel1;
@@ -583,9 +651,11 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -593,7 +663,7 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
     private javax.swing.JTable tabelaCompras;
     // End of variables declaration//GEN-END:variables
 
-    public static class SimNaoRenderer extends DefaultTableCellRenderer {
+    public static class NewCellRenderer extends DefaultTableCellRenderer {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
@@ -603,6 +673,12 @@ public class HistoricoComprasAdmin extends javax.swing.JFrame {
 
                 String valueStr = (String) value;
                 c.setForeground(valueStr.contains("SIM") ? new Color(0, 163, 16) : Color.RED);
+            }
+            if (col == 3) {
+                c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+
+                String valueStr = (String) value;
+                c.setForeground(valueStr.contains("ENTREGA") ? Color.BLUE : Color.RED);
             }
 
             return c;

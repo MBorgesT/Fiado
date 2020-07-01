@@ -131,6 +131,13 @@ public class Cliente {
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
-    
+
+    public void setAtendente(boolean atendente) {
+        this.atendente = atendente;
+    }
+
+    public void setIdAtendente(int idAtendente) {
+        this.idAtendente = idAtendente;
+    }
     
 }

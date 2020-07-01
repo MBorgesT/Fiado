@@ -574,7 +574,7 @@ public class MaisInfoCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoCancelarEdicaoActionPerformed
 
     private void botaoHistoricoComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoHistoricoComprasActionPerformed
-        new HistoricoCompras(CompraDAO.selectComprasFromCliente(cliente.getIdCliente()), cliente).setVisible(true);
+        new HistoricoCompras(cliente).setVisible(true);
     }//GEN-LAST:event_botaoHistoricoComprasActionPerformed
 
     private void botaoHistoricoPagamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoHistoricoPagamentosActionPerformed

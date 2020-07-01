@@ -44,7 +44,7 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
         campoCliente.setText(cliente.getNome());
 
         Atendente atendente = AtendenteDAO.selectAtendenteById(compra.getIdAtendente());
-        campoAtendente.setText(atendente.getNome());
+        if (atendente != null) campoAtendente.setText(atendente.getNome());
 
         campoValor.setText("R$ " + compra.getFormattedValor());
         campoData.setText(compra.getFormattedData());
@@ -52,7 +52,23 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
         campoEstaPago.setText(compra.isEstaPago() ? "SIM" : "NÃO");
         campoEstaPago.setForeground(compra.isEstaPago() ? new Color(0, 163, 16) : Color.RED);
 
-        campoIdPagamento.setText(String.valueOf(compra.getIdPagamento()));
+        campoIdPagamento.setText(compra.getIdPagamento() != 0 ? String.valueOf(compra.getIdPagamento()) : "");
+        
+        String entrega;
+        if (compra.isEntrega()){
+            if (compra.isEntregaValidada()){
+                entrega = "VALIDADA";
+            }else{
+                entrega = "NÃO VALIDADA";
+            }
+        }else{
+            entrega = "NÃO";
+        }
+        campoEntrega.setText(entrega);
+        if (compra.isEntrega()){
+            campoEntrega.setForeground(compra.isEntregaValidada() ? new Color(0,163,16) : Color.RED);
+        }
+                
         campoObservacao.setText(compra.getObservacao());
     }
 
@@ -81,6 +97,8 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         campoObservacao = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        campoEntrega = new javax.swing.JTextField();
         botaoImprimirNotaCliente = new javax.swing.JButton();
         botaoImprimirNotaPadaria = new javax.swing.JButton();
         botaoExcluirCompra = new javax.swing.JToggleButton();
@@ -142,6 +160,12 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
         campoObservacao.setRows(5);
         jScrollPane1.setViewportView(campoObservacao);
 
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel1.setText("Entrega?");
+
+        campoEntrega.setEditable(false);
+        campoEntrega.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -177,7 +201,9 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(campoIdPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel7))))
-                            .addComponent(jLabel8))
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel1)
+                            .addComponent(campoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -212,6 +238,10 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(campoEstaPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(campoIdPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(campoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -315,7 +345,7 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
         if (reply == 0) {
             if (CompraDAO.deleteCompra(compra)) {
                 JOptionPane.showMessageDialog(null, "Compra deletada com sucesso", "deleteCompra", JOptionPane.INFORMATION_MESSAGE);
-                telaAterior.fillTable();
+                telaAterior.resetTabela();
                 this.dispose();
             }
         }
@@ -363,10 +393,12 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
     private javax.swing.JTextField campoAtendente;
     private javax.swing.JTextField campoCliente;
     private javax.swing.JTextField campoData;
+    private javax.swing.JTextField campoEntrega;
     private javax.swing.JTextField campoEstaPago;
     private javax.swing.JTextField campoIdPagamento;
     private javax.swing.JTextArea campoObservacao;
     private javax.swing.JTextField campoValor;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

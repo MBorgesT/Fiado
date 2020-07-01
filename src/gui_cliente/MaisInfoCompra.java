@@ -28,7 +28,7 @@ public class MaisInfoCompra extends javax.swing.JFrame {
         campoCliente.setText(cliente.getNome());
         
         Atendente atendente = AtendenteDAO.selectAtendenteById(compra.getIdAtendente());
-        campoAtendente.setText(atendente.getNome());
+        if (atendente != null) campoAtendente.setText(atendente.getNome());
         
         campoValor.setText("R$ " + compra.getFormattedValor());
         campoData.setText(compra.getFormattedData());
@@ -36,7 +36,23 @@ public class MaisInfoCompra extends javax.swing.JFrame {
         campoEstaPago.setText(compra.isEstaPago() ? "SIM" : "NÃO");
         campoEstaPago.setForeground(compra.isEstaPago() ? new Color(0,163,16) : Color.RED);
         
-        campoIdPagamento.setText(String.valueOf(compra.getIdPagamento()));
+        campoIdPagamento.setText(compra.getIdPagamento() != 0 ? String.valueOf(compra.getIdPagamento()) : "");
+        
+        String entrega;
+        if (compra.isEntrega()){
+            if (compra.isEntregaValidada()){
+                entrega = "VALIDADA";
+            }else{
+                entrega = "NÃO VALIDADA";
+            }
+        }else{
+            entrega = "NÃO";
+        }
+        campoEntrega.setText(entrega);
+        if (compra.isEntrega()){
+            campoEntrega.setForeground(compra.isEntregaValidada() ? new Color(0,163,16) : Color.RED);
+        }
+        
         campoObservacao.setText(compra.getObservacao());
     }
 
@@ -65,10 +81,13 @@ public class MaisInfoCompra extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         campoObservacao = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        campoEntrega = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Mais Informações da Compra");
         setIconImage(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png")).getImage());
+        setResizable(false);
 
         labelId.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         labelId.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/basket-48.png"))); // NOI18N
@@ -123,6 +142,12 @@ public class MaisInfoCompra extends javax.swing.JFrame {
         campoObservacao.setRows(5);
         jScrollPane1.setViewportView(campoObservacao);
 
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel1.setText("Entrega?");
+
+        campoEntrega.setEditable(false);
+        campoEntrega.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -158,7 +183,9 @@ public class MaisInfoCompra extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(campoIdPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel7))))
-                            .addComponent(jLabel8))
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel1)
+                            .addComponent(campoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -194,6 +221,10 @@ public class MaisInfoCompra extends javax.swing.JFrame {
                             .addComponent(campoEstaPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(campoIdPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(campoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -219,8 +250,8 @@ public class MaisInfoCompra extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(labelId)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -263,10 +294,12 @@ public class MaisInfoCompra extends javax.swing.JFrame {
     private javax.swing.JTextField campoAtendente;
     private javax.swing.JTextField campoCliente;
     private javax.swing.JTextField campoData;
+    private javax.swing.JTextField campoEntrega;
     private javax.swing.JTextField campoEstaPago;
     private javax.swing.JTextField campoIdPagamento;
     private javax.swing.JTextArea campoObservacao;
     private javax.swing.JTextField campoValor;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

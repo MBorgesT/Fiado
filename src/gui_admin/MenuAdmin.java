@@ -340,15 +340,10 @@ public class MenuAdmin extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tabelaClientes);
         if (tabelaClientes.getColumnModel().getColumnCount() > 0) {
-            tabelaClientes.getColumnModel().getColumn(0).setResizable(false);
             tabelaClientes.getColumnModel().getColumn(0).setPreferredWidth(75);
-            tabelaClientes.getColumnModel().getColumn(1).setResizable(false);
             tabelaClientes.getColumnModel().getColumn(1).setPreferredWidth(320);
-            tabelaClientes.getColumnModel().getColumn(2).setResizable(false);
             tabelaClientes.getColumnModel().getColumn(2).setPreferredWidth(125);
-            tabelaClientes.getColumnModel().getColumn(3).setResizable(false);
             tabelaClientes.getColumnModel().getColumn(3).setPreferredWidth(200);
-            tabelaClientes.getColumnModel().getColumn(4).setResizable(false);
             tabelaClientes.getColumnModel().getColumn(4).setPreferredWidth(60);
         }
 
@@ -622,11 +617,8 @@ public class MenuAdmin extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(tabelaAtendentes);
         if (tabelaAtendentes.getColumnModel().getColumnCount() > 0) {
-            tabelaAtendentes.getColumnModel().getColumn(0).setResizable(false);
             tabelaAtendentes.getColumnModel().getColumn(0).setPreferredWidth(75);
-            tabelaAtendentes.getColumnModel().getColumn(1).setResizable(false);
             tabelaAtendentes.getColumnModel().getColumn(1).setPreferredWidth(725);
-            tabelaAtendentes.getColumnModel().getColumn(2).setResizable(false);
             tabelaAtendentes.getColumnModel().getColumn(2).setPreferredWidth(60);
         }
 
@@ -988,7 +980,7 @@ public class MenuAdmin extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

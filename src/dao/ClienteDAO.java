@@ -312,5 +312,42 @@ public class ClienteDAO {
         }
         return false;
     }
+    
+    public static boolean updateEstadoAtendenteCliente(int idCliente, boolean isAtendente, int idAtendente){
+        try {
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
+            String sql = "UPDATE cliente SET atendente = ?, idAtendente = ? WHERE idCliente = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
 
+            ps.setInt(1, isAtendente ? 1 : 0);
+            ps.setInt(2, idAtendente);
+            ps.setInt(3, idCliente);
+
+            ps.executeUpdate();
+
+            conn.close();
+
+            return true;
+        } catch (SQLException e) {
+            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, e, "updateEstadoAtendenteCliente", JOptionPane.WARNING_MESSAGE);
+        }
+        return false;
+    }
+
+    public static boolean atendenteJaCadastrado(int idAtendente){
+        try {
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT idCliente FROM cliente WHERE atendente = 1 AND idAtendente = " + String.valueOf(idAtendente));
+
+            conn.close();
+
+            return rs.next() == true;
+        } catch (SQLException e) {
+            Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, e, "atendenteJaCadastrado", JOptionPane.WARNING_MESSAGE);
+        }
+        return false;
+    }
 }

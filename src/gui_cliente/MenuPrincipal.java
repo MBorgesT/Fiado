@@ -64,6 +64,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         botaoDeselecionarCliente.setEnabled(true);
         labelClienteSelecionado.setText("<html>" + c.getNome() + "</html>");
 
+        botaoEntregas.setEnabled(true);
         botaoNovaCompra.setEnabled(true);
         botaoRealizarPagamento.setEnabled(true);
         botaoMaisInfoCliente.setEnabled(true);
@@ -94,6 +95,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         botaoNovaCompra = new javax.swing.JButton();
         botaoMaisInfoCliente = new javax.swing.JButton();
         botaoNovoCliente = new javax.swing.JButton();
+        botaoEntregas = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         labelClienteSelecionado = new javax.swing.JLabel();
@@ -124,9 +126,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tabelaClientes);
         if (tabelaClientes.getColumnModel().getColumnCount() > 0) {
-            tabelaClientes.getColumnModel().getColumn(0).setResizable(false);
             tabelaClientes.getColumnModel().getColumn(0).setPreferredWidth(75);
-            tabelaClientes.getColumnModel().getColumn(1).setResizable(false);
             tabelaClientes.getColumnModel().getColumn(1).setPreferredWidth(725);
         }
 
@@ -196,6 +196,15 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
         });
 
+        botaoEntregas.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoEntregas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/motorcycle-32.png"))); // NOI18N
+        botaoEntregas.setText("Entregas");
+        botaoEntregas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoEntregasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout clientesButtonPanelLayout = new javax.swing.GroupLayout(clientesButtonPanel);
         clientesButtonPanel.setLayout(clientesButtonPanelLayout);
         clientesButtonPanelLayout.setHorizontalGroup(
@@ -206,21 +215,24 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     .addComponent(botaoNovaCompra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(botaoRealizarPagamento, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(botaoMaisInfoCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(botaoNovoCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(botaoNovoCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(botaoEntregas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         clientesButtonPanelLayout.setVerticalGroup(
             clientesButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(clientesButtonPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(botaoNovaCompra)
+                .addGap(18, 18, 18)
+                .addComponent(botaoEntregas)
                 .addGap(18, 18, 18)
                 .addComponent(botaoRealizarPagamento)
                 .addGap(18, 18, 18)
                 .addComponent(botaoMaisInfoCliente)
                 .addGap(18, 18, 18)
                 .addComponent(botaoNovoCliente)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -312,11 +324,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addGroup(clientePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(botaoBuscarCliente)
                             .addComponent(botaoLimparBusca))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 189, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(clientesButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -390,6 +402,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         botaoDeselecionarCliente.setEnabled(false);
         labelClienteSelecionado.setText(" ");
 
+        botaoEntregas.setEnabled(false);
         botaoNovaCompra.setEnabled(false);
         botaoRealizarPagamento.setEnabled(false);
         botaoMaisInfoCliente.setEnabled(false);
@@ -423,7 +436,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_botaoNovaCompraActionPerformed
 
     private void botaoRealizarPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoRealizarPagamentoActionPerformed
-        HistoricoCompras hc = new HistoricoCompras(CompraDAO.selectComprasFromCliente(clienteSelecionado.getIdCliente()), clienteSelecionado);
+        HistoricoCompras hc = new HistoricoCompras(clienteSelecionado);
         new AtendenteAccessControl(hc, clienteSelecionado).setVisible(true);
     }//GEN-LAST:event_botaoRealizarPagamentoActionPerformed
 
@@ -436,6 +449,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void campoBuscaClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoBuscaClientesActionPerformed
         botaoBuscarCliente.doClick();
     }//GEN-LAST:event_campoBuscaClientesActionPerformed
+
+    private void botaoEntregasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoEntregasActionPerformed
+        new AtendenteAccessControl(new EntregaOpcoes(clienteSelecionado), clienteSelecionado).setVisible(true);
+    }//GEN-LAST:event_botaoEntregasActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -472,6 +489,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botaoBuscarCliente;
     private javax.swing.JButton botaoDeselecionarCliente;
+    private javax.swing.JButton botaoEntregas;
     private javax.swing.JButton botaoLimparBusca;
     private javax.swing.JButton botaoMaisInfoCliente;
     private javax.swing.JButton botaoNovaCompra;

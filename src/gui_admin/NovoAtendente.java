@@ -170,6 +170,11 @@ public class NovoAtendente extends javax.swing.JFrame {
         botaoCancelar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cancel.png"))); // NOI18N
         botaoCancelar.setText("Cancelar");
+        botaoCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoCancelarActionPerformed(evt);
+            }
+        });
 
         botaoCadastrar.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         botaoCadastrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/ok.png"))); // NOI18N
@@ -242,6 +247,10 @@ public class NovoAtendente extends javax.swing.JFrame {
             System.out.println("erro no cadastro de atendente");
         }
     }//GEN-LAST:event_botaoCadastrarActionPerformed
+
+    private void botaoCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCancelarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_botaoCancelarActionPerformed
 
     /**
      * @param args the command line arguments

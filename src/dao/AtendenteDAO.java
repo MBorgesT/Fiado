@@ -141,8 +141,12 @@ public class AtendenteDAO {
 
             ResultSet rs = stmt.executeQuery("SELECT * FROM atendente WHERE idAtendente = " + String.valueOf(idAtendente));
 
-            rs.next();
-            Atendente atendente = extractAtendenteFromRs(rs);
+            Atendente atendente;
+            if (rs.next()){
+                atendente = extractAtendenteFromRs(rs);
+            }else{
+                return null;
+            }
 
             conn.close();
 
