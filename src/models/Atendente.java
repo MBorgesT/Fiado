@@ -10,6 +10,7 @@ public class Atendente {
         this.idAtendente = idAtendente;
         this.nome = nome;
         this.senha = senha;
+        this.salt = salt;
         this.ativo = ativo;
     }
 
@@ -18,6 +19,11 @@ public class Atendente {
         this.senha = senha;
         this.salt = salt;
         this.ativo = true;
+    }
+
+    @Override
+    public String toString() {
+        return "Atendente{" + "idAtendente=" + idAtendente + ", nome=" + nome + ", senha=" + senha + ", salt=" + salt + ", ativo=" + ativo + '}';
     }
     
     public Object[] atendenteObjectArray(){

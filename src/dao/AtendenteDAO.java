@@ -17,19 +17,19 @@ public class AtendenteDAO {
 
     private static Atendente extractAtendenteFromRs(ResultSet rs) {
         try {
-            byte[] salt = rs.getBytes("salt");
-            boolean ativo = rs.getInt("ativo") == 1 ? true : false;
+            //byte[] salt = rs.getBytes("salt");
+            //boolean ativo = rs.getInt("ativo") == 1 ? true : false;
 
             Atendente atendente = new Atendente(
                     rs.getInt("idAtendente"),
                     rs.getString("nome"),
                     rs.getString("senha"),
-                    rs.getBytes("salt"),
-                    rs.getInt("ativo") == 1 ? true : false
+                    rs.getBytes("salt"), 
+                    (rs.getInt("ativo") == 1)
             );
 
-            atendente.setSalt(salt);
-            atendente.setAtivo(ativo);
+            //atendente.setSalt(salt);
+            //atendente.setAtivo(ativo);
             // até agora não entendi porque caralhos o salt não está funcionando no construtor
             // mas assim funcionou, então fica na gambiarra
 
@@ -175,6 +175,57 @@ public class AtendenteDAO {
         } catch (SQLException e) {
             Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(null, e, "updateEstadoAtivoCliente", JOptionPane.WARNING_MESSAGE);
+        }
+        return false;
+    }
+    
+        
+    public static boolean existeComprasOuPagamentosRelacionados(int idAtendente) {
+        try {
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
+            Statement stmt = conn.createStatement();
+            ResultSet rs1 = stmt.executeQuery("SELECT idAtendente FROM compra WHERE idAtendente = " + String.valueOf(idAtendente));
+            ResultSet rs2 = stmt.executeQuery("SELECT idAtendente FROM pagamento WHERE idAtendente = " + String.valueOf(idAtendente));
+
+            conn.close();
+
+            return rs1.next() || rs2.next();
+        } catch (SQLException e) {
+            Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, e, "existeComprasRelacionadas", JOptionPane.WARNING_MESSAGE);
+        }
+        return false;
+    }
+    
+    public static boolean deleteAtendente(int idAtendente){
+        try {
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
+            String sql;
+            PreparedStatement ps;
+            
+            
+            sql = "UPDATE cliente SET atendente = 0, idAtendente = -1 WHERE idAtendente = ?";
+            ps = conn.prepareStatement(sql);
+            
+            ps.setInt(1, idAtendente);
+            
+            ps.executeUpdate();
+            
+            
+            sql = "DELETE FROM atendente WHERE idAtendente = ?";
+            ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, idAtendente);
+
+            ps.executeUpdate();
+            
+
+            conn.close();
+
+            return true;
+        } catch (SQLException e) {
+            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, e, "deleteAtendente", JOptionPane.WARNING_MESSAGE);
         }
         return false;
     }

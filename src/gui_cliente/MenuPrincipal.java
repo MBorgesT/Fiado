@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import models.Cliente;
 import dao.ClienteDAO;
 import dao.CompraDAO;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 

@@ -3,6 +3,6 @@ package fiado;
 
 public class FilesFolder {
     
-    public static String path = "/home/matheus/arquivos-caderneta/";
+    public static String path = System.getProperty("user.home") + "/arquivos-caderneta/";
     
 }

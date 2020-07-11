@@ -335,7 +335,7 @@ public class ClienteDAO {
         return false;
     }
 
-    public static boolean atendenteJaCadastrado(int idAtendente){
+    public static boolean atendenteJaCadastrado(int idAtendente) {
         try {
             Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
@@ -347,6 +347,42 @@ public class ClienteDAO {
         } catch (SQLException e) {
             Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(null, e, "atendenteJaCadastrado", JOptionPane.WARNING_MESSAGE);
+        }
+        return false;
+    }
+    
+    public static boolean existeComprasRelacionadas(int idCliente) {
+        try {
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT idCompra FROM compra WHERE idCliente = " + String.valueOf(idCliente));
+
+            conn.close();
+
+            return rs.next() == true;
+        } catch (SQLException e) {
+            Logger.getLogger(CompraDAO.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, e, "existeComprasRelacionadas", JOptionPane.WARNING_MESSAGE);
+        }
+        return false;
+    }
+    
+    public static boolean deleteCliente(int idCliente){
+        try {
+            Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
+            String sql = "DELETE FROM cliente WHERE idCliente = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, idCliente);
+
+            ps.executeUpdate();
+
+            conn.close();
+
+            return true;
+        } catch (SQLException e) {
+            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, e, "deleteCliente", JOptionPane.WARNING_MESSAGE);
         }
         return false;
     }

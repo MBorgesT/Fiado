@@ -14,21 +14,25 @@ public class AtendenteAccessControl extends javax.swing.JFrame {
 
     JFrame newFrame;
     Cliente cliente;
-    ArrayList<Atendente> arrayAtendentes;
+    ArrayList<Atendente> arrayAtendentes, todosAtendentes;
 
     public AtendenteAccessControl(JFrame newFrame, Cliente cliente) {
         initComponents();
 
         this.newFrame = newFrame;
         this.cliente = cliente;
-        this.arrayAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
+        
+        this.todosAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
         
         if (cliente.isAtendente()){
-            for (Atendente atendente: arrayAtendentes){
-                if (atendente.getIdAtendente() == cliente.getIdAtendente()){
-                    arrayAtendentes.remove(atendente);
+            this.arrayAtendentes = new ArrayList<>();
+            for (Atendente atendente: todosAtendentes){
+                if (atendente.getIdAtendente() != cliente.getIdAtendente()){
+                    arrayAtendentes.add(atendente);
                 }
             }
+        }else{
+            arrayAtendentes = todosAtendentes;
         }
 
         for (Atendente a : arrayAtendentes) {
@@ -50,7 +54,7 @@ public class AtendenteAccessControl extends javax.swing.JFrame {
         this.newFrame = newFrame;
         this.arrayAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
 
-        for (Atendente a : arrayAtendentes) {
+        for (Atendente a: arrayAtendentes) {
             comboBoxAtendente.addItem(a.getNome());
         }
 

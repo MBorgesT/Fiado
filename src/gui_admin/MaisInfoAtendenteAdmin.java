@@ -10,13 +10,15 @@ import validation.AtendenteFormValidation;
 public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
 
     private Atendente atendente;
+    private MenuAdmin telaAnterior;
     private boolean editando;
 
-    public MaisInfoAtendenteAdmin(Atendente atendente) {
+    public MaisInfoAtendenteAdmin(Atendente atendente, MenuAdmin telaAnterior) {
         initComponents();
 
         this.atendente = atendente;
-        
+        this.telaAnterior = telaAnterior;
+
         labelId.setText("ID: " + String.valueOf(atendente.getIdAtendente()));
         campoNome.setText(atendente.getNome());
 
@@ -27,6 +29,10 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
         ast1.setVisible(false);
         ast2.setVisible(false);
         ast3.setVisible(false);
+
+        if (AtendenteDAO.existeComprasOuPagamentosRelacionados(atendente.getIdAtendente())) {
+            botaoExcluirAtendente.setVisible(false);
+        }
     }
 
     private MaisInfoAtendenteAdmin() {
@@ -70,6 +76,7 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
         ast2 = new javax.swing.JLabel();
         botaoEditarInfo = new javax.swing.JButton();
         botaoCancelarEdicao = new javax.swing.JButton();
+        botaoExcluirAtendente = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Mais Informações do Atendente");
@@ -209,6 +216,15 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
             }
         });
 
+        botaoExcluirAtendente.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoExcluirAtendente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/delete.png"))); // NOI18N
+        botaoExcluirAtendente.setText("Excluir Atendente");
+        botaoExcluirAtendente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoExcluirAtendenteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -218,20 +234,27 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labelId)
-                            .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 704, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(botaoCancelarEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 704, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(botaoCancelarEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(botaoEditarInfo)))
+                        .addGap(0, 12, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelId)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(botaoEditarInfo)))
-                .addContainerGap())
+                        .addComponent(botaoExcluirAtendente)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(labelId)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelId)
+                    .addComponent(botaoExcluirAtendente))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -254,29 +277,38 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
 
             if (reply == 0 && new AtendenteFormValidation(formPanel).validate()) {
                 byte[] salt = Hash.generateSalt();
-                String hashedPw = Hash.hashPassword(campoSenha.getPassword().toString(), salt).get();
+                String hashedPw = Hash.hashPassword(String.valueOf(campoSenha.getPassword()), salt).get();
 
+                System.out.println(atendente.toString());
                 Atendente updatedAtendente = new Atendente(
                         atendente.getIdAtendente(),
                         campoNome.getText(),
-                        hashedPw,
+                        hashedPw,   
                         salt,
                         atendente.isAtivo()
                 );
+                updatedAtendente.setSalt(salt);
+                System.out.println(updatedAtendente.getSalt().toString());
 
                 if (AtendenteDAO.updateAtendente(updatedAtendente)) {
                     atendente = updatedAtendente;
+
+                    campoNome.setText(atendente.getNome());
+
+                    botaoCancelarEdicao.doClick();
+
+                    editando = false;
+
+                    preencherCampos();
+
+                    JOptionPane.showMessageDialog(null, "Atendente atualizado com sucesso", "Informação", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Houve um erro com o banco de dados. Favor reiniciar o programa e tentar novamente", "Erro", JOptionPane.WARNING_MESSAGE);
                 }
-
-                campoNome.setText(atendente.getNome());
-
-                botaoCancelarEdicao.doClick();
-
-                editando = false;
                 
-                preencherCampos();
+                Atendente aux = AtendenteDAO.selectAtendenteById(updatedAtendente.getIdAtendente());
+                System.out.println(aux.toString());
+                System.out.println(aux.getSalt().toString());
             }
 
         } else {
@@ -301,6 +333,18 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
         botaoCancelarEdicao.setEnabled(false);
         preencherCampos();
     }//GEN-LAST:event_botaoCancelarEdicaoActionPerformed
+
+    private void botaoExcluirAtendenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExcluirAtendenteActionPerformed
+        if (AtendenteDAO.existeComprasOuPagamentosRelacionados(atendente.getIdAtendente())) {
+            JOptionPane.showMessageDialog(null, "Não se pode excluir atendentes com compras realizadas", "Atenção", JOptionPane.WARNING_MESSAGE);
+        } else {
+            if (AtendenteDAO.deleteAtendente(atendente.getIdAtendente())) {
+                telaAnterior.fillTables();
+                JOptionPane.showMessageDialog(null, "Atendente excluido com sucesso", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            }
+        }
+    }//GEN-LAST:event_botaoExcluirAtendenteActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -341,6 +385,7 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel ast3;
     private javax.swing.JButton botaoCancelarEdicao;
     private javax.swing.JButton botaoEditarInfo;
+    private javax.swing.JButton botaoExcluirAtendente;
     private javax.swing.JPasswordField campoConfirmarSenha;
     private javax.swing.JTextField campoNome;
     private javax.swing.JPasswordField campoSenha;

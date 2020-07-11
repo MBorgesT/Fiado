@@ -24,16 +24,22 @@ public class MaisInfoClienteAdmin extends javax.swing.JFrame {
 
     Cliente cliente;
     ArrayList<Atendente> atendentesNoComboBox;
+    MenuAdmin telaAnterior;
     boolean editando;
 
-    public MaisInfoClienteAdmin(Cliente cliente) {
+    public MaisInfoClienteAdmin(Cliente cliente, MenuAdmin telaAnterior) {
         initComponents();
 
         this.cliente = cliente;
+        this.telaAnterior = telaAnterior;
 
         editando = false;
 
         preencherCampos();
+        
+        if (ClienteDAO.existeComprasRelacionadas(cliente.getIdCliente())){
+            botaoExcluirCliente.setVisible(false);
+        }
     }
 
     private MaisInfoClienteAdmin() {
@@ -125,6 +131,7 @@ public class MaisInfoClienteAdmin extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         botaoAlterarAtendente = new javax.swing.JButton();
         botaoCancelarAlteracao = new javax.swing.JButton();
+        botaoExcluirCliente = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Mais Informações de Cliente");
@@ -397,14 +404,26 @@ public class MaisInfoClienteAdmin extends javax.swing.JFrame {
             }
         });
 
+        botaoExcluirCliente.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoExcluirCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/delete.png"))); // NOI18N
+        botaoExcluirCliente.setText("Excluir Cliente");
+        botaoExcluirCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoExcluirClienteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(idLabel)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(idLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(botaoExcluirCliente))
                     .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
@@ -426,7 +445,9 @@ public class MaisInfoClienteAdmin extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(idLabel)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(idLabel)
+                    .addComponent(botaoExcluirCliente))
                 .addGap(6, 6, 6)
                 .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -545,6 +566,18 @@ public class MaisInfoClienteAdmin extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_atendenteSimRadioButtonActionPerformed
 
+    private void botaoExcluirClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExcluirClienteActionPerformed
+        if (ClienteDAO.existeComprasRelacionadas(cliente.getIdCliente())){
+            JOptionPane.showMessageDialog(null, "Não se pode excluir clientes com compras realizadas", "Atenção", JOptionPane.WARNING_MESSAGE);
+        }else{
+            if (ClienteDAO.deleteCliente(cliente.getIdCliente())){
+                telaAnterior.fillTodosClientesTable();
+                JOptionPane.showMessageDialog(null, "Cliente excluido com sucesso", "Atenção", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            }
+        }
+    }//GEN-LAST:event_botaoExcluirClienteActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -590,6 +623,7 @@ public class MaisInfoClienteAdmin extends javax.swing.JFrame {
     private javax.swing.JTextField bairroTextField;
     private javax.swing.JButton botaoAlterarAtendente;
     private javax.swing.JButton botaoCancelarAlteracao;
+    private javax.swing.JButton botaoExcluirCliente;
     private javax.swing.JButton botaoHistoricoCompras;
     private javax.swing.JButton botaoHistoricoPagamentos;
     private javax.swing.JTextField cidadeTextField;

@@ -231,7 +231,7 @@ public class NovoAtendente extends javax.swing.JFrame {
         if (new AtendenteFormValidation(formPanel).validate()) {
             byte[] salt = Hash.generateSalt();
             String hashedPw = Hash.hashPassword(String.valueOf(senhaTextField.getPassword()), salt).get();
-
+            
             Atendente a = new Atendente(
                     nomeTextField.getText().toUpperCase(),
                     hashedPw,

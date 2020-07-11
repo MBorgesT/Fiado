@@ -46,12 +46,6 @@ public class MenuAdmin extends javax.swing.JFrame {
     public MenuAdmin() {
         initComponents();
 
-        todosClientes = ClienteDAO.selectAllClientes();
-        todosAtendentes = AtendenteDAO.selectTodosAtendentes();
-
-        clientesNaTabela = todosClientes;
-        atendentesNaTabela = todosAtendentes;
-
         botaoDeselecionarCliente.doClick();
         botaoDeselecionarAtendente.doClick();
 
@@ -165,12 +159,15 @@ public class MenuAdmin extends javax.swing.JFrame {
         tabelaAtendentes.getColumnModel().getColumn(2).setCellRenderer(new SimNaoRenderer());
     }
 
-    private void fillTables() {
-        fillClientesTable();
-        fillAtendentesTable();
+    public void fillTables() {
+        fillTodosClientesTable();
+        fillTodosAtendentesTable();
     }
 
-    private void fillClientesTable() {
+    public void fillTodosClientesTable() {
+        todosClientes = ClienteDAO.selectAllClientes();
+        clientesNaTabela = todosClientes;
+        
         DefaultTableModel tabelaClientesModel = (DefaultTableModel) tabelaClientes.getModel();
 
         tabelaClientesModel.setRowCount(0);
@@ -181,7 +178,10 @@ public class MenuAdmin extends javax.swing.JFrame {
         setupTabelaClientes();
     }
 
-    private void fillAtendentesTable() {
+    public void fillTodosAtendentesTable() {
+        todosAtendentes = AtendenteDAO.selectTodosAtendentes();
+        atendentesNaTabela = todosAtendentes;
+        
         DefaultTableModel tabelaAtendentesModel = (DefaultTableModel) tabelaAtendentes.getModel();
 
         tabelaAtendentesModel.setRowCount(0);
@@ -190,6 +190,28 @@ public class MenuAdmin extends javax.swing.JFrame {
         }
 
         setupTabelaAtendentes();
+    }
+
+    public void fillAtendentesTable() {
+        DefaultTableModel tabelaAtendentesModel = (DefaultTableModel) tabelaAtendentes.getModel();
+
+        tabelaAtendentesModel.setRowCount(0);
+        for (Atendente a : atendentesNaTabela) {
+            tabelaAtendentesModel.addRow(a.atendenteObjectArray());
+        }
+
+        setupTabelaAtendentes();
+    }
+    
+    public void fillClientesTable() {
+        DefaultTableModel tabelaClientesModel = (DefaultTableModel) tabelaClientes.getModel();
+
+        tabelaClientesModel.setRowCount(0);
+        for (Cliente c : clientesNaTabela) {
+            tabelaClientesModel.addRow(c.clienteObjectArrayComplete());
+        }
+
+        setupTabelaClientes();
     }
 
     private void selecionarCliente(Cliente c) {
@@ -233,13 +255,13 @@ public class MenuAdmin extends javax.swing.JFrame {
     public void resetTabelaClientes() {
         todosClientes = new ClienteDAO().selectAllClientes();
         clientesNaTabela = todosClientes;
-        fillClientesTable();
+        fillTodosClientesTable();
     }
 
     public void resetTabelaAtendentes() {
         todosAtendentes = new AtendenteDAO().selectTodosAtendentesAtivos();
         atendentesNaTabela = todosAtendentes;
-        fillAtendentesTable();
+        fillTodosAtendentesTable();
 
     }
 
@@ -1166,7 +1188,7 @@ public class MenuAdmin extends javax.swing.JFrame {
             ClienteDAO.updateEstadoAtivoCliente(clienteSelecionado.getIdCliente(), !clienteSelecionado.isAtivo());
             clienteSelecionado.setAtivo(!clienteSelecionado.isAtivo());
             selecionarCliente(clienteSelecionado);
-            fillClientesTable();
+            fillTodosClientesTable();
         }
     }//GEN-LAST:event_botaoDesAtivarClienteActionPerformed
 
@@ -1191,12 +1213,12 @@ public class MenuAdmin extends javax.swing.JFrame {
             AtendenteDAO.updateEstadoAtivoAtendente(atendenteSelecionado.getIdAtendente(), !atendenteSelecionado.isAtivo());
             atendenteSelecionado.setAtivo(!atendenteSelecionado.isAtivo());
             selecionarAtendente(atendenteSelecionado);
-            fillAtendentesTable();
+            fillTodosAtendentesTable();
         }
     }//GEN-LAST:event_botaoDesAtivarAtendenteActionPerformed
 
     private void botaoMaisInfoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMaisInfoClienteActionPerformed
-        new MaisInfoClienteAdmin(clienteSelecionado).setVisible(true);
+        new MaisInfoClienteAdmin(clienteSelecionado, this).setVisible(true);
     }//GEN-LAST:event_botaoMaisInfoClienteActionPerformed
 
     private void botaoLimparBuscaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoLimparBuscaClienteActionPerformed
@@ -1208,18 +1230,18 @@ public class MenuAdmin extends javax.swing.JFrame {
         checkBoxClienteNao.setSelected(true);
 
         clientesNaTabela = todosClientes;
-        fillClientesTable();
+        fillTodosClientesTable();
     }//GEN-LAST:event_botaoLimparBuscaClienteActionPerformed
 
     private void botaoMaisInfoAtendenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoMaisInfoAtendenteActionPerformed
-        new MaisInfoAtendenteAdmin(atendenteSelecionado).setVisible(true);
+        new MaisInfoAtendenteAdmin(atendenteSelecionado, this).setVisible(true);
     }//GEN-LAST:event_botaoMaisInfoAtendenteActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         campoBuscaAtendentes.setText("");
         checkBoxAtendenteSim.setSelected(true);
         checkBoxAtendenteNao.setSelected(true);
-        fillAtendentesTable();
+        fillTodosAtendentesTable();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void botaoCancelarEdicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCancelarEdicaoActionPerformed
