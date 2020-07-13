@@ -63,7 +63,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         criarTabelaClienteListeners();
     }
 
-    private void selecionarCliente(Cliente c) {
+    public void selecionarCliente(Cliente c) {
         clienteSelecionado = c;
         botaoDeselecionarCliente.setEnabled(true);
         labelClienteSelecionado.setText("<html>" + c.getNome() + "</html>");

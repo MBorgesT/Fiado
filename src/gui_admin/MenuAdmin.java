@@ -11,8 +11,18 @@ import dao.ClienteDAO;
 import dao.AtendenteDAO;
 import dao.CompraDAO;
 import dao.ConfiguracaoDAO;
+import fiado.FilesFolder;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -24,6 +34,7 @@ import models.Atendente;
 import security.Hash;
 import validation.BuscaClienteAdminValidation;
 import validation.ConfiguracaoSenhaFormValidation;
+import validation.RelatorioValidation;
 
 /**
  *
@@ -58,6 +69,19 @@ public class MenuAdmin extends javax.swing.JFrame {
         campoLimiteDiasAviso.setText(String.valueOf(ConfiguracaoDAO.selectDiasNotificacao()));
 
         setupConfiguracao();
+
+        try {
+            inserirImagensRelatorio();
+            File file = new File(FilesFolder.path + "relatorio/scripts/config.txt");
+            Scanner sc = new Scanner(file);
+            campoRelatorioDataDe.setText(sc.nextLine());
+            campoRelatorioDataAte.setText(sc.nextLine());
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MenuAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MenuAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     private void setupConfiguracao() {
@@ -167,7 +191,7 @@ public class MenuAdmin extends javax.swing.JFrame {
     public void fillTodosClientesTable() {
         todosClientes = ClienteDAO.selectAllClientes();
         clientesNaTabela = todosClientes;
-        
+
         DefaultTableModel tabelaClientesModel = (DefaultTableModel) tabelaClientes.getModel();
 
         tabelaClientesModel.setRowCount(0);
@@ -181,7 +205,7 @@ public class MenuAdmin extends javax.swing.JFrame {
     public void fillTodosAtendentesTable() {
         todosAtendentes = AtendenteDAO.selectTodosAtendentes();
         atendentesNaTabela = todosAtendentes;
-        
+
         DefaultTableModel tabelaAtendentesModel = (DefaultTableModel) tabelaAtendentes.getModel();
 
         tabelaAtendentesModel.setRowCount(0);
@@ -202,7 +226,7 @@ public class MenuAdmin extends javax.swing.JFrame {
 
         setupTabelaAtendentes();
     }
-    
+
     public void fillClientesTable() {
         DefaultTableModel tabelaClientesModel = (DefaultTableModel) tabelaClientes.getModel();
 
@@ -233,7 +257,7 @@ public class MenuAdmin extends javax.swing.JFrame {
         botaoMaisInfoCliente.setEnabled(true);
     }
 
-    private void selecionarAtendente(Atendente a) {
+    public void selecionarAtendente(Atendente a) {
         atendenteSelecionado = a;
         botaoDeselecionarAtendente.setEnabled(true);
         labelAtendenteSelecionado.setText("<html>" + a.getNome() + "</html>");
@@ -263,6 +287,42 @@ public class MenuAdmin extends javax.swing.JFrame {
         atendentesNaTabela = todosAtendentes;
         fillTodosAtendentesTable();
 
+    }
+
+    private void inserirImagensRelatorio() throws IOException {
+
+        BufferedImage graf1 = ImageIO.read(new File(FilesFolder.path + "relatorio/imagens/totais.png"));
+        graficoImage1.setText("");
+        graficoImage1.setIcon(new ImageIcon(graf1));
+
+        BufferedImage graf2 = ImageIO.read(new File(FilesFolder.path + "relatorio/imagens/entregas.png"));
+        graficoImage2.setText("");
+        graficoImage2.setIcon(new ImageIcon(graf2));
+
+        BufferedImage graf3 = ImageIO.read(new File(FilesFolder.path + "relatorio/imagens/vendas_por_dia.png"));
+        graficoImage3.setText("");
+        graficoImage3.setIcon(new ImageIcon(graf3));
+
+        BufferedImage graf4 = ImageIO.read(new File(FilesFolder.path + "relatorio/imagens/clientes.png"));
+        graficoImage4.setText("");
+        graficoImage4.setIcon(new ImageIcon(graf4));
+
+        BufferedImage graf5 = ImageIO.read(new File(FilesFolder.path + "relatorio/imagens/clientes_nao_pago.png"));
+        graficoImage5.setText("");
+        graficoImage5.setIcon(new ImageIcon(graf5));
+
+    }
+
+    private void montarRelatorio() throws IOException, InterruptedException {
+        String query = "python3 " + FilesFolder.path + "relatorio/scripts/relatorio.py";
+        Process p = Runtime.getRuntime().exec(query);
+        int exitVal = p.waitFor();
+
+        if (exitVal == 0) {
+            inserirImagensRelatorio();
+        } else {
+            JOptionPane.showMessageDialog(null, "Houve algum erro na geração do relatório", "Atenção", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -320,6 +380,20 @@ public class MenuAdmin extends javax.swing.JFrame {
         checkBoxAtendenteNao = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JSeparator();
+        relatorioPanel = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        campoRelatorioDataDe = new javax.swing.JFormattedTextField();
+        campoRelatorioDataAte = new javax.swing.JFormattedTextField();
+        jLabel17 = new javax.swing.JLabel();
+        botaoConfirmarRelatorio = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        graficosPanel = new javax.swing.JPanel();
+        graficoImage1 = new javax.swing.JLabel();
+        graficoImage2 = new javax.swing.JLabel();
+        graficoImage3 = new javax.swing.JLabel();
+        graficoImage4 = new javax.swing.JLabel();
+        graficoImage5 = new javax.swing.JLabel();
         configuracoesPanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -529,7 +603,7 @@ public class MenuAdmin extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(checkBoxClienteNao))
                             .addComponent(jLabel9))
-                        .addGap(0, 26, Short.MAX_VALUE))
+                        .addGap(0, 35, Short.MAX_VALUE))
                     .addGroup(formPanelLayout.createSequentialGroup()
                         .addComponent(comboBoxBuscaValor, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -678,7 +752,7 @@ public class MenuAdmin extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE)
                 .addComponent(botaoDeselecionarAtendente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
@@ -732,9 +806,9 @@ public class MenuAdmin extends javax.swing.JFrame {
             .addGroup(atendentesButtonPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(atendentesButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(botaoNovoAtendente, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
-                    .addComponent(botaoDesAtivarAtendente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
-                    .addComponent(botaoMaisInfoAtendente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE))
+                    .addComponent(botaoNovoAtendente, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
+                    .addComponent(botaoDesAtivarAtendente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
+                    .addComponent(botaoMaisInfoAtendente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE))
                 .addContainerGap())
         );
         atendentesButtonPanelLayout.setVerticalGroup(
@@ -869,6 +943,147 @@ public class MenuAdmin extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Atendente", new javax.swing.ImageIcon(getClass().getResource("/icons/bread-48.png")), atendentePanel); // NOI18N
 
+        relatorioPanel.setName(""); // NOI18N
+
+        jLabel15.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel15.setText("Período a ser analisado:");
+
+        jLabel16.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel16.setText("De:");
+
+        try {
+            campoRelatorioDataDe.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        campoRelatorioDataDe.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoRelatorioDataDe.setName("dataDe"); // NOI18N
+        campoRelatorioDataDe.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                campoRelatorioDataDeActionPerformed(evt);
+            }
+        });
+
+        try {
+            campoRelatorioDataAte.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        campoRelatorioDataAte.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        campoRelatorioDataAte.setName("dataAte"); // NOI18N
+        campoRelatorioDataAte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                campoRelatorioDataAteActionPerformed(evt);
+            }
+        });
+
+        jLabel17.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel17.setText("Até:");
+
+        botaoConfirmarRelatorio.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botaoConfirmarRelatorio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/ok.png"))); // NOI18N
+        botaoConfirmarRelatorio.setText("Confirmar");
+        botaoConfirmarRelatorio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoConfirmarRelatorioActionPerformed(evt);
+            }
+        });
+
+        graficosPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        graficoImage1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        graficoImage1.setText("graf1");
+
+        graficoImage2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        graficoImage2.setText("graf2");
+
+        graficoImage3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        graficoImage3.setText("graf3");
+
+        graficoImage4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        graficoImage4.setText("graf4");
+
+        graficoImage5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        graficoImage5.setText("graf5");
+
+        javax.swing.GroupLayout graficosPanelLayout = new javax.swing.GroupLayout(graficosPanel);
+        graficosPanel.setLayout(graficosPanelLayout);
+        graficosPanelLayout.setHorizontalGroup(
+            graficosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(graficoImage1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(graficoImage4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1179, Short.MAX_VALUE)
+            .addGroup(graficosPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(graficosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(graficoImage2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(graficoImage3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+            .addComponent(graficoImage5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1179, Short.MAX_VALUE)
+        );
+        graficosPanelLayout.setVerticalGroup(
+            graficosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(graficosPanelLayout.createSequentialGroup()
+                .addComponent(graficoImage1)
+                .addGap(45, 45, 45)
+                .addComponent(graficoImage2)
+                .addGap(45, 45, 45)
+                .addComponent(graficoImage3)
+                .addGap(45, 45, 45)
+                .addComponent(graficoImage4)
+                .addGap(45, 45, 45)
+                .addComponent(graficoImage5)
+                .addContainerGap(541, Short.MAX_VALUE))
+        );
+
+        jScrollPane3.setViewportView(graficosPanel);
+
+        javax.swing.GroupLayout relatorioPanelLayout = new javax.swing.GroupLayout(relatorioPanel);
+        relatorioPanel.setLayout(relatorioPanelLayout);
+        relatorioPanelLayout.setHorizontalGroup(
+            relatorioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(relatorioPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(relatorioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3)
+                    .addGroup(relatorioPanelLayout.createSequentialGroup()
+                        .addGroup(relatorioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel15)
+                            .addGroup(relatorioPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(campoRelatorioDataDe, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel17)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(campoRelatorioDataAte, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(36, 36, 36)
+                        .addComponent(botaoConfirmarRelatorio)
+                        .addGap(0, 685, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        relatorioPanelLayout.setVerticalGroup(
+            relatorioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(relatorioPanelLayout.createSequentialGroup()
+                .addGroup(relatorioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(relatorioPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(relatorioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel16)
+                            .addComponent(campoRelatorioDataDe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17)
+                            .addComponent(campoRelatorioDataAte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(relatorioPanelLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(botaoConfirmarRelatorio)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Relatórios", new javax.swing.ImageIcon(getClass().getResource("/icons/report-48.png")), relatorioPanel); // NOI18N
+
         jLabel3.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/warning-48.png"))); // NOI18N
         jLabel3.setText("Avisos e Bloqueios:");
@@ -993,7 +1208,7 @@ public class MenuAdmin extends javax.swing.JFrame {
                             .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel11)
                             .addComponent(senhaFormPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 812, Short.MAX_VALUE)))
+                        .addGap(0, 821, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         configuracoesPanelLayout.setVerticalGroup(
@@ -1284,7 +1499,7 @@ public class MenuAdmin extends javax.swing.JFrame {
                 } else {
                     flagSenha = false;
                 }
-            }else{
+            } else {
                 flagSenha = false;
             }
         }
@@ -1294,6 +1509,41 @@ public class MenuAdmin extends javax.swing.JFrame {
             botaoSalvarEdicao.setEnabled(false);
         }
     }//GEN-LAST:event_botaoSalvarEdicaoActionPerformed
+
+    private void botaoConfirmarRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoConfirmarRelatorioActionPerformed
+        if (new RelatorioValidation(relatorioPanel).validate()) {
+            try {
+                graficoImage1.setIcon(null);
+                graficoImage2.setIcon(null);
+                graficoImage3.setIcon(null);
+                graficoImage4.setIcon(null);
+                graficoImage5.setIcon(null);
+                
+                graficoImage1.setIcon(new ImageIcon(getClass().getResource("/icons/loading.gif")));
+
+                String strDataDe = campoRelatorioDataDe.getText();
+                String strDataAte = campoRelatorioDataAte.getText();
+
+                FileWriter file = new FileWriter(FilesFolder.path + "relatorio/scripts/config.txt");
+                file.write(strDataDe + "\n" + strDataAte);
+                file.close();
+
+                montarRelatorio();
+            } catch (IOException ex) {
+                Logger.getLogger(MenuAdmin.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MenuAdmin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_botaoConfirmarRelatorioActionPerformed
+
+    private void campoRelatorioDataAteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoRelatorioDataAteActionPerformed
+        botaoConfirmarRelatorio.doClick();
+    }//GEN-LAST:event_campoRelatorioDataAteActionPerformed
+
+    private void campoRelatorioDataDeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoRelatorioDataDeActionPerformed
+        botaoConfirmarRelatorio.doClick();
+    }//GEN-LAST:event_campoRelatorioDataDeActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -1334,6 +1584,7 @@ public class MenuAdmin extends javax.swing.JFrame {
     private javax.swing.JButton botaoAtendenteBuscar;
     private javax.swing.JButton botaoBuscarCliente;
     private javax.swing.JButton botaoCancelarEdicao;
+    private javax.swing.JButton botaoConfirmarRelatorio;
     private javax.swing.JButton botaoDesAtivarAtendente;
     private javax.swing.JButton botaoDesAtivarCliente;
     private javax.swing.JButton botaoDeselecionarAtendente;
@@ -1352,6 +1603,8 @@ public class MenuAdmin extends javax.swing.JFrame {
     private javax.swing.JTextField campoDiasNotificacao;
     private javax.swing.JTextField campoLimiteDiasAviso;
     private javax.swing.JPasswordField campoNovaSenha;
+    private javax.swing.JFormattedTextField campoRelatorioDataAte;
+    private javax.swing.JFormattedTextField campoRelatorioDataDe;
     private javax.swing.JCheckBox checkBoxAtendenteNao;
     private javax.swing.JCheckBox checkBoxAtendenteSim;
     private javax.swing.JCheckBox checkBoxClienteNao;
@@ -1361,6 +1614,12 @@ public class MenuAdmin extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboBoxBuscaValor;
     private javax.swing.JPanel configuracoesPanel;
     private javax.swing.JPanel formPanel;
+    private javax.swing.JLabel graficoImage1;
+    private javax.swing.JLabel graficoImage2;
+    private javax.swing.JLabel graficoImage3;
+    private javax.swing.JLabel graficoImage4;
+    private javax.swing.JLabel graficoImage5;
+    private javax.swing.JPanel graficosPanel;
     private javax.swing.JRadioButton idAtendenteRadioButton;
     private javax.swing.JRadioButton idClienteRadioButton;
     private javax.swing.JButton jButton1;
@@ -1370,6 +1629,9 @@ public class MenuAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1384,6 +1646,7 @@ public class MenuAdmin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -1392,6 +1655,7 @@ public class MenuAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel labelClienteSelecionado;
     private javax.swing.JRadioButton nomeAtendenteRadioButton;
     private javax.swing.JRadioButton nomeClienteRadioButton;
+    private javax.swing.JPanel relatorioPanel;
     private javax.swing.JPanel senhaFormPanel;
     private javax.swing.JTable tabelaAtendentes;
     private javax.swing.JTable tabelaClientes;

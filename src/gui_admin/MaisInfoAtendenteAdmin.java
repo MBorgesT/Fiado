@@ -10,14 +10,14 @@ import validation.AtendenteFormValidation;
 public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
 
     private Atendente atendente;
-    private MenuAdmin telaAnterior;
+    private MenuAdmin menuAdmin;
     private boolean editando;
 
     public MaisInfoAtendenteAdmin(Atendente atendente, MenuAdmin telaAnterior) {
         initComponents();
 
         this.atendente = atendente;
-        this.telaAnterior = telaAnterior;
+        this.menuAdmin = telaAnterior;
 
         labelId.setText("ID: " + String.valueOf(atendente.getIdAtendente()));
         campoNome.setText(atendente.getNome());
@@ -282,7 +282,7 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
                 System.out.println(atendente.toString());
                 Atendente updatedAtendente = new Atendente(
                         atendente.getIdAtendente(),
-                        campoNome.getText(),
+                        campoNome.getText().toUpperCase(),
                         hashedPw,   
                         salt,
                         atendente.isAtivo()
@@ -291,7 +291,10 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
                 System.out.println(updatedAtendente.getSalt().toString());
 
                 if (AtendenteDAO.updateAtendente(updatedAtendente)) {
-                    atendente = updatedAtendente;
+                    this.atendente = updatedAtendente;
+                    menuAdmin.selecionarAtendente(updatedAtendente);
+                    
+                    menuAdmin.resetTabelaAtendentes();
 
                     campoNome.setText(atendente.getNome());
 
@@ -339,7 +342,7 @@ public class MaisInfoAtendenteAdmin extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Não se pode excluir atendentes com compras realizadas", "Atenção", JOptionPane.WARNING_MESSAGE);
         } else {
             if (AtendenteDAO.deleteAtendente(atendente.getIdAtendente())) {
-                telaAnterior.fillTables();
+                menuAdmin.fillTables();
                 JOptionPane.showMessageDialog(null, "Atendente excluido com sucesso", "Atenção", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
             }

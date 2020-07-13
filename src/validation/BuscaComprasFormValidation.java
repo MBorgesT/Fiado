@@ -94,6 +94,7 @@ public class BuscaComprasFormValidation {
             return true;
         } else {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            sdf.setLenient(false);
             try {
                 if (!dataDeVazia()) {
                     sdf.parse(campoDataDe.getText());

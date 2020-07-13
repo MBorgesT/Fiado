@@ -32,7 +32,7 @@ public class PagarComprasValidation {
     public boolean validate(){
         return (!temCamposVazios()
                 && validarSenhaCliente()
-                && validarSenhaCliente()
+                && validarSenhaAtendente()
         );
     }
     

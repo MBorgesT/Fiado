@@ -534,14 +534,17 @@ public class MaisInfoCliente extends javax.swing.JFrame {
                     if (ClienteDAO.updateCliente(c) == false) {
                         JOptionPane.showMessageDialog(null, "Houve um erro com o banco de dados. Favor reiniciar o programa e tentar novamente", "Erro", JOptionPane.WARNING_MESSAGE);
                     } else {
-                        cliente = c;
+                        this.cliente = c;
+                        menuPrincipal.selecionarCliente(c);
+                        
+                        menuPrincipal.resetTabelaClientes();
+
+                        botaoCancelarEdicao.doClick();
+
+                        editando = false;
+
+                        preencherCampos();
                     }
-
-                    botaoCancelarEdicao.doClick();
-
-                    editando = false;
-
-                    preencherCampos();
                 }
             }
         } else {

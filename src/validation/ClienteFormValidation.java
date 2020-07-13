@@ -24,7 +24,7 @@ public class ClienteFormValidation {
     Cliente cliente;
 
     public ClienteFormValidation(JPanel panel) {
-        cliente = null;
+        cliente = null; 
         
         Component[] components = panel.getComponents();
         HashMap componentMap = new HashMap<String, Component>();

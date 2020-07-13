@@ -153,7 +153,7 @@ public class ClienteDAO {
             ps.setInt(6, e.getIdEndereco());
             ps.executeUpdate();
 
-            sql = "UPDATE cliente SET nome = ?, telefone1 = ?, telefone2 = ?, cpf = ?, senha = ?, ativo = ? WHERE idCliente = ?";
+            sql = "UPDATE cliente SET nome = ?, telefone1 = ?, telefone2 = ?, cpf = ?, senha = ?, salt = ? WHERE idCliente = ?";
             ps = conn.prepareStatement(sql);
 
             int isAtivo = c.isAtivo() ? 1 : 0;
@@ -162,7 +162,7 @@ public class ClienteDAO {
             ps.setString(3, c.getTelefone2());
             ps.setString(4, c.getCpf());
             ps.setString(5, c.getSenha());
-            ps.setInt(6, isAtivo);
+            ps.setBytes(6, c.getSalt());
             ps.setInt(7, c.getIdCliente());
             ps.executeUpdate();
 
