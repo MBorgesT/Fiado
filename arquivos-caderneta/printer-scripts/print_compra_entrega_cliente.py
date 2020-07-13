@@ -1,0 +1,41 @@
+from escpos.printer import Usb
+from unidecode import unidecode
+import json
+
+file = open('/home/matheus/arquivos-caderneta/printer-scripts/compraEntrega.json')
+json_data = json.load(file)
+
+printer = Usb(0x0416, 0x5011)
+
+
+id_compra = json_data['id_compra']
+data = json_data['data']
+valor = json_data['valor']
+cliente = json_data['cliente']
+observacao = json_data['observacao']
+
+
+cliente = unidecode(cliente)
+atendente = unidecode(atendente)
+observacao = unidecode(observacao)
+    
+
+printer.set(align='center', width=2, height=2)
+printer.text('Paes & Cia\n\n')
+
+printer.set(align='center', width=2, height=1)
+printer.text('Recibo de\nentrega\n\n')
+
+printer.set(align='left')
+printer.text('ID: ' + id_compra + '\n')
+printer.text('Data: ' + data + '\n')
+printer.text('Valor: R$ ' + valor + '\n')
+printer.text('Cliente: ' + cliente + '\n')
+if (observacao != 'null'):
+	printer.text('Observacao: ' + observacao + '\n')
+
+printer.text('\n\n')
+printer.set(align='center')
+printer.text('Agradecemos a preferencia\n')
+
+printer.cut()
