@@ -77,7 +77,7 @@ public class CompraDAO {
             ArrayList<Compra> arrayCompras = new ArrayList<>();
 
             ResultSet rs = stmt.executeQuery("SELECT * FROM compra WHERE idCliente = " + String.valueOf(idCliente) + 
-                    " AND (entrega = 0)  OR  (entrega = 1 AND entregaValidada = 1)");
+                    " AND ((entrega = 0)  OR  (entrega = 1 AND entregaValidada = 1))");
 
             while (rs.next()) {
                 arrayCompras.add(extractCompraFromRs(rs));

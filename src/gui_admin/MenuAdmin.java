@@ -303,13 +303,9 @@ public class MenuAdmin extends javax.swing.JFrame {
         graficoImage3.setText("");
         graficoImage3.setIcon(new ImageIcon(graf3));
 
-        BufferedImage graf4 = ImageIO.read(new File(FilesFolder.path + "relatorio/imagens/clientes.png"));
+        BufferedImage graf4 = ImageIO.read(new File(FilesFolder.path + "relatorio/imagens/stacked_clientes.png"));
         graficoImage4.setText("");
         graficoImage4.setIcon(new ImageIcon(graf4));
-
-        BufferedImage graf5 = ImageIO.read(new File(FilesFolder.path + "relatorio/imagens/clientes_nao_pago.png"));
-        graficoImage5.setText("");
-        graficoImage5.setIcon(new ImageIcon(graf5));
 
     }
 
@@ -393,7 +389,6 @@ public class MenuAdmin extends javax.swing.JFrame {
         graficoImage2 = new javax.swing.JLabel();
         graficoImage3 = new javax.swing.JLabel();
         graficoImage4 = new javax.swing.JLabel();
-        graficoImage5 = new javax.swing.JLabel();
         configuracoesPanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -1003,9 +998,6 @@ public class MenuAdmin extends javax.swing.JFrame {
         graficoImage4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         graficoImage4.setText("graf4");
 
-        graficoImage5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        graficoImage5.setText("graf5");
-
         javax.swing.GroupLayout graficosPanelLayout = new javax.swing.GroupLayout(graficosPanel);
         graficosPanel.setLayout(graficosPanelLayout);
         graficosPanelLayout.setHorizontalGroup(
@@ -1018,7 +1010,6 @@ public class MenuAdmin extends javax.swing.JFrame {
                     .addComponent(graficoImage2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(graficoImage3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(graficoImage5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1179, Short.MAX_VALUE)
         );
         graficosPanelLayout.setVerticalGroup(
             graficosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1030,9 +1021,7 @@ public class MenuAdmin extends javax.swing.JFrame {
                 .addComponent(graficoImage3)
                 .addGap(45, 45, 45)
                 .addComponent(graficoImage4)
-                .addGap(45, 45, 45)
-                .addComponent(graficoImage5)
-                .addContainerGap(541, Short.MAX_VALUE))
+                .addContainerGap(601, Short.MAX_VALUE))
         );
 
         jScrollPane3.setViewportView(graficosPanel);
@@ -1517,7 +1506,6 @@ public class MenuAdmin extends javax.swing.JFrame {
                 graficoImage2.setIcon(null);
                 graficoImage3.setIcon(null);
                 graficoImage4.setIcon(null);
-                graficoImage5.setIcon(null);
                 
                 graficoImage1.setIcon(new ImageIcon(getClass().getResource("/icons/loading.gif")));
 
@@ -1618,7 +1606,6 @@ public class MenuAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel graficoImage2;
     private javax.swing.JLabel graficoImage3;
     private javax.swing.JLabel graficoImage4;
-    private javax.swing.JLabel graficoImage5;
     private javax.swing.JPanel graficosPanel;
     private javax.swing.JRadioButton idAtendenteRadioButton;
     private javax.swing.JRadioButton idClienteRadioButton;
