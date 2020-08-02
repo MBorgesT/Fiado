@@ -410,6 +410,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
         botaoNovaCompra.setEnabled(false);
         botaoRealizarPagamento.setEnabled(false);
         botaoMaisInfoCliente.setEnabled(false);
+        
+        tabelaClientes.getSelectionModel().clearSelection();
     }//GEN-LAST:event_botaoDeselecionarClienteActionPerformed
 
     private void botaoNovoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoNovoClienteActionPerformed

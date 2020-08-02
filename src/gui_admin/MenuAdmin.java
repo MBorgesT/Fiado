@@ -412,7 +412,7 @@ public class MenuAdmin extends javax.swing.JFrame {
 
         jTabbedPane1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
 
-        tabelaClientes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        tabelaClientes.setFont(new java.awt.Font("Noto Sans", 0, 14)); // NOI18N
         tabelaClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
