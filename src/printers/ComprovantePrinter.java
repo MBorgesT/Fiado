@@ -1,22 +1,19 @@
 package printers;
 
-import fiado.FilesFolder;
 import dao.AtendenteDAO;
 import dao.ClienteDAO;
 import dao.CompraDAO;
 import gui_cliente.NovaCompra;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.text.Normalizer;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Atendente;
 import models.Cliente;
 import models.Compra;
 import models.Pagamento;
+import org.apache.commons.codec.binary.StringUtils;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
@@ -52,16 +49,19 @@ public class ComprovantePrinter {
 
             String valor = String.format("%.02f", compra.getValor());
             valor = valor.replace('.', ',');
-
-            String obs = compra.getObservacao() == "" ? "null" : compra.getObservacao();
+            
+            String obs = compra.getObservacao().equals("") ? "null" : compra.getObservacao();
+            obs = stripAccents(obs);
 
             JSONObject json = new JSONObject();
             json.put("id_compra", String.valueOf(compra.getIdCompra()));
             json.put("data", compra.getFormattedData());
             json.put("valor", valor);
-            json.put("cliente", cliente.getNome());
-            json.put("atendente", atendente.getNome());
+            json.put("cliente", stripAccents(cliente.getNome()));
+            json.put("atendente", stripAccents(atendente.getNome()));
             json.put("observacao", obs);
+            
+            System.out.println(json.toString());
 
             if (isCliente) {
                 sendHttpPost(json, "/fiado_compra_cliente/");
@@ -80,13 +80,14 @@ public class ComprovantePrinter {
             String valor = String.format("%.02f", compra.getValor());
             valor = valor.replace('.', ',');
 
-            String obs = compra.getObservacao() == "" ? "null" : compra.getObservacao();
+            String obs = compra.getObservacao().equals("") ? "null" : compra.getObservacao();
+            obs = stripAccents(obs);
 
             JSONObject json = new JSONObject();
             json.put("id_compra", String.valueOf(compra.getIdCompra()));
             json.put("data", compra.getFormattedData());
             json.put("valor", valor);
-            json.put("cliente", cliente.getNome());
+            json.put("cliente", stripAccents(cliente.getNome()));
             json.put("observacao", obs);
 
             if (isCliente) {
@@ -106,13 +107,14 @@ public class ComprovantePrinter {
             ArrayList<Compra> arrayCompras = CompraDAO.selectComprasFromPagamento(pagamento.getIdPagamento());
 
             String obs = pagamento.getObservacao().isEmpty() ? "null" : pagamento.getObservacao();
+            obs = stripAccents(obs);
 
             JSONObject json = new JSONObject();
             json.put("id_pagamento", String.valueOf(pagamento.getIdPagamento()));
             json.put("data", pagamento.getFormattedData());
             json.put("valor", pagamento.getFormattedValor());
-            json.put("cliente", cliente.getNome());
-            json.put("atendente", atendente.getNome());
+            json.put("cliente", stripAccents(cliente.getNome()));
+            json.put("atendente", stripAccents(atendente.getNome()));
             json.put("observacao", obs);
             json.put("qtd_compras", String.valueOf(arrayCompras.size()));
             for (int i = 0; i < arrayCompras.size(); i++) {
@@ -145,6 +147,13 @@ public class ComprovantePrinter {
         } catch (IOException ex) {
             Logger.getLogger(ComprovantePrinter.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private static String stripAccents(String str){
+        String aux = Normalizer.normalize(str, Normalizer.Form.NFD);
+        aux = aux.replaceAll("[^\\p{ASCII}]", "");
+        aux = aux.replaceAll("\\p{M}", "");
+        return aux;
     }
 
 }

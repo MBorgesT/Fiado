@@ -44,7 +44,9 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
         campoCliente.setText(cliente.getNome());
 
         Atendente atendente = AtendenteDAO.selectAtendenteById(compra.getIdAtendente());
-        if (atendente != null) campoAtendente.setText(atendente.getNome());
+        if (atendente != null) {
+            campoAtendente.setText(atendente.getNome());
+        }
 
         campoValor.setText("R$ " + compra.getFormattedValor());
         campoData.setText(compra.getFormattedData());
@@ -53,22 +55,22 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
         campoEstaPago.setForeground(compra.isEstaPago() ? new Color(0, 163, 16) : Color.RED);
 
         campoIdPagamento.setText(compra.getIdPagamento() != 0 ? String.valueOf(compra.getIdPagamento()) : "");
-        
+
         String entrega;
-        if (compra.isEntrega()){
-            if (compra.isEntregaValidada()){
+        if (compra.isEntrega()) {
+            if (compra.isEntregaValidada()) {
                 entrega = "VALIDADA";
-            }else{
+            } else {
                 entrega = "NÃO VALIDADA";
             }
-        }else{
+        } else {
             entrega = "NÃO";
         }
         campoEntrega.setText(entrega);
-        if (compra.isEntrega()){
-            campoEntrega.setForeground(compra.isEntregaValidada() ? new Color(0,163,16) : Color.RED);
+        if (compra.isEntrega()) {
+            campoEntrega.setForeground(compra.isEntregaValidada() ? new Color(0, 163, 16) : Color.RED);
         }
-                
+
         campoObservacao.setText(compra.getObservacao());
     }
 
@@ -321,7 +323,11 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
                 options, options[0]);
 
         if (reply == 0) {
-            ComprovantePrinter.printComprovanteCompra(compra, true);
+            if (compra.isEntrega()) {
+                ComprovantePrinter.printComprovanteCompraEntrega(compra, true);
+            } else {
+                ComprovantePrinter.printComprovanteCompra(compra, true);
+            }
         }
     }//GEN-LAST:event_botaoImprimirNotaClienteActionPerformed
 
@@ -332,7 +338,11 @@ public class MaisInfoCompraAdmin extends javax.swing.JFrame {
                 options, options[0]);
 
         if (reply == 0) {
-            ComprovantePrinter.printComprovanteCompra(compra, false);
+            if (compra.isEntrega()) {
+                ComprovantePrinter.printComprovanteCompraEntrega(compra, false);
+            } else {
+                ComprovantePrinter.printComprovanteCompra(compra, false);
+            }
         }
     }//GEN-LAST:event_botaoImprimirNotaPadariaActionPerformed
 
