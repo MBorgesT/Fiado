@@ -155,7 +155,7 @@ public class CompraDAO {
         return 0;
     }
     
-        public static int insertCompraEntrega(Compra compra) {
+    public static int insertCompraEntrega(Compra compra) {
         try {
             Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             String sql = "INSERT INTO compra(idCliente, valor, data, observacao, estaPago, entrega, entregaValidada) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -218,7 +218,7 @@ public class CompraDAO {
 
             Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
-            String sql = "SELECT data FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente);
+            String sql = "SELECT data FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente) + " AND (entrega = 0 OR (entrega = 1 AND entregaValidada = 1)";
             ResultSet rs = stmt.executeQuery(sql);
 
             boolean flag = false;
@@ -253,7 +253,7 @@ public class CompraDAO {
         try {
             Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
-            String sql = "SELECT data FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente);
+            String sql = "SELECT data FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente) + " AND (entrega = 0 OR (entrega = 1 AND entregaValidada = 1))";
             ResultSet rs = stmt.executeQuery(sql);
 
             boolean flag = false;

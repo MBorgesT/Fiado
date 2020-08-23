@@ -21,7 +21,7 @@ import validation.PagarComprasValidation;
 public class PagarCompras extends javax.swing.JFrame {
 
     private ArrayList<Compra> arrayCompras;
-    private ArrayList<Atendente> todosAtendentes;
+    private ArrayList<Atendente> atendentesNoComboBox;
     private Cliente cliente;
     private float valorTotal;
     HistoricoCompras telaAnterior;
@@ -31,15 +31,18 @@ public class PagarCompras extends javax.swing.JFrame {
 
         this.arrayCompras = arrayCompras;
         this.cliente = cliente;
-        this.todosAtendentes = AtendenteDAO.selectTodosAtendentesAtivos();
         this.telaAnterior = telaAnterior;
         
         if (cliente.isAtendente()){
-            for (Atendente atendente: todosAtendentes){
-                if (cliente.getIdAtendente() == atendente.getIdAtendente()){
-                    todosAtendentes.remove(atendente);
+            ArrayList<Atendente> todosAtendentesAtivos = AtendenteDAO.selectTodosAtendentesAtivos();
+            this.atendentesNoComboBox = new ArrayList<>();
+            for (Atendente atendente: todosAtendentesAtivos){
+                if (cliente.getIdAtendente() != atendente.getIdAtendente()){
+                    atendentesNoComboBox.add(atendente);
                 }
             }
+        }else{
+            this.atendentesNoComboBox = AtendenteDAO.selectTodosAtendentesAtivos();
         }
 
         this.valorTotal = 0;
@@ -55,7 +58,7 @@ public class PagarCompras extends javax.swing.JFrame {
         campoValorTotal.setText("R$ " + valorTotalStr);
         campoNomeCliente.setText(cliente.getNome());
 
-        for (Atendente atendente : todosAtendentes) {
+        for (Atendente atendente : atendentesNoComboBox) {
             comboBoxAtendente.addItem(atendente.getNome());
         }
 
@@ -328,7 +331,7 @@ public class PagarCompras extends javax.swing.JFrame {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
                 options, options[0]);
 
-        Atendente atendenteSelecionado = todosAtendentes.get(comboBoxAtendente.getSelectedIndex());
+        Atendente atendenteSelecionado = atendentesNoComboBox.get(comboBoxAtendente.getSelectedIndex());
 
         if (reply == 0 && new PagarComprasValidation(formPanel, cliente, atendenteSelecionado).validate()) {
             Pagamento pagamento = new Pagamento(

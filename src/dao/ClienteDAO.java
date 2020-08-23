@@ -235,7 +235,7 @@ public class ClienteDAO {
             Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
 
-            ResultSet rs = stmt.executeQuery("SELECT valor FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente));
+            ResultSet rs = stmt.executeQuery("SELECT valor FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente) + " AND ((entrega = 0)  OR  (entrega = 1 AND entregaValidada = 1))");
 
             float valorTotal = 0;
             while (rs.next()) {
