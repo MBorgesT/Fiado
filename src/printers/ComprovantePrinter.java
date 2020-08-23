@@ -60,8 +60,6 @@ public class ComprovantePrinter {
             json.put("cliente", stripAccents(cliente.getNome()));
             json.put("atendente", stripAccents(atendente.getNome()));
             json.put("observacao", obs);
-            
-            System.out.println(json.toString());
 
             if (isCliente) {
                 sendHttpPost(json, "/fiado_compra_cliente/");

@@ -218,7 +218,7 @@ public class CompraDAO {
 
             Connection conn = DriverManager.getConnection(DAOPaths.dbPath);
             Statement stmt = conn.createStatement();
-            String sql = "SELECT data FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente) + " AND (entrega = 0 OR (entrega = 1 AND entregaValidada = 1)";
+            String sql = "SELECT data FROM compra WHERE estaPago = 0 AND idCliente = " + String.valueOf(idCliente) + " AND (entrega = 0 OR (entrega = 1 AND entregaValidada = 1))";
             ResultSet rs = stmt.executeQuery(sql);
 
             boolean flag = false;
