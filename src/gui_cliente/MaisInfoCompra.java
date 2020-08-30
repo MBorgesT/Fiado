@@ -1,26 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package gui_cliente;
 
 import dao.AtendenteDAO;
 import dao.ClienteDAO;
 import java.awt.Color;
+import javax.swing.JOptionPane;
 import models.Atendente;
 import models.Cliente;
 import models.Compra;
+import printers.ComprovantePrinter;
 
-/**
- *
- * @author matheus
- */
 public class MaisInfoCompra extends javax.swing.JFrame {
-
+    
+    Compra compra;
     
     public MaisInfoCompra(Compra compra) {
         initComponents();
+        
+        this.compra = compra;
         
         labelId.setText("ID: " + String.valueOf(compra.getIdCompra()));
         
@@ -83,6 +80,8 @@ public class MaisInfoCompra extends javax.swing.JFrame {
         campoObservacao = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         campoEntrega = new javax.swing.JTextField();
+        botaoImprimirNotaPadaria = new javax.swing.JButton();
+        botaoImprimirNotaCliente = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Mais Informações da Compra");
@@ -231,6 +230,24 @@ public class MaisInfoCompra extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        botaoImprimirNotaPadaria.setFont(new java.awt.Font("Noto Sans", 1, 14)); // NOI18N
+        botaoImprimirNotaPadaria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/printer-green-32.png"))); // NOI18N
+        botaoImprimirNotaPadaria.setText("Nota da Padaria");
+        botaoImprimirNotaPadaria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoImprimirNotaPadariaActionPerformed(evt);
+            }
+        });
+
+        botaoImprimirNotaCliente.setFont(new java.awt.Font("Noto Sans", 1, 14)); // NOI18N
+        botaoImprimirNotaCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/printer-blue-32.png"))); // NOI18N
+        botaoImprimirNotaCliente.setText("Nota do Cliente");
+        botaoImprimirNotaCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoImprimirNotaClienteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -240,15 +257,25 @@ public class MaisInfoCompra extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelId)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(botaoImprimirNotaPadaria)
+                        .addGap(18, 18, 18)
+                        .addComponent(botaoImprimirNotaCliente))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(labelId)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(labelId))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(botaoImprimirNotaCliente)
+                            .addComponent(botaoImprimirNotaPadaria))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -257,6 +284,36 @@ public class MaisInfoCompra extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void botaoImprimirNotaPadariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoImprimirNotaPadariaActionPerformed
+        String[] options = {"SIM", "NÃO"};
+        int reply = JOptionPane.showOptionDialog(null, "Realmente deseja imprimir o comprovante da padaria?", "Recibo",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                options, options[0]);
+
+        if (reply == 0) {
+            if (compra.isEntrega()) {
+                ComprovantePrinter.printComprovanteCompraEntrega(compra, false);
+            } else {
+                ComprovantePrinter.printComprovanteCompra(compra, false);
+            }
+        }
+    }//GEN-LAST:event_botaoImprimirNotaPadariaActionPerformed
+
+    private void botaoImprimirNotaClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoImprimirNotaClienteActionPerformed
+        String[] options = {"SIM", "NÃO"};
+        int reply = JOptionPane.showOptionDialog(null, "Realmente deseja imprimir o comprovante do cliente?", "Recibo",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                options, options[0]);
+
+        if (reply == 0) {
+            if (compra.isEntrega()) {
+                ComprovantePrinter.printComprovanteCompraEntrega(compra, true);
+            } else {
+                ComprovantePrinter.printComprovanteCompra(compra, true);
+            }
+        }
+    }//GEN-LAST:event_botaoImprimirNotaClienteActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -291,6 +348,8 @@ public class MaisInfoCompra extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton botaoImprimirNotaCliente;
+    private javax.swing.JButton botaoImprimirNotaPadaria;
     private javax.swing.JTextField campoAtendente;
     private javax.swing.JTextField campoCliente;
     private javax.swing.JTextField campoData;

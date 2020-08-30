@@ -50,4 +50,5 @@ def gerar_imagem(compras):
 	ax1.set_title('Compras realizadas pelos doze maiores clientes')
 
 	plt.savefig(imagens_path + 'clientes.png', bbox_inches='tight')
+	plt.clf()
 

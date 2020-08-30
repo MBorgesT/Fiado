@@ -22,7 +22,7 @@ def gerar_imagem(compras):
 
 	fig1, ax1 = plt.subplots()
 
-	ax1.pie(sizes, explode=explode, autopct='%1.1f%%',
+	ax1.pie(sizes, autopct='%1.1f%%',
         shadow=False, startangle=90)
 	ax1.axis('equal')
 	ax1.legend(labels)

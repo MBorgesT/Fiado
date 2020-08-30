@@ -1,10 +1,10 @@
 from models import Compra
 from datetime import datetime, timedelta
 from common import cursor, config_path
+from copy import deepcopy
 
 arq = open(config_path, 'r')
 config = arq.read().splitlines()
-print(config)
 
 inicio = datetime.strptime(config[0], '%d/%m/%Y')
 fim = datetime.strptime(config[1], '%d/%m/%Y')
@@ -33,12 +33,14 @@ for l in cursor.fetchall():
 		compras.append(c)
 
 
-import pizza_totais, pizza_clientes, pizza_clientes_nao_pago, pizza_entregas, stacked_vendas_por_dia
+import pizza_totais, pizza_entregas, stacked_clientes, stacked_vendas_por_dia, stacked_vendas_por_horario
 
+stacked_vendas_por_horario.gerar_imagem(deepcopy(compras))
 
-stacked_vendas_por_dia.gerar_imagem(compras)
+'''
+stacked_vendas_por_dia.gerar_imagem(deepcopy(compras))
+stacked_clientes.gerar_imagem(deepcopy(compras))
 
-pizza_totais.gerar_imagem(compras)
-pizza_clientes.gerar_imagem(compras)
-pizza_clientes_nao_pago.gerar_imagem(compras)
-pizza_entregas.gerar_imagem(compras)
+pizza_totais.gerar_imagem(deepcopy(compras))
+pizza_entregas.gerar_imagem(deepcopy(compras))
+'''

@@ -19,7 +19,7 @@ def gerar_imagem(compras):
 	labels = ['PAGAS ' + formatar(valor_pagas), 'NÃO PAGAS ' + formatar(valor_n_pagas)]
 	sizes = [valor_pagas/valor_total, valor_n_pagas/valor_total]
 	explode = (0.1, 0)
-	colors = ['#09ba00', '#f20000']
+	colors = ['#38AFA0', '#D84A3F']
 
 	fig1, ax1 = plt.subplots()
 
@@ -31,4 +31,4 @@ def gerar_imagem(compras):
 
 	plt.tight_layout()
 	plt.savefig(imagens_path + 'totais.png')
-
+	plt.clf()

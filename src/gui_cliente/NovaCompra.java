@@ -359,23 +359,8 @@ public class NovaCompra extends javax.swing.JFrame {
                 int insertedId = CompraDAO.insertCompra(compra);
                 if (insertedId != 0) {
                     compra.setIdCompra(insertedId);
-
-                    reply = JOptionPane.showOptionDialog(null, "Deseja imprimir o recibo do cliente?", "Recibo",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-                            options, options[0]);
-
-                    if (reply == 0) {
-                        ComprovantePrinter.printComprovanteCompra(compra, true);
-                    }
-
-                    try {
-                        Thread.currentThread().sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(NovaCompra.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                    JOptionPane.showMessageDialog(null, "Confirme para imprimir a nota da padaria", "Recibo", JOptionPane.INFORMATION_MESSAGE);
-                    ComprovantePrinter.printComprovanteCompra(compra, false);
+                    
+                    new ImpressaoNovaCompra(compra).setVisible(true);
 
                     this.dispose();
                 } else {

@@ -13,7 +13,9 @@ def gerar_imagem(compras):
 		if c.data > fim:
 			fim = c.data
 
-	dias_datetime = np.arange(inicio, fim, timedelta(days=1)).astype(datetime)
+	dias_datetime = np.arange(inicio, fim+timedelta(days=1), timedelta(days=1)).astype(datetime)
+	for d in dias_datetime:
+		print(d.strftime('%d/%m/%Y'))
 
 	vendas_dias = dict()
 
@@ -46,7 +48,12 @@ def gerar_imagem(compras):
 	plt.title('Vendas por dia')
 	plt.xticks(dias, rotation='vertical')
 	plt.legend((barras_manha, barras_tarde), ('Manhã', 'Tarde'))
+
+	if (len(dias) > 28):
+		ax = plt.gca()
+		ax.set_xticks(ax.get_xticks()[::7])
 	
 	plt.grid(axis='y', linestyle='--')
 
 	plt.savefig(imagens_path + 'vendas_por_dia.png', bbox_inches='tight')
+	plt.clf()
